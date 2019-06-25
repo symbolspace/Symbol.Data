@@ -1,99 +1,94 @@
-# ³ÌĞò¼¯    [Ê¹ÓÃËµÃ÷](https://github.com/symbolspace/Symbol.Data/wiki/Home)
+# ç®€ä»‹
+* è½»é‡çº§ORMï¼Œå®ä½“ä¸æŸ¥è¯¢æ— éœ€ä¸€è‡´ï¼›
+* æ”¯æŒT-SQLå’ŒNoSQLè¯­æ³•æ··ç”¨ï¼›
+* æ”¯æŒæ•°æ®åº“æ¶æ„ç‰ˆæœ¬æ£€æµ‹ï¼›
+* æ•°æ®åº“ï¼šMSSQL 2005/2008/2012/2014/2016+ï¼Œå¼•ç”¨ **Symbol.Data.SqlServer** ï¼›
+* æ•°æ®åº“ï¼šPostgreSQLï¼Œå¼•ç”¨ **Symbol.Data.PostgreSQL**ï¼ŒåŸºäºNpgsql.dllï¼›
+* æ•°æ®åº“ï¼šMySqlï¼Œå¼•ç”¨ **Symbol.Data.MySql**ï¼ŒåŸºäº MySql.Data.dllï¼›
+* æ•°æ®åº“ï¼šSQLiteï¼Œå¼•ç”¨ **Symbol.Data.SQLite**ï¼ŒåŸºäº System.Data.SQLite.Core.dllï¼Œè‡ªé€‚åº”x64/x86ï¼Œè‡ªåŠ¨è¯†åˆ«ï¼›
+
+# ç¨‹åºé›†    [ä½¿ç”¨è¯´æ˜](https://github.com/symbolspace/Symbol.Data/wiki/Home)
 * Symbol.Data.dll [![Available on NuGet https://www.nuget.org/packages/Symbol.Data/](https://img.shields.io/nuget/v/Symbol.Data.svg?style=flat)](https://www.nuget.org/packages/Symbol.Data/)
 * Symbol.Data.SqlServer.dll [![Available on NuGet https://www.nuget.org/packages/Symbol.Data.SqlServer/](https://img.shields.io/nuget/v/Symbol.Data.SqlServer.svg?style=flat)](https://www.nuget.org/packages/Symbol.Data.SqlServer/)
 * Symbol.Data.PostgreSQL.dll [![Available on NuGet https://www.nuget.org/packages/Symbol.Data.PostgreSQL/](https://img.shields.io/nuget/v/Symbol.Data.PostgreSQL.svg?style=flat)](https://www.nuget.org/packages/Symbol.Data.PostgreSQL/)
 * Symbol.Data.MySQL.dll [![Available on NuGet https://www.nuget.org/packages/Symbol.Data.MySQL/](https://img.shields.io/nuget/v/Symbol.Data.MySQL.svg?style=flat)](https://www.nuget.org/packages/Symbol.Data.MySQL/)
 
-# ×î½ü¸üĞÂ   [°æ±¾ÀúÊ·](https://github.com/symbolspace/Symbol.Data/wiki/Version-history)
-> 4.1.0.6 2019-06-24
-* ÖØ¹¹ORM£¬·ÖÀëÊı¾İ¿âÒıÇæ£»
-* ·ÖÀëµ½×Ó²Ö¿â£»
 
-
-# ¼ò½é
-* ÇáÁ¿¼¶ORM£¬ÊµÌåÓë²éÑ¯ÎŞĞèÒ»ÖÂ£»
-* Ö§³ÖT-SQLºÍNoSQLÓï·¨»ìÓÃ£»
-* Ö§³ÖÊı¾İ¿â¼Ü¹¹°æ±¾¼ì²â£»
-* Êı¾İ¿â£ºMSSQL 2005/2008/2012/2014/2016+£¬ÒıÓÃ **Symbol.Data.SqlServer** £»
-* Êı¾İ¿â£ºPostgreSQL£¬ÒıÓÃ **Symbol.Data.PostgreSQL**£¬»ùÓÚNpgsql.dll£»
-* Êı¾İ¿â£ºMySql£¬ÒıÓÃ **Symbol.Data.MySql**£¬»ùÓÚ MySql.Data.dll£»
-* Êı¾İ¿â£ºSQLite£¬ÒıÓÃ **Symbol.Data.SQLite**£¬»ùÓÚ System.Data.SQLite.Core.dll£¬×ÔÊÊÓ¦x64/x86£¬×Ô¶¯Ê¶±ğ£»
-
-# Ê¹ÓÃSymbol.Data
-* ÒıÓÃ Symbol.Data£»
-* ÒıÓÃÊı¾İ¿âÒıÇæÀà¿â£¬ÀıÈç Symbol.Data.SqlServer£»
-* ´´½¨DataContext£»
+# ä½¿ç”¨Symbol.Data
+* å¼•ç”¨ Symbol.Dataï¼›
+* å¼•ç”¨æ•°æ®åº“å¼•æ“ç±»åº“ï¼Œä¾‹å¦‚ Symbol.Data.SqlServerï¼›
+* åˆ›å»ºDataContextï¼›
 ```csharp
-//Á¬½Ó²ÎÊı£¬¿ÉÒÔÊÇjson×Ö·û´®¡¢ÄäÃû¶ÔÏó¡¢IDictionary<string, object>
-//Ê¡È¥Ò»Ğ©¼Ç²»×¡µÄÁ¬½Ó²ÎÊı£¬Ö»ĞèÒªÉèÖÃ¹Ø¼üµÄ²ÎÊı¼´¿É
+//è¿æ¥å‚æ•°ï¼Œå¯ä»¥æ˜¯jsonå­—ç¬¦ä¸²ã€åŒ¿åå¯¹è±¡ã€IDictionary<string, object>
+//çœå»ä¸€äº›è®°ä¸ä½çš„è¿æ¥å‚æ•°ï¼Œåªéœ€è¦è®¾ç½®å…³é”®çš„å‚æ•°å³å¯
 var connectionOptions = new {
-    host = "192.168.247.119\\MSSQL2014",    //·şÎñÆ÷£¬¶Ë¿ÚÎªÄ¬ÈÏ£¬ËùÒÔ²»ÓÃĞ´
-    name = "test",                          //Êı¾İ¿âÃû³Æ
-    account = "test",                       //µÇÂ¼ÕËºÅ
-    password = "test",                      //µÇÂ¼ÃÜÂë
+    host = "192.168.247.119\\MSSQL2014",    //æœåŠ¡å™¨ï¼Œç«¯å£ä¸ºé»˜è®¤ï¼Œæ‰€ä»¥ä¸ç”¨å†™
+    name = "test",                          //æ•°æ®åº“åç§°
+    account = "test",                       //ç™»å½•è´¦å·
+    password = "test",                      //ç™»å½•å¯†ç 
 };
 
-//db ÀàĞÍ£ºSymbol.Data.IDataContext
+//db ç±»å‹ï¼šSymbol.Data.IDataContext
 var db = Symbol.Data.Provider.CreateDataContext("mssql2012", connectionOptions);
-//Ò²¿ÉÒÔÕâÑù¹¹½¨
+//ä¹Ÿå¯ä»¥è¿™æ ·æ„å»º
 //var db = return new Symbol.Data.SqlServer2012Provider().CreateDataContext(connectionOptions);
 
-//³ıÁËÊ¹ÓÃconnectionOptions£¬Ò²Ö§³ÖÔ­Ê¼µÄÁ¬½Ó×Ö·û´®
+//é™¤äº†ä½¿ç”¨connectionOptionsï¼Œä¹Ÿæ”¯æŒåŸå§‹çš„è¿æ¥å­—ç¬¦ä¸²
 //var db = return new Symbol.Data.SqlServer2012Provider().CreateDataContext("Data Source=.;.....");
 ```
-* ²éÑ¯Êı¾İ
+* æŸ¥è¯¢æ•°æ®
 ```csharp
-/* -------- ·Ç·ºĞÍ -------- */
+/* -------- éæ³›å‹ -------- */
 {
-    //µ¥ÌõÊı¾İ
+    //å•æ¡æ•°æ®
     var item = db.Find("test", new { name = "xxxxxxxxx" });
     Console.WriteLine( JSON.ToNiceJSON( item ) );
-    //²éÑ¯¶ÔÏó£¬²»½øĞĞÊı¾İ¶ÁÈ¡²Ù×÷Ê±£¬²»»áÊµ¼Ê·ÃÎÊÊı¾İ¿â
+    //æŸ¥è¯¢å¯¹è±¡ï¼Œä¸è¿›è¡Œæ•°æ®è¯»å–æ“ä½œæ—¶ï¼Œä¸ä¼šå®é™…è®¿é—®æ•°æ®åº“
     var q = db.FindAll("test", new { name = "xxxxxxxxx" }, new { id = "desc" });
     Console.WriteLine( JSON.ToNiceJSON( q ) );
-    //¿ÉÒÔ¿ìËÙÊä³öList<T>
+    //å¯ä»¥å¿«é€Ÿè¾“å‡ºList<T>
     var list = q.ToList();
-    //¿ÉÒÔ¿ìËÙÈ¡³öµÚÒ»Ìõ db.Find ¾ÍÊÇ»ùÓÚËü
+    //å¯ä»¥å¿«é€Ÿå–å‡ºç¬¬ä¸€æ¡ db.Find å°±æ˜¯åŸºäºå®ƒ
     var firstItem = q.FirstOrDefault();
     
-    //´«Í³SQLÓÃ·¨
+    //ä¼ ç»ŸSQLç”¨æ³•
     var q2 = db.CreateQuery("select * from [test] where [name]=@p1 order by [id] desc", "xxxxxxxxx");
 }
-/* ---------- ·ºĞÍ -------- */
+/* ---------- æ³›å‹ -------- */
 {
-    //·ºĞÍ»ù±¾ÉÏÓë·Ç·ºĞÍ²î²»¶à£¬²»Í¬Ö®´¦ÊÇÖ¸¶¨ÊµÌåÀà
+    //æ³›å‹åŸºæœ¬ä¸Šä¸éæ³›å‹å·®ä¸å¤šï¼Œä¸åŒä¹‹å¤„æ˜¯æŒ‡å®šå®ä½“ç±»
     var q = db.FindAll<t_sys_User>(new{ age = 25 });
-    //ÓëEF ºÍ Dapper ²»Í¬Ö®´¦µÄÊÇ£¬ÊµÌåÀà¿ÉÒÔ²»×÷Îª±íÃû
+    //ä¸EF å’Œ Dapper ä¸åŒä¹‹å¤„çš„æ˜¯ï¼Œå®ä½“ç±»å¯ä»¥ä¸ä½œä¸ºè¡¨å
     var q2 = db.FindAll<UserInfo>("t_sys_User", new { age = 25 });
 }
 
 ```
-* ²åÈëÊı¾İ
+* æ’å…¥æ•°æ®
 ```csharp
-//·Ç·ºĞÍ²Ù×÷£¬Ö¸¶¨±íÃû
+//éæ³›å‹æ“ä½œï¼ŒæŒ‡å®šè¡¨å
 var id = db.Insert("test", new {
     name = "xxxxxxxxx",
     count = 9999,
-    data = new { //JSONÀàĞÍ²âÊÔ£¬×Ô¶¯ĞòÁĞ»¯
+    data = new { //JSONç±»å‹æµ‹è¯•ï¼Œè‡ªåŠ¨åºåˆ—åŒ–
         url = "https://www.baidu.com/",
         guid = System.Guid.NewGuid(),
         datetime = DateTime.Now,
-        values = FastWrapper.As(new {//Ç¶Ì×¸´ÔÓ¶ÔÏó²âÊÔ
-            nickName = "êÇ¶û",
+        values = FastWrapper.As(new {//åµŒå¥—å¤æ‚å¯¹è±¡æµ‹è¯•
+            nickName = "æ˜µå°”",
             account = "test"
         })
     }
 });
 Console.WriteLine($"insert id={id}");
 
-//·ºĞÍ²åÈë£¬Î¨Ò»ÓÃ´¦²»ÓÃĞ´±íÃû£¬ÁíÍâÀàÃû·¢Éú¸Ä±ä£¬²»ÓÃµ£ĞÄ´íÎó
+//æ³›å‹æ’å…¥ï¼Œå”¯ä¸€ç”¨å¤„ä¸ç”¨å†™è¡¨åï¼Œå¦å¤–ç±»åå‘ç”Ÿæ”¹å˜ï¼Œä¸ç”¨æ‹…å¿ƒé”™è¯¯
 var id2 = db.Insert<t_sys_User>(new{
-     //ÀàĞÍ¿ÉÒÔÎªt_sys_User£¬Ò²¿ÉÒÔÎªÄäÃûÀà¡¢IDictionary<string, object>
+     //ç±»å‹å¯ä»¥ä¸ºt_sys_Userï¼Œä¹Ÿå¯ä»¥ä¸ºåŒ¿åç±»ã€IDictionary<string, object>
      //...
 });
 
-//Èç¹ûÖ÷¼üÎªGuidµÈÌØÊâÀàĞÍÊ±
-//ÓÉÓÚÖØÔØÓĞ³åÍ»£¬Òò´ËÄ©Î²µÄ²ÎÊı±ØĞë´«
+//å¦‚æœä¸»é”®ä¸ºGuidç­‰ç‰¹æ®Šç±»å‹æ—¶
+//ç”±äºé‡è½½æœ‰å†²çªï¼Œå› æ­¤æœ«å°¾çš„å‚æ•°å¿…é¡»ä¼ 
 var guid = db.Insert<System.Guid>("guidtable", {
     name = "test"
 },new string[0]);
@@ -101,37 +96,37 @@ var guid2 = db.Insert<t_sys_User, System.Guid>(new {
     //...
 });
 
-//¿ÉÒÔÊ¹ÓÃExecuteScalarÊµÀı´«Í³µÄSQL²Ù×÷
+//å¯ä»¥ä½¿ç”¨ExecuteScalarå®ä¾‹ä¼ ç»Ÿçš„SQLæ“ä½œ
 var testId = db.ExecuteScalar<int>("insert into [test]([name]) values(@p1)","xxxxx");
 
 ```
-* ¸üĞÂÊı¾İ
+* æ›´æ–°æ•°æ®
 ```csharp
-//·Ç·ºĞÍ²Ù×÷£¬Ö¸¶¨±íÃû
+//éæ³›å‹æ“ä½œï¼ŒæŒ‡å®šè¡¨å
 var count = db.Update(
-    "test",   //±íÃû
-     new {    //¸üĞÂÊı¾İ
+    "test",   //è¡¨å
+     new {    //æ›´æ–°æ•°æ®
          name = "fsafhakjshfksjhf",
          count = 88
-     }, new { //¸üĞÂÄ¿±ê£¬Ïàµ±ÓÚ where Ìõ¼ş
+     }, new { //æ›´æ–°ç›®æ ‡ï¼Œç›¸å½“äº where æ¡ä»¶
          id 
      });
 var updated = (count == 1);
 Console.WriteLine($"update {updated}");
 ```
-* É¾³ıÊı¾İ
+* åˆ é™¤æ•°æ®
 ```csharp
-//Æ¥Åä¹æÔò ÀàËÆ mongodb µÄ¹æÔò
+//åŒ¹é…è§„åˆ™ ç±»ä¼¼ mongodb çš„è§„åˆ™
 var count = db.Delete(
-    "test",                          //±íÃû
+    "test",                          //è¡¨å
     new {
-        name = "xxxxxxxxx",          //nameÎªxxxxxxxxx
-        id = "{ '$gt': 200000 }"     //id´óÓÚ200000£¬C#Óï·¨²»Ö§³ÖJSON£¬µ«ÎÒÃÇÖ§³ÖÇ¶Ì×JSONÓï¾ä :)
+        name = "xxxxxxxxx",          //nameä¸ºxxxxxxxxx
+        id = "{ '$gt': 200000 }"     //idå¤§äº200000ï¼ŒC#è¯­æ³•ä¸æ”¯æŒJSONï¼Œä½†æˆ‘ä»¬æ”¯æŒåµŒå¥—JSONè¯­å¥ :)
     });
 Console.WriteLine($"delete count={count}");
 
-//Ò²¿ÉÒÔÊ¹ÓÃdb.ExecuteNoQuery Ö´ĞĞ´«Í³SQL
+//ä¹Ÿå¯ä»¥ä½¿ç”¨db.ExecuteNoQuery æ‰§è¡Œä¼ ç»ŸSQL
 var count2 = db.ExecuteNoQuery("delete from [test] where [name]=@p1 and [id]>@p2", "xxxxxxxxx", 200000);
-//@p1 @p2 ¿ÉÒÔÓÃÎÊºÅ´úÌæ
+//@p1 @p2 å¯ä»¥ç”¨é—®å·ä»£æ›¿
 var count3 = db.ExecuteNoQuery("delete from [test] where [name]=? and [id]>?", "xxxxxxxxx", 200000);
 ```
