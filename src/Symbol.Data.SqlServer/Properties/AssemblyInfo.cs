@@ -16,11 +16,11 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCopyrightAttribute("© symbolspace All rights reserved.")]
 [assembly: System.Reflection.AssemblyDescriptionAttribute("Please see https://github.com/symbolspace/Symbol.Data/wiki/Home for more informat" +
     "ion.")]
-[assembly: System.Reflection.AssemblyFileVersionAttribute("4.1.0.2")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("4.1.0.2")]
+[assembly: System.Reflection.AssemblyFileVersionAttribute("4.1.0.3")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("4.1.0.3")]
 [assembly: System.Reflection.AssemblyProductAttribute("Symbol.Data.SqlServer")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Symbol.Data.SqlServer")]
-[assembly: System.Reflection.AssemblyVersionAttribute("4.1.0.2")]
+[assembly: System.Reflection.AssemblyVersionAttribute("4.1.0.3")]
 [assembly: System.Resources.NeutralResourcesLanguageAttribute("zh-CN")]
 
 // 由 MSBuild WriteCodeFragment 类生成。

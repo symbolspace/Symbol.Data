@@ -8,9 +8,9 @@
 
 
 # 最近更新   [版本历史](https://github.com/symbolspace/Symbol.Data/wiki/Version-history)
-> v4.1.0.6 2019-06-24
-* 重构ORM，分离数据库引擎；
+> v4.1.0.7 2019-06-26
 * 分离到子仓库；
+* 本次没有重大更新，可以选择不更新；
 
 
 # 简介
