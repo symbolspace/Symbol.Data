@@ -8,6 +8,8 @@
 * 数据库：SQLite，引用 **Symbol.Data.SQLite**，基于 System.Data.SQLite.Core.dll，自适应x64/x86，自动识别；
 
 # 程序集    [使用说明](https://github.com/symbolspace/Symbol.Data/wiki/Home)
+> 运行时支持 .net framework v2.0/3.5/4.0/4.5、.net standard 2.x、.net core app 2.x。
+
 * Symbol.Data.dll [![Available on NuGet https://www.nuget.org/packages/Symbol.Data/](https://img.shields.io/nuget/v/Symbol.Data.svg?style=flat)](https://www.nuget.org/packages/Symbol.Data/)
 * Symbol.Data.SqlServer.dll [![Available on NuGet https://www.nuget.org/packages/Symbol.Data.SqlServer/](https://img.shields.io/nuget/v/Symbol.Data.SqlServer.svg?style=flat)](https://www.nuget.org/packages/Symbol.Data.SqlServer/)
 * Symbol.Data.PostgreSQL.dll [![Available on NuGet https://www.nuget.org/packages/Symbol.Data.PostgreSQL/](https://img.shields.io/nuget/v/Symbol.Data.PostgreSQL.svg?style=flat)](https://www.nuget.org/packages/Symbol.Data.PostgreSQL/)
