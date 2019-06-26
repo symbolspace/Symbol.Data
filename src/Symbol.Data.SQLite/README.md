@@ -6,15 +6,6 @@
 
 ### 创建IDataContext [更多使用说明](https://github.com/symbolspace/Symbol.Data/wiki/Home)
 ```csharp
-//连接参数，可以是json字符串、匿名对象、IDictionary<string, object>
-//省去一些记不住的连接参数，只需要设置关键的参数即可
-var connectionOptions = new {
-    host = "localhost",        //服务器
-    port = 5432,               //端口为默认时，可以不用写
-    name = "test",             //数据库名称
-    account = "test",          //登录账号
-    password = "test",         //登录密码
-};
 //连接参数直接为文件
 var connectionOptions = AppHelper.MapPath("~/test.db");
 
