@@ -22,7 +22,11 @@ namespace Symbol.Data {
         /// <summary>
         /// 获取是否在事务中。
         /// </summary>
-        public override bool Working { get { return ThreadHelper.InterlockedGet(ref _transaction) != null; } }
+        public override bool Working {
+            get {
+                return DbTransaction != null;
+            }
+        }
         /// <summary>
         /// 获取Ado事务对象。
         /// </summary>
@@ -54,6 +58,7 @@ namespace Symbol.Data {
             if (connection == null)
                 return;
             if (transaction == null) {
+                connection.Open();
                 transaction = connection.DbConnection.BeginTransaction();
                 ThreadHelper.InterlockedSet(ref _transaction, transaction);
             }
@@ -80,8 +85,6 @@ namespace Symbol.Data {
         public override void Rollback() {
             if (!Working)
                 return;
-            if (!Working)
-                return;
             var transaction = ThreadHelper.InterlockedSet(ref _transaction, null);
             try {
                 transaction?.Rollback();
@@ -97,9 +100,9 @@ namespace Symbol.Data {
         /// 释放占用的资源。
         /// </summary>
         public override void Dispose() {
-            base.Dispose();
             ThreadHelper.InterlockedSet(ref _connection, null);
             ThreadHelper.InterlockedSet(ref _transaction, null)?.Dispose();
+            base.Dispose();
         }
 
         #endregion

@@ -134,8 +134,8 @@ namespace Symbol.Data {
         /// </summary>
         /// <returns>返回事务对象。</returns>
         protected override ITransaction CreateTranscation() {
-            var _transaction= new AdoTransaction(this);
-            return _transaction;
+            var transaction= new AdoTransaction(this);
+            return transaction;
         }
 
         /// <summary>

@@ -65,8 +65,8 @@ namespace Symbol.Data {
         /// 释放占用的资源。
         /// </summary>
         public virtual void Dispose() {
-            if (Working)
-                Rollback();
+            //if (Working)
+            //    Rollback();
             ThreadHelper.InterlockedSet(ref _connection, null);
         }
 

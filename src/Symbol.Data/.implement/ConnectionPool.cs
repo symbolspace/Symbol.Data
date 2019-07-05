@@ -63,7 +63,7 @@ namespace Symbol.Data {
             var master = Master;
             if (master == null)
                 return null;
-            if (master.MultipleActiveResultSets)
+            if (master.MultipleActiveResultSets || master.Transaction.Working)
                 return master;
             var list = ThreadHelper.InterlockedGet(ref _list);
             IConnection connection;
@@ -79,7 +79,7 @@ namespace Symbol.Data {
         public virtual void Push(IConnection connection) {
             if (connection == null)
                 return;
-            connection?.Transaction?.Rollback();
+            //connection?.Transaction?.Rollback();
 
             var master = Master;
             if (connection.MultipleActiveResultSets) {

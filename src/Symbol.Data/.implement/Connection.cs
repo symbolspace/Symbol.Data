@@ -56,7 +56,7 @@ namespace Symbol.Data {
             get {
                 var value = ThreadHelper.InterlockedGet(ref _transaction);
                 if (value == null) {
-                    value = _transaction = CreateTranscation();
+                    value= CreateTranscation();
                     ThreadHelper.InterlockedSet(ref _transaction, value);
                 }
                 return value;
