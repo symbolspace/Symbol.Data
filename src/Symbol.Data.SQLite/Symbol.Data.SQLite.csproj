@@ -5,14 +5,13 @@
     <IsPackable>true</IsPackable>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
-    <GeneratedAssemblyInfoFile>Properties\AssemblyInfo.cs</GeneratedAssemblyInfoFile>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <GenerateAssemblyTitleAttribute>true</GenerateAssemblyTitleAttribute>
     <GenerateAssemblyFileVersionAttribute>true</GenerateAssemblyFileVersionAttribute>
     <NeutralLanguage>zh-CN</NeutralLanguage>
     <AssemblyTitle>Symbol.Data.SQLite</AssemblyTitle>
     <AssemblyName>Symbol.Data.SQLite</AssemblyName>
-    <VersionPrefix>4.1.0.4</VersionPrefix>
+    <VersionPrefix>4.1.0.5</VersionPrefix>
     <Title>Symbol.Data.SQLite</Title>
     <Authors>symbolspace</Authors>
     <Company>symbolspace</Company>
@@ -99,7 +98,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Symbol" Version="4.0.0.6" />
     <ProjectReference Include="..\Symbol.Data\Symbol.Data.csproj" />
   </ItemGroup>
 

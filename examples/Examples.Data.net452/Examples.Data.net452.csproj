@@ -41,8 +41,8 @@
     <Reference Include="Google.Protobuf, Version=3.6.1.0, Culture=neutral, PublicKeyToken=a7d26565bac4d604, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Google.Protobuf.3.6.1\lib\net45\Google.Protobuf.dll</HintPath>
     </Reference>
-    <Reference Include="Symbol, Version=4.0.0.6, Culture=neutral, PublicKeyToken=1e13af8be3ebbb99, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Symbol.4.0.0.6\lib\net45\Symbol.dll</HintPath>
+    <Reference Include="Symbol, Version=4.0.0.8, Culture=neutral, PublicKeyToken=1e13af8be3ebbb99, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Symbol.4.0.0.8\lib\net45\Symbol.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel" />
