@@ -30,46 +30,19 @@ namespace Symbol.Data {
         static Provider() {
             _list_cache = new System.Collections.Concurrent.ConcurrentDictionary<string, IProvider>(System.StringComparer.OrdinalIgnoreCase);
             
-            foreach (string file in System.IO.FileHelper.Scan("Symbol.Data.*.dll", AppHelper.AppPath)) {
-                try
-                {
-                    //var deps = Microsoft.Extensions.DependencyModel.DependencyContext;
-
 #if netcore
-                    var assemblyName = System.Runtime.Loader.AssemblyLoadContext.GetAssemblyName(file);
-                    var assembly = System.Reflection.Assembly.Load(assemblyName);
+            var q = Symbol.AssemblyLoader.GetAssemblies(
+                    (assemblyName, version) =>
+                        assemblyName.StartsWith("Symbol.Data.", System.StringComparison.OrdinalIgnoreCase)
+                );
+            foreach (var p in q) {
+                Register(p);
+            }
 #else
-                    var assembly = System.Reflection.Assembly.LoadFrom(file);
-#endif
-                    var attributes = AttributeExtensions.GetCustomAttributes<ProviderAttribute>(assembly, true);
-                    foreach (var item in attributes)
-                    {
-                        if (string.IsNullOrEmpty(item.Name) || item.Type == null)
-                            continue;
-                        _list_cache.TryAdd(item.Name, FastWrapper.CreateInstance<IProvider>(item.Type, new object[0]));
-                    }
-                }
-                catch (System.Exception error)
-                {
-                    System.Console.WriteLine(file);
-                    System.Console.WriteLine(error);
-                }
-            }
-#if netcore
-            {
-                var deps = Microsoft.Extensions.DependencyModel.DependencyContext.Default;
-                foreach (var p in deps.CompileLibraries) {
-                    if (!p.Name.StartsWith("Symbol.Data.", System.StringComparison.OrdinalIgnoreCase))
-                        continue;
-                    var assemblyName = new System.Reflection.AssemblyName($"{p.Name}, Version={p.Version}");
-                    var assembly = System.Reflection.Assembly.Load(assemblyName);
-                    Register(assembly);
-                }
+            foreach (string file in System.IO.FileHelper.Scan("Symbol.Data.*.dll", AppHelper.AppPath)) {
+                Register(Symbol.AssemblyLoader.Load(file));
             }
 #endif
-            //var type = FastWrapper.GetWarpperType("Symbol.Data.SqlServerProvider, Symbol.Data.SqlServer");
-            //Console.WriteLine(FastWrapper.GetWarpperType("Symbol.Data.SqlServerProvider, Symbol.Data.SqlServer"));
-            //Register(type.Assembly);
         }
         #endregion
 
