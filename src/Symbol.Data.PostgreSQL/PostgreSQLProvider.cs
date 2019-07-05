@@ -52,7 +52,7 @@ namespace Symbol.Data {
         public override IConnection CreateConnection(string connectionString) {
             CommonException.CheckArgumentNull(connectionString, "connectionString");
             System.Type type = GetConnectionType(true);
-            return new AdoConnection(this, FastWrapper.CreateInstance<IDbConnection>(type, connectionString), connectionString);
+            return new PostgreSQLConnection(this, FastWrapper.CreateInstance<IDbConnection>(type, connectionString), connectionString);
         }
         /// <summary>
         /// 创建数据库连接。
