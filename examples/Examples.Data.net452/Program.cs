@@ -2,18 +2,58 @@
 using Symbol.Data;
 
 namespace Examples.Data {
+    [DatabaseSchema("t_merc_WorkerPermission", 1, "商家工号权限关联表.创建")]
+    public class t_merc_WorkerPermission_create : Symbol.Data.DatabaseSchemaHandler {
+        protected override DatabaseSchemaProcessResults OnProcess(DatabaseSchemaContext context) {
+            if (context.DataContext.TableExists(Attribute.TableName))
+                return DatabaseSchemaProcessResults.Ignore;
+            context.ExecuteBlockQuery(@"
+                -- 商家工号权限关联表
+                create table ""public"".""t_merc_WorkerPermission""(
+                    ""objectId""                       character varying(64)            not null                        ,-- 对象ID
+                    ""workerObjectId""                 character varying(64)            not null                        ,-- FK，商家工号ID
+                    ""permissionObjectId""             character varying(64)            not null                        ,-- FK，商家权限ID
+                    ""operatorObjectId""               character varying(64)            not null                        ,-- 操作者对象ID
+                    ""operatorName""                   character varying(64)            not null                        ,-- 操作者姓名
+                    ""createDate""                     timestamp with time zone         not null                        ,-- 创建时间
+                    CONSTRAINT ""pk_t_merc_WorkerPermission_objectId"" PRIMARY KEY(""objectId"")
+                )
+                WITH(
+                    OIDS=False
+                );
+                ALTER TABLE ""public"".""t_merc_WorkerPermission"" OWNER TO ""test"";
+                COMMENT ON TABLE ""public"".""t_merc_WorkerPermission""  IS '商家工号权限关联表';
+                COMMENT ON COLUMN ""public"".""t_merc_WorkerPermission"".""objectId""  IS '对象ID';
+                COMMENT ON COLUMN ""public"".""t_merc_WorkerPermission"".""workerObjectId""  IS 'FK，商家工号ID';
+                COMMENT ON COLUMN ""public"".""t_merc_WorkerPermission"".""permissionObjectId""  IS 'FK，商家权限ID';
+                COMMENT ON COLUMN ""public"".""t_merc_WorkerPermission"".""operatorObjectId""  IS '操作者对象ID';
+                COMMENT ON COLUMN ""public"".""t_merc_WorkerPermission"".""operatorName""  IS '操作者姓名';
+                COMMENT ON COLUMN ""public"".""t_merc_WorkerPermission"".""createDate""  IS '创建时间';
+                CREATE INDEX ""IX_t_merc_WorkerPermission_workerObjectId"" ON ""public"".""t_merc_WorkerPermission""(""workerObjectId"" asc  NULLS FIRST);
+                CREATE INDEX ""IX_t_merc_WorkerPermission_permissionObjectId"" ON ""public"".""t_merc_WorkerPermission""(""permissionObjectId"" asc  NULLS FIRST);
+                ");
+            return DatabaseSchemaProcessResults.Success;
+        }
+    }
     class Program {
 
         static void Main(string[] args) {
-
-            var type = typeof(System.Data.SqlClient.SqlConnection);
-            Console.WriteLine(type.FullName);
-
             {
+                
                 //创建数据上下文对象
                 //IDataContext db = CreateDataContext("mssql2012");
-                IDataContext db = CreateDataContext("mysql");
-                //IDataContext db = CreateDataContext("pgsql");
+                //IDataContext db = CreateDataContext("mysql");
+                IDataContext db = CreateDataContext("pgsql");
+                db.TableExists("ping");
+
+                var manager = new Symbol.Data.DatabaseSchemaManager();
+                manager.RegisterAppDomain();
+                var context = new Symbol.Data.DatabaseSchemaContext(db);
+                context.Log = new ConsoleLog("test");
+
+                manager.Process(context);
+                db.Dispose();
+                System.Console.ReadKey();
                 //IDataContext db = CreateDataContext("sqlite");
 
                 //初始化 &  数据
@@ -34,7 +74,7 @@ namespace Examples.Data {
             switch (type) {
                 case "mssql2012":
                     connectionOptions = new {
-                        host = "192.168.247.119\\MSSQL2014",    //服务器，端口为默认，所以不用写
+                        host = "192.168.247.219\\MSSQL2014",    //服务器，端口为默认，所以不用写
                         name = "test",                          //数据库名称
                         account = "test",                       //登录账号
                         password = "test",                      //登录密码
@@ -42,7 +82,7 @@ namespace Examples.Data {
                     break;
                 case "mysql":
                     connectionOptions = new {
-                        host = "192.168.247.119",               //服务器
+                        host = "192.168.247.219",               //服务器
                         port = 3306,                            //端口，可以与服务器写在一起，例如127.0.0.1:3306
                         name = "test",                          //数据库名称
                         account = "test",                       //登录账号
@@ -51,7 +91,7 @@ namespace Examples.Data {
                     break;
                 case "pgsql":
                     connectionOptions = new {
-                        host = "192.168.247.119",               //服务器
+                        host = "192.168.247.219",               //服务器
                         port = 5432,                            //端口，可以与服务器写在一起，例如127.0.0.1:5432
                         name = "test",                          //数据库名称
                         account = "test",                       //登录账号
@@ -176,11 +216,15 @@ namespace Examples.Data {
             //常规测试
             {
                 //删除数据
+                db.BeginTransaction();
                 Console.WriteLine("delete count={0}", db.Delete("test", new {
                     name = "xxxxxxxxx",         //name为xxxxxxxxx
                     id = "{ '$gt': 200000 }"     //id大于200000，C#语法不支持JSON，但我们支持嵌套JSON语句 :)
                 }));
+                db.CommitTransaction();
+
                 //插入数据
+                db.BeginTransaction();
                 var id = db.Insert("test", new {
                     name = "xxxxxxxxx",
                     count = 9999,
@@ -195,12 +239,17 @@ namespace Examples.Data {
                     }
                 });
                 Console.WriteLine($"insert id={id}");
+                db.CommitTransaction();
+
                 //查询数据
                 Console.WriteLine("select");
                 Console.WriteLine(JSON.ToNiceJSON(db.Find("test", new { name = "xxxxxxxxx" })));
                 //更新数据
+                db.BeginTransaction();
                 var updated = db.Update("test", new { name = "fsafhakjshfksjhf", count = 88 }, new { id }) == 1;
                 Console.WriteLine($"update {updated}");
+                db.CommitTransaction();
+
                 //验证是否真的修改到
                 Console.WriteLine("select new value");
                 Console.WriteLine(JSON.ToNiceJSON(db.Find("test", new { id })));
@@ -210,7 +259,8 @@ namespace Examples.Data {
                 //枚举测试
                 var id = db.Insert("t_user", new {
                     account = "admin",
-                    type = UserTypes.Manager
+                    type = UserTypes.Manager,
+                    password = "test"
                 });
                 Console.WriteLine(JSON.ToNiceJSON(db.Find("t_user", new { id })));
             }

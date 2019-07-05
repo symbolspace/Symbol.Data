@@ -8,8 +8,8 @@ namespace Examples.Data.netcore {
             {
                 //创建数据上下文对象
                 //IDataContext db = CreateDataContext("mssql2012");
-                IDataContext db = CreateDataContext("mysql");
-                //IDataContext db = CreateDataContext("pgsql");
+                //IDataContext db = CreateDataContext("mysql");
+                IDataContext db = CreateDataContext("pgsql");
                 //IDataContext db = CreateDataContext("sqlite");
 
                 //初始化 &  数据
@@ -48,7 +48,7 @@ namespace Examples.Data.netcore {
                     break;
                 case "pgsql":
                     connectionOptions = new {
-                        host = "192.168.247.119",               //服务器
+                        host = "192.168.247.219",               //服务器
                         port = 5432,                            //端口，可以与服务器写在一起，例如127.0.0.1:5432
                         name = "test",                          //数据库名称
                         account = "test",                       //登录账号
@@ -174,11 +174,15 @@ namespace Examples.Data.netcore {
             //常规测试
             {
                 //删除数据
+                db.BeginTransaction();
                 Console.WriteLine("delete count={0}", db.Delete("test", new {
                     name = "xxxxxxxxx",         //name为xxxxxxxxx
                     id = "{ '$gt': 200000 }"     //id大于200000，C#语法不支持JSON，但我们支持嵌套JSON语句 :)
                 }));
+                db.CommitTransaction();
+
                 //插入数据
+                db.BeginTransaction();
                 var id = db.Insert("test", new {
                     name = "xxxxxxxxx",
                     count = 9999,
@@ -193,12 +197,17 @@ namespace Examples.Data.netcore {
                     }
                 });
                 Console.WriteLine($"insert id={id}");
+                db.CommitTransaction();
+
                 //查询数据
                 Console.WriteLine("select");
                 Console.WriteLine(JSON.ToNiceJSON(db.Find("test", new { name = "xxxxxxxxx" })));
                 //更新数据
+                db.BeginTransaction();
                 var updated = db.Update("test", new { name = "fsafhakjshfksjhf", count = 88 }, new { id }) == 1;
                 Console.WriteLine($"update {updated}");
+                db.CommitTransaction();
+
                 //验证是否真的修改到
                 Console.WriteLine("select new value");
                 Console.WriteLine(JSON.ToNiceJSON(db.Find("test", new { id })));
@@ -208,7 +217,8 @@ namespace Examples.Data.netcore {
                 //枚举测试
                 var id = db.Insert("t_user", new {
                     account = "admin",
-                    type = UserTypes.Manager
+                    type = UserTypes.Manager,
+                    password="test"
                 });
                 Console.WriteLine(JSON.ToNiceJSON(db.Find("t_user", new { id })));
             }
