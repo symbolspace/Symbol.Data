@@ -37,7 +37,7 @@ namespace Symbol.Data {
             if (item.Value.GetType() != item.RealType) {
                 item.Value = TypeExtensions.Convert(item.Value, item.RealType);
             }
-            
+
             if (item.RealType.IsEnum) {
                 //item.Properties["PostgreSQLDbType"] = TypeExtensions.Convert("Int64", PostgreSQLProvider.GetDbType());
                 item.RealType = typeof(long);
@@ -54,9 +54,10 @@ namespace Symbol.Data {
                 return;
             }
             if (
-                   TypeExtensions.IsAnonymousType(item.RealType) 
+                   item.RealType == typeof(object)
+                || TypeExtensions.IsAnonymousType(item.RealType)
                 || TypeExtensions.IsInheritFrom(item.RealType, typeof(System.Collections.Generic.IDictionary<string, object>))
-                || (item.RealType.IsClass && !TypeExtensions.IsSystemBaseType(item.RealType))   
+                || (item.RealType.IsClass && !TypeExtensions.IsSystemBaseType(item.RealType))
             ) {
                 item.Properties["NpgsqlDbType"] = TypeExtensions.Convert("Json", PostgreSQLProvider.GetDbType());
                 item.RealType = typeof(object);

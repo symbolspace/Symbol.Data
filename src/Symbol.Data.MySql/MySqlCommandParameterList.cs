@@ -50,7 +50,8 @@ namespace Symbol.Data {
                 return;
             }
             if (
-                   TypeExtensions.IsAnonymousType(item.RealType) 
+                   item.RealType == typeof(object)
+                || TypeExtensions.IsAnonymousType(item.RealType)
                 || TypeExtensions.IsInheritFrom(item.RealType, typeof(System.Collections.Generic.IDictionary<string, object>))
                 || (item.RealType.IsClass && !TypeExtensions.IsSystemBaseType(item.RealType))   
             ) {

@@ -2,59 +2,18 @@
 using Symbol.Data;
 
 namespace Examples.Data {
-    [DatabaseSchema("t_merc_WorkerPermission", 1, "商家工号权限关联表.创建")]
-    public class t_merc_WorkerPermission_create : Symbol.Data.DatabaseSchemaHandler {
-        protected override DatabaseSchemaProcessResults OnProcess(DatabaseSchemaContext context) {
-            if (context.DataContext.TableExists(Attribute.TableName))
-                return DatabaseSchemaProcessResults.Ignore;
-            context.ExecuteBlockQuery(@"
-                -- 商家工号权限关联表
-                create table ""public"".""t_merc_WorkerPermission""(
-                    ""objectId""                       character varying(64)            not null                        ,-- 对象ID
-                    ""workerObjectId""                 character varying(64)            not null                        ,-- FK，商家工号ID
-                    ""permissionObjectId""             character varying(64)            not null                        ,-- FK，商家权限ID
-                    ""operatorObjectId""               character varying(64)            not null                        ,-- 操作者对象ID
-                    ""operatorName""                   character varying(64)            not null                        ,-- 操作者姓名
-                    ""createDate""                     timestamp with time zone         not null                        ,-- 创建时间
-                    CONSTRAINT ""pk_t_merc_WorkerPermission_objectId"" PRIMARY KEY(""objectId"")
-                )
-                WITH(
-                    OIDS=False
-                );
-                ALTER TABLE ""public"".""t_merc_WorkerPermission"" OWNER TO ""test"";
-                COMMENT ON TABLE ""public"".""t_merc_WorkerPermission""  IS '商家工号权限关联表';
-                COMMENT ON COLUMN ""public"".""t_merc_WorkerPermission"".""objectId""  IS '对象ID';
-                COMMENT ON COLUMN ""public"".""t_merc_WorkerPermission"".""workerObjectId""  IS 'FK，商家工号ID';
-                COMMENT ON COLUMN ""public"".""t_merc_WorkerPermission"".""permissionObjectId""  IS 'FK，商家权限ID';
-                COMMENT ON COLUMN ""public"".""t_merc_WorkerPermission"".""operatorObjectId""  IS '操作者对象ID';
-                COMMENT ON COLUMN ""public"".""t_merc_WorkerPermission"".""operatorName""  IS '操作者姓名';
-                COMMENT ON COLUMN ""public"".""t_merc_WorkerPermission"".""createDate""  IS '创建时间';
-                CREATE INDEX ""IX_t_merc_WorkerPermission_workerObjectId"" ON ""public"".""t_merc_WorkerPermission""(""workerObjectId"" asc  NULLS FIRST);
-                CREATE INDEX ""IX_t_merc_WorkerPermission_permissionObjectId"" ON ""public"".""t_merc_WorkerPermission""(""permissionObjectId"" asc  NULLS FIRST);
-                ");
-            return DatabaseSchemaProcessResults.Success;
-        }
-    }
+
     class Program {
 
         static void Main(string[] args) {
             {
-                
+
                 //创建数据上下文对象
                 //IDataContext db = CreateDataContext("mssql2012");
                 //IDataContext db = CreateDataContext("mysql");
                 IDataContext db = CreateDataContext("pgsql");
-                db.TableExists("ping");
-
-                var manager = new Symbol.Data.DatabaseSchemaManager();
-                manager.RegisterAppDomain();
-                var context = new Symbol.Data.DatabaseSchemaContext(db);
-                context.Log = new ConsoleLog("test");
-
-                manager.Process(context);
-                db.Dispose();
-                System.Console.ReadKey();
                 //IDataContext db = CreateDataContext("sqlite");
+                db.TableExists("ping");
 
                 //初始化 &  数据
                 DatabaseSchema(db);
@@ -114,7 +73,7 @@ namespace Examples.Data {
                 case "PostgreSQLProvider": {
 
                         #region 创建表：t_user
-                        if (!db.TableExists("t_user")){
+                        if (!db.TableExists("t_user")) {
                             db.ExecuteNonQuery(@"
                                 create table t_user(
                                     id bigserial not null,
@@ -143,8 +102,8 @@ namespace Examples.Data {
                                 ); ");
                             #region 初始测试数据
                             db.Insert("test", new {
-                                name= "test",
-                                count= 24234
+                                name = "test",
+                                count = 24234
                             });
                             db.Insert("test", new {
                                 name = "test24",
@@ -153,9 +112,9 @@ namespace Examples.Data {
                             db.Insert("test", new {
                                 name = "test214",
                                 count = 347693,
-                                data=new {
-                                    a=true,
-                                    list=new object[] { 32,"test" }
+                                data = new {
+                                    a = true,
+                                    list = new object[] { 32, "test" }
                                 }
                             });
                             for (int i = 0; i < 15; i++) {
@@ -246,7 +205,19 @@ namespace Examples.Data {
                 Console.WriteLine(JSON.ToNiceJSON(db.Find("test", new { name = "xxxxxxxxx" })));
                 //更新数据
                 db.BeginTransaction();
-                var updated = db.Update("test", new { name = "fsafhakjshfksjhf", count = 88 }, new { id }) == 1;
+                var updated = db.Update("test", new {
+                    name = "fsafhakjshfksjhf",
+                    count = 88,
+                    data = (object)new {//JSON类型测试
+                        url = "https://www.baidu.com/",
+                        guid = System.Guid.NewGuid(),
+                        datetime = DateTime.Now,
+                        values = FastWrapper.As(new {//嵌套复杂对象测试
+                            nickName = "昵尔2",
+                            account = "test"
+                        })
+                    }
+                }, new { id }) == 1;
                 Console.WriteLine($"update {updated}");
                 db.CommitTransaction();
 
