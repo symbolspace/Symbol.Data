@@ -32,10 +32,9 @@ namespace Symbol.Data {
         /// <param name="commandText">命令脚本。</param>
         protected override void Parse(string commandText) {
             commandText = StringExtensions.Replace(
-                            StringExtensions.Replace(
-                                commandText, "select*", "select *", true),
-                            "*from ", " * from", true);
-
+                                StringExtensions.Replace(
+                                    commandText, "select*", "select *", true),
+                                "*from ", " * from", true);
             int i = commandText.IndexOf("select ", System.StringComparison.OrdinalIgnoreCase);
             if (i == -1)//没有select ，无效
                 throw new System.InvalidOperationException("没有“select ”：" + commandText);
@@ -51,22 +50,21 @@ namespace Symbol.Data {
                 int ix = commandText.IndexOf("limit ", System.StringComparison.OrdinalIgnoreCase);
                 if (ix != -1) {
                     //_limitMode = true;
-                    var match = System.Text.RegularExpressions.Regex.Match(commandText, "limit\\s*(\\d+),(\\d+)", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
-                    if (match.Success) {
-                        SkipCount = TypeExtensions.Convert<int>(match.Groups[1].Value, 0);
-                        TakeCount = TypeExtensions.Convert<int>(match.Groups[2].Value, 0);
-                        commandText = commandText.Replace(match.Value, "");
-                    } else {
-                        match = System.Text.RegularExpressions.Regex.Match(commandText, "limit\\s*(\\d+)", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
-                        if (match.Success) {
-                            TakeCount = TypeExtensions.Convert<int>(match.Groups[1].Value, 0);
-                            commandText = commandText.Replace(match.Value, "");
-                        }
-                    }
+                    System.Text.RegularExpressions.Match match = System.Text.RegularExpressions.Regex.Match(commandText, "limit\\s*(\\d+)", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+                    TakeCount = TypeExtensions.Convert<int>(match.Groups[1].Value, 0);
+                    commandText = commandText.Replace(match.Value, "");
                 }
 
             }
-
+            {
+                int ix = commandText.IndexOf("offset ", System.StringComparison.OrdinalIgnoreCase);
+                if (ix != -1) {
+                    //_limitMode = true;
+                    System.Text.RegularExpressions.Match match = System.Text.RegularExpressions.Regex.Match(commandText, "offset\\s*(\\d+)", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+                    SkipCount = TypeExtensions.Convert<int>(match.Groups[1].Value, 0);
+                    commandText = commandText.Replace(match.Value, "");
+                }
+            }
             j += " from ".Length;//推进到form 后面
             i = commandText.IndexOf(" where ", j, System.StringComparison.OrdinalIgnoreCase);//尝试找到where
             if (i != -1) {
@@ -88,6 +86,8 @@ namespace Symbol.Data {
                     PaseWhereBefore(commandText.Substring(j));
                 }
             }
+
+
         }
         void PaseWhereBefore(string text) {
             if (string.IsNullOrEmpty(text))
@@ -163,9 +163,10 @@ namespace Symbol.Data {
             return builder.ToString();
         }
         void BuildSkip(System.Text.StringBuilder builder) {
-            if (SkipCount > 0 || TakeCount > 0) {
-                builder.AppendFormat(" limit {0},{1}", SkipCount, TakeCount);
-            }
+            if (SkipCount > 0)
+                builder.AppendFormat(" offset {0}", SkipCount);
+            if (TakeCount > 0)
+                builder.AppendFormat(" limit {0}", TakeCount);
         }
 
         #endregion
