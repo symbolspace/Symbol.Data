@@ -259,9 +259,6 @@ namespace Symbol.Data {
             string commandText = CommandText;
             if (string.IsNullOrEmpty(commandText))
                 return null;
-            string orignalCommandText = OrignalCommandText;
-            if (!string.IsNullOrEmpty(orignalCommandText))
-                commandText = orignalCommandText;
 
             if (!string.IsNullOrEmpty(CommandTextBefore))
                 commandText = CommandTextBefore + "\r\n" + commandText;
