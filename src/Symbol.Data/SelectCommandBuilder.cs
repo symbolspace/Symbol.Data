@@ -292,11 +292,18 @@ namespace Symbol.Data {
         protected virtual void BuildWhereBefore(System.Text.StringBuilder builder) {
             if (WhereBefores.Count == 0)
                 return;
-            builder.AppendLine();
+            bool first = true;
             foreach (string whereBefore in WhereBefores) {
+                if (string.IsNullOrEmpty(whereBefore?.Trim()))
+                    continue;
+                if (first) {
+                    first = false;
+                    builder.AppendLine();
+                }
                 builder.Append(" ").AppendLine(whereBefore);
             }
-            builder.AppendLine();
+            if(!first)
+                builder.AppendLine();
         }
         /// <summary>
         /// 构造where脚本。
@@ -305,8 +312,11 @@ namespace Symbol.Data {
         protected virtual void BuildWhere(System.Text.StringBuilder builder) {
             if (Wheres.Count == 0)
                 return;
+            var whereCommandText = _whereExpression.CommandText;
+            if (string.IsNullOrEmpty(whereCommandText))
+                return;
             builder.AppendLine(" where ");
-            builder.Append(_whereExpression.CommandText);
+            builder.Append(whereCommandText);
         }
         /// <summary>
         /// 构造order by脚本。
@@ -315,13 +325,16 @@ namespace Symbol.Data {
         protected virtual void BuildOrderBy(System.Text.StringBuilder builder) {
             if (OrderBys.Count == 0)
                 return;
-            builder.AppendLine(" order by ");
             bool isFirstOrderBy = true;
             foreach (string orderBy in OrderBys) {
-                if (isFirstOrderBy)
+                if (string.IsNullOrEmpty(orderBy))
+                    continue;
+                if (isFirstOrderBy) {
+                    builder.AppendLine(" order by ");
                     isFirstOrderBy = false;
-                else
+                } else {
                     builder.AppendLine(",");
+                }
                 builder.Append("    ").Append(orderBy);
             }
 

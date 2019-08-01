@@ -372,8 +372,9 @@ namespace Symbol.Data {
                     command.Text = orignalCommandText;
                 return;
             }
-            if (string.IsNullOrEmpty(orignalCommandText))
-                OrignalCommandText = commandText;
+            if (string.IsNullOrEmpty(orignalCommandText)) {
+                OrignalCommandText = orignalCommandText = commandText;
+            }
             command.Text = DataContext?.CreateSelect(_emptyTableName, orignalCommandText)
                                                ?.Skip(CurrentPageIndex * ItemPerPage)
                                                ?.Take(ItemPerPage)

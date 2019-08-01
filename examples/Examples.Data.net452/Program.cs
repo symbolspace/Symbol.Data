@@ -1,12 +1,15 @@
 ﻿using System;
 using Symbol.Data;
+using System.Linq;
 
 namespace Examples.Data {
 
     class Program {
 
         static void Main(string[] args) {
+            
             {
+               
 
                 //创建数据上下文对象
                 //IDataContext db = CreateDataContext("mssql2012");
@@ -14,7 +17,31 @@ namespace Examples.Data {
                 IDataContext db = CreateDataContext("pgsql");
                 //IDataContext db = CreateDataContext("sqlite");
                 db.TableExists("ping");
+                {
+                    var sql = @" 
+ select 
+    *
+ from ""t_user"" 
+ order by
+    ""id"" desc
+";
+                    
+                    var select = db.CreateSelect("table", sql);
+                    //select.Count();
+                    var q = select.CreateQuery();
+                    Console.WriteLine("".PadRight(24, '-'));
+                    Console.WriteLine(q.CommandText);
+                    q.Paging(15, 0);
+                    Console.WriteLine("".PadRight(24, '-'));
+                    Console.WriteLine(q.CommandText);
 
+                    //Console.WriteLine("table:" + select.TableName);
+                    //Console.WriteLine("select:\r\n    "+string.Join("\r\n    ",select.Fields));
+                    //Console.WriteLine("where befores:\r\n    " + string.Join("\r\n    ", select.WhereBefores));
+                    //Console.WriteLine("where:\r\n    " + string.Join("\r\n    ", select.Wheres.Select(p => $"[{p.Value.ToName()}]{p.Key}")));
+                    //Console.WriteLine("order by:\r\n    " + string.Join("\r\n    ", select.OrderBys));
+                    Console.ReadKey();
+                }
                 //初始化 &  数据
                 DatabaseSchema(db);
                 //增 删 改 查  常规操作

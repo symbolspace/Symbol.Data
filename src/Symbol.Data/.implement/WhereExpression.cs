@@ -111,6 +111,8 @@ namespace Symbol.Data {
                 return;
             bool isFirstWhere = true;
             foreach (System.Collections.Generic.KeyValuePair<string, WhereOperators> expression in Items) {
+                if (string.IsNullOrEmpty(expression.Key.Trim()))
+                    continue;
                 builder.Append(_layerLeft);
                 if (isFirstWhere) {
                     isFirstWhere = false;
