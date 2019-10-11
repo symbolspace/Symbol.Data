@@ -123,6 +123,19 @@ namespace Symbol.Data {
         #endregion
 
         #region Schema
+        #region GetTableSpacePath
+        /// <summary>
+        /// 获取表空间的位置
+        /// </summary>
+        /// <param name="name">名称，不带[]等符号。</param>
+        /// <returns></returns>
+        public override string GetTableSpacePath(string name) {
+            if (string.IsNullOrEmpty(name))
+                return TypeExtensions.Convert<string>(ExecuteScalar("select top 1 [physical_name] from sys.database_files"));
+            return TypeExtensions.Convert<string>(ExecuteScalar("select top 1 [physical_name] from sys.database_files where [name]=@p1", name));
+        }
+
+        #endregion
         #region TableSpaceExists
         /// <summary>
         /// 判断表空间是否存在。
