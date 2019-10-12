@@ -24,7 +24,8 @@ namespace Symbol.Data {
         /// </summary>
         public override bool Working {
             get {
-                return DbTransaction != null;
+                var transaction = DbTransaction;
+                return transaction != null && transaction.Connection != null && transaction.Connection.State != ConnectionState.Closed;
             }
         }
         /// <summary>
