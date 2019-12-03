@@ -11,7 +11,7 @@ namespace Symbol.Data {
     /// <summary>
     /// ADO.NET 事务。
     /// </summary>
-    public class AdoTransaction : Transaction {
+    public class AdoTransaction : Transaction,  IAdoTransaction {
 
         #region fields
         private IDbTransaction _transaction;

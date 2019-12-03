@@ -17,7 +17,6 @@ namespace Symbol.Data {
         private IDbConnection _connection;
         private string _connectionString;
         private string _databaseName;
-        private IAdoTransaction _transaction;
         #endregion
 
         #region properties
@@ -28,7 +27,7 @@ namespace Symbol.Data {
         /// <summary>
         /// 获取Ado事务对象。
         /// </summary>
-        public IDbTransaction DbTransaction { get { return ThreadHelper.InterlockedGet(ref _transaction)?.DbTransaction; } }
+        public IDbTransaction DbTransaction { get { return ((IAdoTransaction)Transaction)?.DbTransaction;} }
 
         /// <summary>
         /// 获取是否已连接。
@@ -152,7 +151,7 @@ namespace Symbol.Data {
             Close();
             var connection = ThreadHelper.InterlockedSet(ref _connection, null);
             connection?.Dispose();
-            ThreadHelper.InterlockedSet(ref _transaction, null);
+            //ThreadHelper.InterlockedSet(ref _transaction, null);
             _databaseName = null;
             _connectionString = null;
             base.Dispose();

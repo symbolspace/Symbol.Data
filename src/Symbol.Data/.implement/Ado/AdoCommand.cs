@@ -60,9 +60,10 @@ namespace Symbol.Data {
             try {
                 connection.Open();
                 dbCommand = connection.DbConnection.CreateCommand();
-                var transcation = connection.DbTransaction;
-                if (transcation != null)
-                    dbCommand.Transaction = transcation;
+                //dbCommand.Connection = connection.DbConnection;
+                if (connection.Transaction.Working) {
+                    dbCommand.Transaction = connection.DbTransaction;
+                }
                 if (Timeout > 0)
                     dbCommand.CommandTimeout = Timeout;
                 dbCommand.CommandText = commandText;
@@ -201,6 +202,7 @@ namespace Symbol.Data {
         /// <param name="commandText">命令文本</param>
         /// <returns>返回查询结果。</returns>
         public override object ExecuteScalar(string commandText) {
+
             var dbCommandCache = CreateDbCommand(commandText);
             if (dbCommandCache == null)
                 return null;
