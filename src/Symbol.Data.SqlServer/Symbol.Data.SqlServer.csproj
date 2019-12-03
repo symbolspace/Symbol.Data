@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup Label="NuGet">
-    <TargetFrameworks>netstandard2.0;netcoreapp2.0;net45;net4;net35;net2</TargetFrameworks>
+    <TargetFrameworks>netcoreapp3.0;netstandard2.0;netcoreapp2.0;net47;net461;net46;net45;net4;net35;net2</TargetFrameworks>
     <IsPackable>true</IsPackable>
     <IncludeSymbols>true</IncludeSymbols>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
@@ -12,7 +12,7 @@
     <NeutralLanguage>zh-CN</NeutralLanguage>
     <AssemblyTitle>Symbol.Data.SqlServer</AssemblyTitle>
     <AssemblyName>Symbol.Data.SqlServer</AssemblyName>
-    <VersionPrefix>4.1.0.7</VersionPrefix>
+    <VersionPrefix>4.1.0.10</VersionPrefix>
     <Title>Symbol.Data.SqlServer</Title>
     <Authors>symbolspace</Authors>
     <Company>symbolspace</Company>
@@ -21,7 +21,8 @@
     <PackageId>Symbol.Data.SqlServer</PackageId>
     <PackageLicenseUrl></PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/symbolspace/Symbol.Data/</PackageProjectUrl>
-    <PackageIconUrl>https://raw.githubusercontent.com/symbolspace/Symbol.Data/master/icon.png</PackageIconUrl>
+    <PackageIconUrl>https://raw.githubusercontent.com/symbolspace/Symbol/master/icon.png</PackageIconUrl>
+    <PackageIcon>icon.png</PackageIcon>
     <PackageTags>sqlserver;mssql,nosql;ado;orm;symbol</PackageTags>
     <PackageReleaseNotes>Please see https://github.com/symbolspace/Symbol.Data/wiki/Home for more information.</PackageReleaseNotes>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
@@ -48,15 +49,29 @@
     <Optimize>false</Optimize>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(TargetFramework)'=='netcoreapp3.0'">
+    <DefineConstants>netapp30;netcore;</DefineConstants>
+  </PropertyGroup>
+
   <PropertyGroup Condition="'$(TargetFramework)'=='netcoreapp2.0'">
     <DefineConstants>netapp20;netcore;</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition="'$(TargetFramework)'=='netstandard2.0'">
     <DefineConstants>netcore20;netcore;</DefineConstants>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(TargetFramework)'=='net452'">
+  <PropertyGroup Condition="'$(TargetFramework)'=='net47'">
+    <DefineConstants>net47</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(TargetFramework)'=='net461'">
+    <DefineConstants>net461</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(TargetFramework)'=='net46'">
+    <DefineConstants>net46</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(TargetFramework)'=='net45'">
     <DefineConstants>net45</DefineConstants>
   </PropertyGroup>
+
   <PropertyGroup Condition="'$(TargetFramework)'=='net4'">
     <DefineConstants>net40</DefineConstants>
   </PropertyGroup>
@@ -70,6 +85,18 @@
     <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
   </PropertyGroup>
 
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net47' ">
+    <Reference Include="System" />
+    <Reference Include="Microsoft.CSharp" />
+  </ItemGroup>
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net461' ">
+    <Reference Include="System" />
+    <Reference Include="Microsoft.CSharp" />
+  </ItemGroup>
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net46' ">
+    <Reference Include="System" />
+    <Reference Include="Microsoft.CSharp" />
+  </ItemGroup>
   <ItemGroup Condition=" '$(TargetFramework)' == 'net45' ">
     <Reference Include="System" />
     <Reference Include="Microsoft.CSharp" />
@@ -98,7 +125,12 @@
     <PackageReference Include="System.Data.SqlClient" Version="4.5.0">
     </PackageReference>
   </ItemGroup>
-
+  <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp3.0'">
+    <PackageReference Include="System.Data.Common" Version="4.3.0">
+    </PackageReference>
+    <PackageReference Include="System.Data.SqlClient" Version="4.5.0">
+    </PackageReference>
+  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Symbol.Data\Symbol.Data.csproj" />
   </ItemGroup>
@@ -107,6 +139,10 @@
     <None Include="..\..\LICENSE.txt">
       <Pack>True</Pack>
       <PackagePath></PackagePath>
+    </None>
+    <None Include="..\..\icon.png">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
     </None>
   </ItemGroup>
 
