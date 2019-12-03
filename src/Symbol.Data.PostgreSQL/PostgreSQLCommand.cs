@@ -49,7 +49,20 @@ namespace Symbol.Data {
         }
         #endregion
 
-
+        /// <summary>
+        /// 销毁DbCommand
+        /// </summary>
+        /// <param name="dbCommand">DbCommand对象。</param>
+        protected override void DestroyDbCommand(System.Data.IDbCommand dbCommand) {
+            if (dbCommand == null)
+                return;
+            dbCommand.Cancel();
+            if (dbCommand.Transaction == null) {
+                dbCommand.Connection = null;
+            }
+            //dbCommand.Transaction = null;
+            dbCommand.Dispose();
+        }
 
         #endregion
 
