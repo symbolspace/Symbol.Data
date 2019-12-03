@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup Label="NuGet">
-    <TargetFrameworks>netstandard2.0;netcoreapp2.0;net45;net35;net2</TargetFrameworks>
+    <TargetFrameworks>netcoreapp3.0;netstandard2.0;netcoreapp2.0;net47;net461;net46;net45;;net35;net2</TargetFrameworks>
     <IsPackable>true</IsPackable>
     <IncludeSymbols>true</IncludeSymbols>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
@@ -12,7 +12,7 @@
     <NeutralLanguage>zh-CN</NeutralLanguage>
     <AssemblyTitle>Symbol.Data.PostgreSQL</AssemblyTitle>
     <AssemblyName>Symbol.Data.PostgreSQL</AssemblyName>
-    <VersionPrefix>4.1.0.9</VersionPrefix>
+    <VersionPrefix>4.1.0.12</VersionPrefix>
     <Title>Symbol.Data.PostgreSQL</Title>
     <Authors>symbolspace</Authors>
     <Company>symbolspace</Company>
@@ -21,7 +21,8 @@
     <PackageId>Symbol.Data.PostgreSQL</PackageId>
     <PackageLicenseUrl></PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/symbolspace/Symbol.Data/</PackageProjectUrl>
-    <PackageIconUrl>https://raw.githubusercontent.com/symbolspace/Symbol.Data/master/icon.png</PackageIconUrl>
+    <PackageIconUrl>https://raw.githubusercontent.com/symbolspace/Symbol/master/icon.png</PackageIconUrl>
+    <PackageIcon>icon.png</PackageIcon>
     <PackageTags>postgresql;psql,nosql;ado;orm;symbol</PackageTags>
     <PackageReleaseNotes>Please see https://github.com/symbolspace/Symbol.Data/wiki/Home for more information.</PackageReleaseNotes>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
@@ -47,12 +48,24 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Optimize>false</Optimize>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(TargetFramework)'=='netcoreapp3.0'">
+    <DefineConstants>netapp30;netcore;</DefineConstants>
+  </PropertyGroup>
 
   <PropertyGroup Condition="'$(TargetFramework)'=='netcoreapp2.0'">
     <DefineConstants>netapp20;netcore;</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition="'$(TargetFramework)'=='netstandard2.0'">
     <DefineConstants>netcore20;netcore;</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(TargetFramework)'=='net47'">
+    <DefineConstants>net47</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(TargetFramework)'=='net461'">
+    <DefineConstants>net461</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(TargetFramework)'=='net46'">
+    <DefineConstants>net46</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition="'$(TargetFramework)'=='net45'">
     <DefineConstants>net45</DefineConstants>
@@ -70,6 +83,21 @@
     <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
   </PropertyGroup>
 
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net47' ">
+    <Reference Include="System" />
+    <Reference Include="Microsoft.CSharp" />
+    <PackageReference Include="Npgsql" Version="3.1.0" />
+  </ItemGroup>
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net461' ">
+    <Reference Include="System" />
+    <Reference Include="Microsoft.CSharp" />
+    <PackageReference Include="Npgsql" Version="3.1.0" />
+  </ItemGroup>
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net46' ">
+    <Reference Include="System" />
+    <Reference Include="Microsoft.CSharp" />
+    <PackageReference Include="Npgsql" Version="3.1.0" />
+  </ItemGroup>
   <ItemGroup Condition=" '$(TargetFramework)' == 'net45' ">
     <Reference Include="System" />
     <Reference Include="Microsoft.CSharp" />
@@ -95,7 +123,9 @@
   <ItemGroup Condition="'$(TargetFramework)'=='netstandard2.0'">
     <PackageReference Include="Npgsql" Version="3.2.5" />
   </ItemGroup>
-
+  <ItemGroup Condition="'$(TargetFramework)'=='netcoreapp3.0'">
+    <PackageReference Include="Npgsql" Version="3.2.5" />
+  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Symbol.Data\Symbol.Data.csproj" />
   </ItemGroup>
@@ -106,5 +136,10 @@
       <PackagePath></PackagePath>
     </None>
   </ItemGroup>
-
+ <ItemGroup>
+    <None Include="..\..\icon.png">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
 </Project>
