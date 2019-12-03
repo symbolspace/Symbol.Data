@@ -17,6 +17,12 @@ namespace Symbol.Data {
         IDisposable {
 
         #region properties
+
+        /// <summary>
+        /// 获取或设置日志对象。
+        /// </summary>
+        ILog Log { get; set; }
+
         /// <summary>
         /// 获取或设置待释放的对象列表。
         /// </summary>

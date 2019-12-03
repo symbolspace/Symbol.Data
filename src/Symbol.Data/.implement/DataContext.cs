@@ -16,11 +16,23 @@ namespace Symbol.Data {
 
         private DisposableObjectList _disposableObjectList;
         private IConnectionPool _connections;
-
+        private ILog _log;
 
         #endregion
 
         #region properties
+        /// <summary>
+        /// 获取或设置日志对象。
+        /// </summary>
+        public ILog Log {
+            get { return ThreadHelper.InterlockedGet(ref _log) ?? LogBase.Empty; }
+            set {
+                ThreadHelper.InterlockedSet(ref _log, value);
+                if (value != null)
+                    DisposableObjects?.Add(value);
+            }
+        }
+
         /// <summary>
         /// 获取或设置待释放的对象列表。
         /// </summary>
@@ -665,7 +677,7 @@ namespace Symbol.Data {
         /// <param name="field">字段名称</param>
         /// <param name="condition">过滤条件</param>
         /// <returns></returns>
-        public virtual TResult Min<TResult>(string collectionName, string field, object condition = null)  {
+        public virtual TResult Min<TResult>(string collectionName, string field, object condition = null) {
             CommonException.CheckArgumentNull(collectionName, "collectionName");
             CommonException.CheckArgumentNull(field, "field");
 
@@ -685,7 +697,7 @@ namespace Symbol.Data {
         /// <param name="field">字段名称</param>
         /// <param name="condition">过滤条件</param>
         /// <returns></returns>
-        public virtual TResult Min<TEntity, TResult>(string field, object condition = null) where TEntity : class  {
+        public virtual TResult Min<TEntity, TResult>(string field, object condition = null) where TEntity : class {
             return Min<TResult>(typeof(TEntity).Name, field, condition);
         }
         #endregion
@@ -698,7 +710,7 @@ namespace Symbol.Data {
         /// <param name="field">字段名称</param>
         /// <param name="condition">过滤条件</param>
         /// <returns></returns>
-        public virtual TResult Max<TResult>(string collectionName, string field, object condition = null)  {
+        public virtual TResult Max<TResult>(string collectionName, string field, object condition = null) {
             CommonException.CheckArgumentNull(collectionName, "collectionName");
             CommonException.CheckArgumentNull(field, "field");
 
@@ -718,7 +730,7 @@ namespace Symbol.Data {
         /// <param name="field">字段名称</param>
         /// <param name="condition">过滤条件</param>
         /// <returns></returns>
-        public virtual TResult Max<TEntity, TResult>(string field, object condition = null) where TEntity : class  {
+        public virtual TResult Max<TEntity, TResult>(string field, object condition = null) where TEntity : class {
             return Max<TResult>(typeof(TEntity).Name, field, condition);
         }
         #endregion
