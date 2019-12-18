@@ -161,11 +161,18 @@ namespace Symbol.Data {
                 return true;
             if (string.IsNullOrEmpty(path)) {
                 string dir = GetTableSpacePath(null);
-                path = System.IO.Path.GetDirectoryName(dir);
-                path = System.IO.Path.Combine(path, Connection?.OriginalDatabaseName + "_" + name + ".ndf");
+                if (dir.IndexOf('/') == -1) {
+                    path = System.IO.Path.GetDirectoryName(dir);
+                    path = System.IO.Path.Combine(path, Connection?.OriginalDatabaseName + "_" + name + ".ndf");
+                } else {
+                    path = dir.Substring(0, dir.LastIndexOf('/') + 1);
+                    path += $"{Connection?.OriginalDatabaseName}_{name}.ndf";
+                }
             } else {
-                string dir = System.IO.Path.GetDirectoryName(path);
-                AppHelper.CreateDirectory(dir, false);
+                if (path.IndexOf('/') == -1) {
+                    string dir = System.IO.Path.GetDirectoryName(path);
+                    AppHelper.CreateDirectory(dir, false);
+                }
             }
             int initSize = 5120;
             ExecuteBlockQuery(string.Format(@"
