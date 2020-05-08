@@ -13,6 +13,15 @@ namespace Symbol.Data {
     public interface IProvider {
 
         /// <summary>
+        /// 获取数据提供者名称
+        /// </summary>
+        string Name { get; }
+        /// <summary>
+        /// 获取数据提供者版本
+        /// </summary>
+        string Version { get; }
+
+        /// <summary>
         /// 获取方言对象。
         /// </summary>
         IDialect Dialect { get; }
