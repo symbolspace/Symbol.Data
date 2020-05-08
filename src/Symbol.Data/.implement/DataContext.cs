@@ -3,6 +3,7 @@
  *  e-mail：symbolspace@outlook.com
  */
 
+using System;
 using System.Data;
 
 namespace Symbol.Data {
@@ -769,15 +770,16 @@ namespace Symbol.Data {
         #endregion
 
 
-        #region Insert
+        #region InsertEntity
         /// <summary>
         /// 插入数据
         /// </summary>
         /// <typeparam name="TEntity">实体类型</typeparam>
         /// <param name="model">更新数据，实体</param>
         /// <returns>返回插入数据的id(取决于是否有自增主键）。</returns>
+        [Obsolete("请改为InsertEntity<TEntity, long>(model)")]
         public virtual long Insert<TEntity>(TEntity model) where TEntity : class {
-            return Insert(typeof(TEntity).Name, model, (InsertCommandBuilderFilter)null);
+            return InsertObject<long>(GetEntityCollectionName(typeof(TEntity)), model, null, null);
         }
         /// <summary>
         /// 插入数据
@@ -786,15 +788,9 @@ namespace Symbol.Data {
         /// <param name="model">更新数据，实体</param>
         /// <param name="removeFields">需要排除的字段列表。</param>
         /// <returns>返回插入数据的id(取决于是否有自增主键）。</returns>
+        [Obsolete("请改为InsertEntity<TEntity, long>(model, removeFields)")]
         public virtual long Insert<TEntity>(TEntity model, string[] removeFields) where TEntity : class {
-            InsertCommandBuilderFilter builderFilter;
-            if (removeFields == null || removeFields.Length == 0)
-                builderFilter = null;
-            else
-                builderFilter = (builder) => {
-                    builder.Fields.RemoveKeys(removeFields);
-                };
-            return Insert(typeof(TEntity).Name, model, builderFilter);
+            return InsertObject<long>(GetEntityCollectionName(typeof(TEntity)), model, removeFields, null);
         }
         /// <summary>
         /// 插入数据
@@ -803,8 +799,9 @@ namespace Symbol.Data {
         /// <param name="model">更新数据，实体</param>
         /// <param name="builderFilter">构造器过滤器</param>
         /// <returns>返回插入数据的id(取决于是否有自增主键）。</returns>
+        [Obsolete("请改为InsertEntity<TEntity, long>(model, builderFilter)")]
         public virtual long Insert<TEntity>(TEntity model, InsertCommandBuilderFilter builderFilter) where TEntity : class {
-            return Insert(typeof(TEntity).Name, model, builderFilter);
+            return InsertObject<long>(GetEntityCollectionName(typeof(TEntity)), model, null, builderFilter);
         }
         /// <summary>
         /// 插入数据
@@ -812,8 +809,9 @@ namespace Symbol.Data {
         /// <typeparam name="TEntity">实体类型</typeparam>
         /// <param name="values">更新数据，实体/匿名对象/键值对</param>
         /// <returns>返回插入数据的id(取决于是否有自增主键）。</returns>
+        [Obsolete("请改为InsertEntity<TEntity, long>(values)")]
         public virtual long Insert<TEntity>(object values) where TEntity : class {
-            return Insert(typeof(TEntity).Name, values, (InsertCommandBuilderFilter)null);
+            return InsertObject<long>(GetEntityCollectionName(typeof(TEntity)), values, null, null);
         }
         /// <summary>
         /// 插入数据
@@ -822,15 +820,9 @@ namespace Symbol.Data {
         /// <param name="values">更新数据，实体/匿名对象/键值对</param>
         /// <param name="removeFields">需要排除的字段列表。</param>
         /// <returns>返回插入数据的id(取决于是否有自增主键）。</returns>
+        [Obsolete("请改为InsertEntity<TEntity, long>(values, removeFields)")]
         public virtual long Insert<TEntity>(object values, string[] removeFields) where TEntity : class {
-            InsertCommandBuilderFilter builderFilter;
-            if (removeFields == null || removeFields.Length == 0)
-                builderFilter = null;
-            else
-                builderFilter = (builder) => {
-                    builder.Fields.RemoveKeys(removeFields);
-                };
-            return Insert(typeof(TEntity).Name, values, builderFilter);
+            return InsertObject<long>(GetEntityCollectionName(typeof(TEntity)), values, removeFields, null);
         }
         /// <summary>
         /// 插入数据
@@ -839,8 +831,9 @@ namespace Symbol.Data {
         /// <param name="values">更新数据，实体/匿名对象/键值对</param>
         /// <param name="builderFilter">构造器过滤器</param>
         /// <returns>返回插入数据的id(取决于是否有自增主键）。</returns>
+        [Obsolete("请改为InsertEntity<TEntity, long>(values, builderFilter)")]
         public virtual long Insert<TEntity>(object values, InsertCommandBuilderFilter builderFilter) where TEntity : class {
-            return Insert(typeof(TEntity).Name, values, builderFilter);
+            return InsertObject<long>(GetEntityCollectionName(typeof(TEntity)), values, null, builderFilter);
         }
         /// <summary>
         /// 插入数据
@@ -850,8 +843,9 @@ namespace Symbol.Data {
         /// <param name="values">更新数据，实体/匿名对象/键值对</param>
         /// <param name="removeFields">需要排除的字段列表。</param>
         /// <returns>返回插入数据的id(取决于是否有自增主键）。</returns>
+        [Obsolete("请改为InsertEntity<TEntity, TResult>(values, removeFields)")]
         public virtual TResult Insert<TEntity, TResult>(object values, string[] removeFields) where TEntity : class {
-            return Insert<TResult>(typeof(TEntity).Name, values, removeFields);
+            return InsertObject<TResult>(GetEntityCollectionName(typeof(TEntity)), values, removeFields, null);
         }
         /// <summary>
         /// 插入数据
@@ -861,65 +855,190 @@ namespace Symbol.Data {
         /// <param name="values">更新数据，实体/匿名对象/键值对</param>
         /// <param name="builderFilter">构造器过滤器</param>
         /// <returns>返回插入数据的id(取决于是否有自增主键）。</returns>
+        [Obsolete("请改为InsertEntity<TEntity, TResult>(values, builderFilter)")]
         public virtual TResult Insert<TEntity, TResult>(object values, InsertCommandBuilderFilter builderFilter) where TEntity : class {
-            return Insert<TResult>(typeof(TEntity).Name, values, builderFilter);
+            return InsertObject<TResult>(GetEntityCollectionName(typeof(TEntity)), values, null, builderFilter);
+        }
+
+
+        /// <summary>
+        /// 插入实体数据
+        /// </summary>
+        /// <typeparam name="TEntity">实体类型</typeparam>
+        /// <typeparam name="TResult">自增主键类型</typeparam>
+        /// <param name="entity">更新数据，实体</param>
+        /// <returns>返回插入数据的第一个主键的值(取决于是否有主键，请根据实现测试判定结果）。</returns>
+        public virtual TResult InsertEntity<TEntity, TResult>(TEntity entity) where TEntity : class {
+            return InsertObject<TResult>(GetEntityCollectionName(typeof(TEntity)), entity, null, null);
+        }
+        /// <summary>
+        /// 插入实体数据
+        /// </summary>
+        /// <typeparam name="TEntity">实体类型</typeparam>
+        /// <typeparam name="TResult">自增主键类型</typeparam>
+        /// <param name="entity">更新数据，实体</param>
+        /// <param name="removeFields">需要排除的字段列表。</param>
+        /// <returns>返回插入数据的第一个主键的值(取决于是否有主键，请根据实现测试判定结果）。</returns>
+        public virtual TResult InsertEntity<TEntity, TResult>(TEntity entity, string[] removeFields) where TEntity : class {
+            return InsertObject<TResult>(GetEntityCollectionName(typeof(TEntity)), entity, removeFields, null);
+        }
+        /// <summary>
+        /// 插入实体数据
+        /// </summary>
+        /// <typeparam name="TEntity">实体类型</typeparam>
+        /// <typeparam name="TResult">自增主键类型</typeparam>
+        /// <param name="entity">更新数据，实体</param>
+        /// <param name="builderFilter">构造器过滤器</param>
+        /// <returns>返回插入数据的第一个主键的值(取决于是否有主键，请根据实现测试判定结果）。</returns>
+        public virtual TResult InsertEntity<TEntity, TResult>(TEntity entity, InsertCommandBuilderFilter builderFilter) where TEntity : class {
+            return InsertObject<TResult>(GetEntityCollectionName(typeof(TEntity)), entity, null, builderFilter);
+        }
+        /// <summary>
+        /// 插入实体数据
+        /// </summary>
+        /// <typeparam name="TEntity">实体类型</typeparam>
+        /// <typeparam name="TResult">自增主键类型</typeparam>
+        /// <param name="entity">更新数据，实体</param>
+        /// <param name="removeFields">需要排除的字段列表。</param>
+        /// <param name="builderFilter">构造器过滤器</param>
+        /// <returns>返回插入数据的第一个主键的值(取决于是否有主键，请根据实现测试判定结果）。</returns>
+        public virtual TResult InsertEntity<TEntity, TResult>(TEntity entity, string[] removeFields, InsertCommandBuilderFilter builderFilter) where TEntity : class {
+            return InsertObject<TResult>(GetEntityCollectionName(typeof(TEntity)), entity, removeFields, builderFilter);
+        }
+        /// <summary>
+        /// 插入实体数据
+        /// </summary>
+        /// <typeparam name="TEntity">实体类型</typeparam>
+        /// <typeparam name="TResult">自增主键类型</typeparam>
+        /// <param name="values">更新数据，实体/匿名对象/键值对</param>
+        /// <returns>返回插入数据的第一个主键的值(取决于是否有主键，请根据实现测试判定结果）。</returns>
+        public virtual TResult InsertEntity<TEntity, TResult>(object values) where TEntity : class {
+            return InsertObject<TResult>(GetEntityCollectionName(typeof(TEntity)), values, null, null);
+        }
+        /// <summary>
+        /// 插入实体数据
+        /// </summary>
+        /// <typeparam name="TEntity">实体类型</typeparam>
+        /// <typeparam name="TResult">自增主键类型</typeparam>
+        /// <param name="values">更新数据，实体/匿名对象/键值对</param>
+        /// <param name="removeFields">需要排除的字段列表。</param>
+        /// <returns>返回插入数据的第一个主键的值(取决于是否有主键，请根据实现测试判定结果）。</returns>
+        public virtual TResult InsertEntity<TEntity, TResult>(object values, string[] removeFields) where TEntity : class {
+            return InsertObject<TResult>(GetEntityCollectionName(typeof(TEntity)), values, removeFields, null);
+        }
+        /// <summary>
+        /// 插入实体数据
+        /// </summary>
+        /// <typeparam name="TEntity">实体类型</typeparam>
+        /// <typeparam name="TResult">自增主键类型</typeparam>
+        /// <param name="values">更新数据，实体/匿名对象/键值对</param>
+        /// <param name="builderFilter">构造器过滤器</param>
+        /// <returns>返回插入数据的第一个主键的值(取决于是否有主键，请根据实现测试判定结果）。</returns>
+        public virtual TResult InsertEntity<TEntity, TResult>(object values, InsertCommandBuilderFilter builderFilter) where TEntity : class {
+            return InsertObject<TResult>(GetEntityCollectionName(typeof(TEntity)), values, null, builderFilter);
+        }
+        /// <summary>
+        /// 插入实体数据
+        /// </summary>
+        /// <typeparam name="TEntity">实体类型</typeparam>
+        /// <typeparam name="TResult">自增主键类型</typeparam>
+        /// <param name="values">更新数据，实体/匿名对象/键值对</param>
+        /// <param name="removeFields">需要排除的字段列表。</param>
+        /// <param name="builderFilter">构造器过滤器</param>
+        /// <returns>返回插入数据的第一个主键的值(取决于是否有主键，请根据实现测试判定结果）。</returns>
+        public virtual TResult InsertEntity<TEntity, TResult>(object values, string[] removeFields, InsertCommandBuilderFilter builderFilter) where TEntity : class {
+            return InsertObject<TResult>(GetEntityCollectionName(typeof(TEntity)), values, removeFields, builderFilter);
         }
 
         /// <summary>
-        /// 插入数据
+        /// 获取实体类对应的集合名称（表名称）
+        /// </summary>
+        /// <param name="type">实体类型。</param>
+        /// <returns></returns>
+        protected virtual string GetEntityCollectionName(Type type) {
+            var collectionName = ConstAttributeExtensions.Const(type, "CollectionName");
+            return string.IsNullOrEmpty(collectionName) ? type.Name : collectionName;
+        }
+        #endregion
+
+        #region InsertObject
+        /// <summary>
+        /// 插入对象数据
         /// </summary>
         /// <param name="collectionName">集合名称（表名称）</param>
         /// <param name="values">更新数据，实体/匿名对象/键值对</param>
-        /// <returns>返回插入数据的id(取决于是否有自增主键）。</returns>
+        /// <returns>返回插入数据的第一个主键的值(取决于是否有主键，请根据实现测试判定结果）。</returns>
+        [Obsolete("请改为InsertObject<long>(collectionName, values)")]
         public virtual long Insert(string collectionName, object values) {
-            return Insert(collectionName, values, (InsertCommandBuilderFilter)null);
+            return InsertObject<long>(collectionName, values, null, null);
         }
         /// <summary>
-        /// 插入数据
+        /// 插入对象数据
         /// </summary>
         /// <param name="collectionName">集合名称（表名称）</param>
         /// <param name="values">更新数据，实体/匿名对象/键值对</param>
         /// <param name="removeFields">需要排除的字段列表。</param>
-        /// <returns>返回插入数据的id(取决于是否有自增主键）。</returns>
+        /// <returns>返回插入数据的第一个主键的值(取决于是否有主键，请根据实现测试判定结果）。</returns>
+        [Obsolete("请改为InsertObject<long>(collectionName, values, removeFields)")]
         public virtual long Insert(string collectionName, object values, string[] removeFields) {
-            InsertCommandBuilderFilter builderFilter;
-            if (removeFields == null || removeFields.Length == 0)
-                builderFilter = null;
-            else
-                builderFilter = (builder) => {
-                    builder.Fields.RemoveKeys(removeFields);
-                };
-            return Insert(collectionName, values, builderFilter);
+            return InsertObject<long>(collectionName, values, removeFields, null);
         }
         /// <summary>
-        /// 插入数据
+        /// 插入对象数据
         /// </summary>
         /// <param name="collectionName">集合名称（表名称）</param>
         /// <param name="values">更新数据，实体/匿名对象/键值对</param>
         /// <param name="builderFilter">构造器过滤器</param>
-        /// <returns>返回插入数据的id(取决于是否有自增主键）。</returns>
+        /// <returns>返回插入数据的第一个主键的值(取决于是否有主键，请根据实现测试判定结果）。</returns>
+        [Obsolete("请改为InsertObject<long>(collectionName, values, builderFilter)")]
         public virtual long Insert(string collectionName, object values, InsertCommandBuilderFilter builderFilter) {
-            return Insert<long>(collectionName, values, builderFilter);
+            return InsertObject<long>(collectionName, values, null, builderFilter);
         }
         /// <summary>
-        /// 插入数据
+        /// 插入对象数据
         /// </summary>
         /// <typeparam name="TResult">自增主键类型</typeparam>
         /// <param name="collectionName">集合名称（表名称）</param>
         /// <param name="values">更新数据，实体/匿名对象/键值对</param>
         /// <param name="removeFields">需要排除的字段列表。</param>
-        /// <returns>返回插入数据的id(取决于是否有自增主键）。</returns>
+        /// <returns>返回插入数据的第一个主键的值(取决于是否有主键，请根据实现测试判定结果）。</returns>
+        [Obsolete("请改为InsertObject<TResult>(collectionName, values, removeFields)")]
         public virtual TResult Insert<TResult>(string collectionName, object values, string[] removeFields) {
-            InsertCommandBuilderFilter builderFilter;
-            if (removeFields == null || removeFields.Length == 0)
-                builderFilter = null;
-            else
-                builderFilter = (builder) => {
-                    builder.Fields.RemoveKeys(removeFields);
-                };
-            return Insert<TResult>(collectionName, values, builderFilter);
+            return InsertObject<TResult>(collectionName, values, removeFields, null);
         }
-
+        /// <summary>
+        /// 插入对象数据
+        /// </summary>
+        /// <typeparam name="TResult">自增主键类型</typeparam>
+        /// <param name="collectionName">集合名称（表名称）</param>
+        /// <param name="values">更新数据，实体/匿名对象/键值对</param>
+        /// <param name="builderFilter">构造器过滤器</param>
+        /// <returns>返回插入数据的第一个主键的值(取决于是否有主键，请根据实现测试判定结果）。</returns>
+        [Obsolete("请改为InsertObject<TResult>(collectionName, values, builderFilter)")]
+        public virtual TResult Insert<TResult>(string collectionName, object values, InsertCommandBuilderFilter builderFilter) {
+            return InsertObject<TResult>(collectionName, values, null, builderFilter);
+        }
+        /// <summary>
+        /// 插入对象数据
+        /// </summary>
+        /// <typeparam name="TResult">自增主键类型</typeparam>
+        /// <param name="collectionName">集合名称（表名称）</param>
+        /// <param name="values">更新数据，实体/匿名对象/键值对</param>
+        /// <returns>返回插入数据的第一个主键的值(取决于是否有主键，请根据实现测试判定结果）。</returns>
+        public virtual TResult InsertObject<TResult>(string collectionName, object values) {
+            return InsertObject<TResult>(collectionName, values, null, null);
+        }
+        /// <summary>
+        /// 插入对象数据
+        /// </summary>
+        /// <typeparam name="TResult">自增主键类型</typeparam>
+        /// <param name="collectionName">集合名称（表名称）</param>
+        /// <param name="values">更新数据，实体/匿名对象/键值对</param>
+        /// <param name="removeFields">需要排除的字段列表。</param>
+        /// <returns>返回插入数据的第一个主键的值(取决于是否有主键，请根据实现测试判定结果）。</returns>
+        public virtual TResult InsertObject<TResult>(string collectionName, object values, string[] removeFields) {
+            return InsertObject<TResult>(collectionName, values, removeFields, null);
+        }
         /// <summary>
         /// 插入数据
         /// </summary>
@@ -927,14 +1046,28 @@ namespace Symbol.Data {
         /// <param name="collectionName">集合名称（表名称）</param>
         /// <param name="values">更新数据，实体/匿名对象/键值对</param>
         /// <param name="builderFilter">构造器过滤器</param>
-        /// <returns>返回插入数据的id(取决于是否有自增主键）。</returns>
-        public virtual TResult Insert<TResult>(string collectionName, object values, InsertCommandBuilderFilter builderFilter) {
+        /// <returns>返回插入数据的第一个主键的值(取决于是否有主键，请根据实现测试判定结果）。</returns>
+        public virtual TResult InsertObject<TResult>(string collectionName, object values, InsertCommandBuilderFilter builderFilter) {
+            return InsertObject<TResult>(collectionName, values, null, builderFilter);
+        }
+        /// <summary>
+        /// 插入对象数据
+        /// </summary>
+        /// <typeparam name="TResult">自增主键类型</typeparam>
+        /// <param name="collectionName">集合名称（表名称）</param>
+        /// <param name="values">更新数据，实体/匿名对象/键值对</param>
+        /// <param name="removeFields">需要排除的字段列表。</param>
+        /// <param name="builderFilter">构造器过滤器</param>
+        /// <returns>返回插入数据的第一个主键的值(取决于是否有主键，请根据实现测试判定结果）。</returns>
+        public virtual TResult InsertObject<TResult>(string collectionName, object values, string[] removeFields, InsertCommandBuilderFilter builderFilter) {
             CommonException.CheckArgumentNull(collectionName, "collectionName");
             CommonException.CheckArgumentNull(values, "values");
 
             using (IInsertCommandBuilder builder = CreateInsert(collectionName)) {
                 builder.Fields.SetValues(values);
                 builder.Fields.Remove("id");
+                if (removeFields != null)
+                    builder.Fields.RemoveKeys(removeFields);
                 builderFilter?.Invoke(builder);
 
                 if (builder.Fields.Count == 0)
@@ -946,6 +1079,8 @@ namespace Symbol.Data {
             }
         }
         #endregion
+
+
         #region Update
         /// <summary>
         /// 更新数据
