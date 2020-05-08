@@ -3,6 +3,7 @@
  *  e-mail：symbolspace@outlook.com
  */
 
+[assembly: Symbol.Data.Provider("mssql", typeof(Symbol.Data.SqlServer2005Provider))]
 [assembly: Symbol.Data.Provider("sql2005", typeof(Symbol.Data.SqlServer2005Provider))]
 [assembly: Symbol.Data.Provider("mssql2005", typeof(Symbol.Data.SqlServer2005Provider))]
 [assembly: Symbol.Data.Provider("mssql.2005", typeof(Symbol.Data.SqlServer2005Provider))]
@@ -12,6 +13,14 @@ namespace Symbol.Data {
     /// SqlServer 2005数据库提供者
     /// </summary>
     public class SqlServer2005Provider : SqlServerProvider {
+
+        #region properties
+        /// <summary>
+        /// 获取数据提供者版本
+        /// </summary>
+        public override string Version { get { return "2005"; } }
+
+        #endregion
 
         #region IDatabaseProvider 成员
 

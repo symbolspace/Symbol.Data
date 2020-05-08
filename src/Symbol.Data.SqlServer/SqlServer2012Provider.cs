@@ -13,6 +13,15 @@ namespace Symbol.Data {
     /// </summary>
     public class SqlServer2012Provider : SqlServerProvider {
 
+        #region properties
+        /// <summary>
+        /// 获取数据提供者版本
+        /// </summary>
+        public override string Version { get { return "2012"; } }
+
+        #endregion
+
+
         #region IDatabaseProvider 成员
 
         /// <summary>

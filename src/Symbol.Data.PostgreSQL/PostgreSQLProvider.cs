@@ -20,6 +20,19 @@ namespace Symbol.Data {
         private static readonly Symbol.Collections.Generic.NameValueCollection<System.Type> _types;
         #endregion
 
+        #region properties
+
+        /// <summary>
+        /// 获取数据提供者名称
+        /// </summary>
+        public override string Name { get { return "postgresql"; } }
+        /// <summary>
+        /// 获取数据提供者版本
+        /// </summary>
+        public override string Version { get { return "9.x"; } }
+
+        #endregion
+
         #region cctor
         static PostgreSQLProvider() {
             _types = new Collections.Generic.NameValueCollection<System.Type>();

@@ -20,6 +20,15 @@ namespace Symbol.Data {
         #region properties
 
         /// <summary>
+        /// 获取数据提供者名称
+        /// </summary>
+        public abstract string Name { get; }
+        /// <summary>
+        /// 获取数据提供者版本
+        /// </summary>
+        public abstract string Version { get; }
+
+        /// <summary>
         /// 获取方言对象。
         /// </summary>
         public IDialect Dialect { get { return _dialect; } }

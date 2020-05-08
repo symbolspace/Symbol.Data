@@ -10,6 +10,15 @@ namespace Symbol.Data {
     /// </summary>
     public abstract class SqlServerProvider : AdoProvider {
 
+        #region properties
+
+        /// <summary>
+        /// 获取数据提供者名称
+        /// </summary>
+        public override string Name { get { return "mssql"; } }
+
+        #endregion
+
 
         #region ctor
         /// <summary>

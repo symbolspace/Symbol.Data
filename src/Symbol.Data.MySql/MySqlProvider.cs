@@ -17,6 +17,20 @@ namespace Symbol.Data {
         private static readonly Symbol.Collections.Generic.NameValueCollection<System.Type> _types;
         #endregion
 
+        #region properties
+
+        /// <summary>
+        /// 获取数据提供者名称
+        /// </summary>
+        public override string Name { get { return "mysql"; } }
+        /// <summary>
+        /// 获取数据提供者版本
+        /// </summary>
+        public override string Version { get { return "5.x"; } }
+
+        #endregion
+
+
         #region cctor
         static MySqlProvider() {
             _types = new Collections.Generic.NameValueCollection<System.Type>();

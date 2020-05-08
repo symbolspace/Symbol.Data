@@ -14,6 +14,20 @@ namespace Symbol.Data {
     /// </summary>
     public class SQLiteProvider : AdoProvider {
 
+        #region properties
+
+        /// <summary>
+        /// 获取数据提供者名称
+        /// </summary>
+        public override string Name { get { return "sqlite"; } }
+        /// <summary>
+        /// 获取数据提供者版本
+        /// </summary>
+        public override string Version { get { return "3.x"; } }
+
+        #endregion
+
+
         #region ctor
         /// <summary>
         /// 创建 SQLiteProvider 的实例。
