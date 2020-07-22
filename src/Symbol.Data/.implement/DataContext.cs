@@ -652,9 +652,7 @@ namespace Symbol.Data {
             using (ISelectCommandBuilder builder = CreateSelect(collectionName)) {
                 builder.Sum(field)
                        .Query(condition);
-                using (var q = CreateQuery<TResult>(builder.CommandText, builder.Parameters)) {
-                    return q.FirstOrDefault();
-                }
+                return ExecuteScalar<TResult>(builder.CommandText, builder.Parameters);
             }
         }
         /// <summary>
@@ -685,9 +683,7 @@ namespace Symbol.Data {
             using (ISelectCommandBuilder builder = CreateSelect(collectionName)) {
                 builder.Min(field)
                        .Query(condition);
-                using (var q = CreateQuery<TResult>(builder.CommandText, builder.Parameters)) {
-                    return q.FirstOrDefault();
-                }
+                return ExecuteScalar<TResult>(builder.CommandText, builder.Parameters);
             }
         }
         /// <summary>
@@ -718,9 +714,7 @@ namespace Symbol.Data {
             using (ISelectCommandBuilder builder = CreateSelect(collectionName)) {
                 builder.Max(field)
                        .Query(condition);
-                using (var q = CreateQuery<TResult>(builder.CommandText, builder.Parameters)) {
-                    return q.FirstOrDefault();
-                }
+                return ExecuteScalar<TResult>(builder.CommandText, builder.Parameters);
             }
         }
         /// <summary>
@@ -751,9 +745,7 @@ namespace Symbol.Data {
             using (ISelectCommandBuilder builder = CreateSelect(collectionName)) {
                 builder.Average(field)
                        .Query(condition);
-                using (var q = CreateQuery<TResult>(builder.CommandText, builder.Parameters)) {
-                    return q.FirstOrDefault();
-                }
+                return ExecuteScalar<TResult>(builder.CommandText, builder.Parameters);
             }
         }
         /// <summary>
