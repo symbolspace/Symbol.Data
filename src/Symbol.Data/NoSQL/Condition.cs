@@ -483,23 +483,21 @@ namespace Symbol.Data.NoSQL {
                             if (jsonValue.Type == NodeValueTypes.String) {
                                 pair._name = "like";
                                 pair._value = jsonValue.Value;
-                                return true;
+                                return !string.IsNullOrEmpty(jsonValue.Value as string);
                             }
                             return false;
                         }
                     case "start": {
                             if (jsonValue.Type == NodeValueTypes.String) {
                                 pair._name = "start";
-                                pair._value = jsonValue.Value;
-                                return true;
+                                return !string.IsNullOrEmpty(jsonValue.Value as string);
                             }
                             return false;
                         }
                     case "end": {
                             if (jsonValue.Type == NodeValueTypes.String) {
                                 pair._name = "end";
-                                pair._value = jsonValue.Value;
-                                return true;
+                                return !string.IsNullOrEmpty(jsonValue.Value as string);
                             }
                             return false;
                         }
