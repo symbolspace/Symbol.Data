@@ -15,6 +15,12 @@ namespace Examples.Data {
                 //IDataContext db = CreateDataContext("mssql2012");
                 //IDataContext db = CreateDataContext("mysql");
                 IDataContext db = CreateDataContext("pgsql");
+                {
+                    var builder = db.CreateSelect("test");
+                    //builder.Query(new { xx = "{ '$like' : '11' }" });
+                    builder.Query("{ 'xx' : { '$like' : '' } }" );
+                    var sql = builder.CommandText;
+                }
                 //IDataContext db = CreateDataContext("sqlite");
                 db.TableExists("ping");
                 {

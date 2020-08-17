@@ -4,6 +4,7 @@
  */
 using System;
 using System.Data;
+using System.IO;
 
 namespace Symbol.Data {
 
@@ -88,13 +89,13 @@ namespace Symbol.Data {
         /// <param name="dialect">方言对象。</param>
         /// <param name="addCommandParameter"></param>
         /// <param name="layer">层</param>
-        public WhereExpression(IDataContext dataContext,IDialect dialect, AddCommandParameterDelegate addCommandParameter, int layer) {
+        public WhereExpression(IDataContext dataContext, IDialect dialect, AddCommandParameterDelegate addCommandParameter, int layer) {
             _dataContext = dataContext;
             _dialect = dialect;
             _addCommandParameter = addCommandParameter;
             dataContext.DisposableObjects?.Add(this);
             _wheres = new System.Collections.Generic.Dictionary<string, WhereOperators>(System.StringComparer.OrdinalIgnoreCase);
-            _layer = Math.Max(layer,1);
+            _layer = Math.Max(layer, 1);
             _layerLeft = "".PadLeft(4 * _layer, ' ');
         }
         #endregion
@@ -251,7 +252,7 @@ namespace Symbol.Data {
         /// </summary>
         /// <returns></returns>
         protected virtual IWhereExpression CreateInstance() {
-            return new WhereExpression(_dataContext, _dialect, _addCommandParameter, _layer+1);
+            return new WhereExpression(_dataContext, _dialect, _addCommandParameter, _layer + 1);
         }
 
         /// <summary>
@@ -321,7 +322,7 @@ namespace Symbol.Data {
         #endregion
 
         #region Match
-        
+
         /// <summary>
         /// 操作符匹配（自动忽略空或空文本）。
         /// </summary>
@@ -765,12 +766,19 @@ namespace Symbol.Data {
                     if (item.Children.Count == 1 && item.Children[0].Type == NoSQL.ConditionTypes.Field) {
                         continue;
                     }
-                    if (!b)
-                        writer.Write(innerOperation);
                     if (QueryChildrenFieldPre(item, writer, b ? "" : innerOperation, ref b))
                         continue;
-                    writer.Write(_dialect.PreName(item.GetNames()));
-                    QueryChildren(item.Children, writer);
+                    using (var childrenWriter = new StringWriter()) {
+                        QueryChildren(item.Children, childrenWriter);
+                        var childrenBuilder = childrenWriter.GetStringBuilder();
+                        if (childrenBuilder.Length > 0) {
+                            if (!b)
+                                writer.Write(innerOperation);
+                            writer.Write(_dialect.PreName(item.GetNames()));
+                            writer.Write(childrenBuilder.ToString());
+                        }
+                    }
+                        
                 } else if (item.Type == NoSQL.ConditionTypes.Logical) {
                     QueryChildrenLogical(item, writer, b ? "" : innerOperation);
                 }
@@ -810,28 +818,40 @@ namespace Symbol.Data {
                         return true;
                     }
                 case "$like": {
-                        firstOperation = false;
                         string value = item.Children[0].Value as string;
-                        bool reverse = TypeExtensions.Convert(QueryChildrenFieldPre_Extend(item, "reverse"), false);
-                        writer.Write(_dialect.LikeGrammar(_dialect.PreName(item.GetNames()), true, true, reverse),
-                            AddCommandParameter(_dialect.LikeValueFilter(value, true, true, reverse)));
-                        return true;
+                        if (string.IsNullOrEmpty(value)) {
+                            return false;
+                        } else {
+                            firstOperation = false;
+                            bool reverse = TypeExtensions.Convert(QueryChildrenFieldPre_Extend(item, "reverse"), false);
+                            writer.Write(_dialect.LikeGrammar(_dialect.PreName(item.GetNames()), true, true, reverse),
+                                AddCommandParameter(_dialect.LikeValueFilter(value, true, true, reverse)));
+                            return true;
+                        }
                     }
                 case "$start": {
-                        firstOperation = false;
                         string value = item.Children[0].Value as string;
-                        bool reverse = TypeExtensions.Convert(QueryChildrenFieldPre_Extend(item, "reverse"), false);
-                        writer.Write(_dialect.LikeGrammar(_dialect.PreName(item.GetNames()), false, true, reverse),
-                            AddCommandParameter(_dialect.LikeValueFilter(value, false, true, reverse)));
-                        return true;
+                        if (string.IsNullOrEmpty(value)) {
+                            return false;
+                        } else {
+                            firstOperation = false;
+                            bool reverse = TypeExtensions.Convert(QueryChildrenFieldPre_Extend(item, "reverse"), false);
+                            writer.Write(_dialect.LikeGrammar(_dialect.PreName(item.GetNames()), false, true, reverse),
+                                AddCommandParameter(_dialect.LikeValueFilter(value, false, true, reverse)));
+                            return true;
+                        }
                     }
                 case "$end": {
-                        firstOperation = false;
                         string value = item.Children[0].Value as string;
-                        bool reverse = TypeExtensions.Convert(QueryChildrenFieldPre_Extend(item, "reverse"), false);
-                        writer.Write(_dialect.LikeGrammar(_dialect.PreName(item.GetNames()), true, false, reverse),
-                            AddCommandParameter(_dialect.LikeValueFilter(value, true, false, reverse)));
-                        return true;
+                        if (string.IsNullOrEmpty(value)) {
+                            return false;
+                        } else {
+                            firstOperation = false;
+                            bool reverse = TypeExtensions.Convert(QueryChildrenFieldPre_Extend(item, "reverse"), false);
+                            writer.Write(_dialect.LikeGrammar(_dialect.PreName(item.GetNames()), true, false, reverse),
+                                AddCommandParameter(_dialect.LikeValueFilter(value, true, false, reverse)));
+                            return true;
+                        }
                     }
 
                 default:
