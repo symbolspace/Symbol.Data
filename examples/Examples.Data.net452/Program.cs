@@ -17,8 +17,8 @@ namespace Examples.Data {
                 IDataContext db = CreateDataContext("pgsql");
                 {
                     var builder = db.CreateSelect("test");
-                    //builder.Query(new { xx = "{ '$like' : '11' }" });
-                    builder.Query("{ 'xx' : { '$like' : '' } }" );
+                    builder.Query(new {c=false, xx = "{ '$like' : '' }",yy=24234, bookId ="{ '$notnull': null }" });
+                    //builder.Query("{ 'xx' : { '$like' : '' } }" );
                     var sql = builder.CommandText;
                 }
                 //IDataContext db = CreateDataContext("sqlite");

@@ -5,6 +5,7 @@
 using System;
 using System.Data;
 using System.IO;
+using System.Text;
 
 namespace Symbol.Data {
 
@@ -768,17 +769,20 @@ namespace Symbol.Data {
                     }
                     if (QueryChildrenFieldPre(item, writer, b ? "" : innerOperation, ref b))
                         continue;
-                    using (var childrenWriter = new StringWriter()) {
-                        QueryChildren(item.Children, childrenWriter);
-                        var childrenBuilder = childrenWriter.GetStringBuilder();
-                        if (childrenBuilder.Length > 0) {
-                            if (!b)
-                                writer.Write(innerOperation);
-                            writer.Write(_dialect.PreName(item.GetNames()));
-                            writer.Write(childrenBuilder.ToString());
+                    {
+                        var children_builder = new StringBuilder();
+                        using (var children_writer = new StringWriter(children_builder)) {
+                            var old_b = b;
+                            QueryChildren(item.Children, children_writer);
                         }
+                        if (children_builder.Length == 0)
+                            continue;
+                        if (!b)
+                            writer.Write(innerOperation);
+                        writer.Write(_dialect.PreName(item.GetNames()));
+                        writer.Write(children_builder.ToString());
                     }
-                        
+
                 } else if (item.Type == NoSQL.ConditionTypes.Logical) {
                     QueryChildrenLogical(item, writer, b ? "" : innerOperation);
                 }
@@ -808,21 +812,26 @@ namespace Symbol.Data {
                 case "$notnull": {
                         if (item.Children.Count != 1)
                             return false;
+                        firstOperation = false;
+                        writer.Write(innerOperation);
                         writer.Write("not {0} is null", _dialect.PreName(item.GetNames()));
                         return true;
                     }
                 case "$ref": {
                         if (item.Children.Count != 1)
                             return false;
+                        firstOperation = false;
+                        writer.Write(innerOperation);
                         writer.Write("{0}={1}", _dialect.PreName(item.GetNames()), _dialect.PreName(item.Children[0].Value as string, "."));
                         return true;
                     }
                 case "$like": {
                         string value = item.Children[0].Value as string;
                         if (string.IsNullOrEmpty(value)) {
-                            return false;
+                            return true;
                         } else {
                             firstOperation = false;
+                            writer.Write(innerOperation);
                             bool reverse = TypeExtensions.Convert(QueryChildrenFieldPre_Extend(item, "reverse"), false);
                             writer.Write(_dialect.LikeGrammar(_dialect.PreName(item.GetNames()), true, true, reverse),
                                 AddCommandParameter(_dialect.LikeValueFilter(value, true, true, reverse)));
@@ -832,9 +841,10 @@ namespace Symbol.Data {
                 case "$start": {
                         string value = item.Children[0].Value as string;
                         if (string.IsNullOrEmpty(value)) {
-                            return false;
+                            return true;
                         } else {
                             firstOperation = false;
+                            writer.Write(innerOperation);
                             bool reverse = TypeExtensions.Convert(QueryChildrenFieldPre_Extend(item, "reverse"), false);
                             writer.Write(_dialect.LikeGrammar(_dialect.PreName(item.GetNames()), false, true, reverse),
                                 AddCommandParameter(_dialect.LikeValueFilter(value, false, true, reverse)));
@@ -844,9 +854,10 @@ namespace Symbol.Data {
                 case "$end": {
                         string value = item.Children[0].Value as string;
                         if (string.IsNullOrEmpty(value)) {
-                            return false;
+                            return true;
                         } else {
                             firstOperation = false;
+                            writer.Write(innerOperation);
                             bool reverse = TypeExtensions.Convert(QueryChildrenFieldPre_Extend(item, "reverse"), false);
                             writer.Write(_dialect.LikeGrammar(_dialect.PreName(item.GetNames()), true, false, reverse),
                                 AddCommandParameter(_dialect.LikeValueFilter(value, true, false, reverse)));
