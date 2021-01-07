@@ -1290,7 +1290,7 @@ namespace Symbol.Data {
         /// <returns>返是否有成功。</returns>
         public virtual bool TryInsert<TEntity>(object values, string[] removeFields, DataContextExecuteCallback<long> callback = null) where TEntity : class {
             try {
-                long result = Insert<TEntity>(values, removeFields);
+                long result = InsertEntity<TEntity,long>(values, removeFields);
                 callback?.Invoke(this, result, null);
                 return true;
             } catch (System.Exception error) {
@@ -1308,7 +1308,7 @@ namespace Symbol.Data {
         /// <returns>返是否有成功。</returns>
         public virtual bool TryInsert<TEntity>(object values, InsertCommandBuilderFilter builderFilter = null, DataContextExecuteCallback<long> callback = null) where TEntity : class {
             try {
-                long result = Insert<TEntity>(values, builderFilter);
+                long result = InsertEntity<TEntity,long>(values, builderFilter);
                 callback?.Invoke(this, result, null);
                 return true;
             } catch (System.Exception error) {
@@ -1327,7 +1327,7 @@ namespace Symbol.Data {
         /// <returns>返是否有成功。</returns>
         public virtual bool TryInsert<TEntity, TResult>(object values, string[] removeFields, DataContextExecuteCallback<TResult> callback = null) where TEntity : class {
             try {
-                TResult result = Insert<TEntity, TResult>(values, removeFields);
+                TResult result = InsertEntity<TEntity, TResult>(values, removeFields);
                 callback?.Invoke(this, result, null);
                 return true;
             } catch (System.Exception error) {
@@ -1346,7 +1346,7 @@ namespace Symbol.Data {
         /// <returns>返是否有成功。</returns>
         public virtual bool TryInsert<TEntity, TResult>(object values, InsertCommandBuilderFilter builderFilter = null, DataContextExecuteCallback<TResult> callback = null) where TEntity : class {
             try {
-                TResult result = Insert<TEntity, TResult>(values, builderFilter);
+                TResult result = InsertEntity<TEntity, TResult>(values, builderFilter);
                 callback?.Invoke(this, result, null);
                 return true;
             } catch (System.Exception error) {
@@ -1364,7 +1364,7 @@ namespace Symbol.Data {
         /// <returns>返是否有成功。</returns>
         public virtual bool TryInsert(string collectionName, object values, string[] removeFields, DataContextExecuteCallback<long> callback = null) {
             try {
-                long result = Insert(collectionName, values, removeFields);
+                long result = InsertObject<long>(collectionName, values, removeFields);
                 callback?.Invoke(this, result, null);
                 return true;
             } catch (System.Exception error) {
@@ -1382,7 +1382,7 @@ namespace Symbol.Data {
         /// <returns>返是否有成功。</returns>
         public virtual bool TryInsert(string collectionName, object values, InsertCommandBuilderFilter builderFilter = null, DataContextExecuteCallback<long> callback = null) {
             try {
-                long result = Insert(collectionName, values, builderFilter);
+                long result = InsertObject<long>(collectionName, values, builderFilter);
                 callback?.Invoke(this, result, null);
                 return true;
             } catch (System.Exception error) {
@@ -1401,7 +1401,7 @@ namespace Symbol.Data {
         /// <returns>返是否有成功。</returns>
         public virtual bool TryInsert<TResult>(string collectionName, object values, string[] removeFields, DataContextExecuteCallback<TResult> callback = null) {
             try {
-                TResult result = Insert<TResult>(collectionName, values, removeFields);
+                TResult result = InsertObject<TResult>(collectionName, values, removeFields);
                 callback?.Invoke(this, result, null);
                 return true;
             } catch (System.Exception error) {
@@ -1420,7 +1420,7 @@ namespace Symbol.Data {
         /// <returns>返是否有成功。</returns>
         public virtual bool TryInsert<TResult>(string collectionName, object values, InsertCommandBuilderFilter builderFilter = null, DataContextExecuteCallback<TResult> callback = null) {
             try {
-                TResult result = Insert<TResult>(collectionName, values, builderFilter);
+                TResult result = InsertObject<TResult>(collectionName, values, builderFilter);
                 callback?.Invoke(this, result, null);
                 return true;
             } catch (System.Exception error) {

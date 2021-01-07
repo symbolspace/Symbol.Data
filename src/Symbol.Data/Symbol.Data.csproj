@@ -12,7 +12,7 @@
     <NeutralLanguage>zh-CN</NeutralLanguage>
     <AssemblyTitle>Symbol.Data</AssemblyTitle>
     <AssemblyName>Symbol.Data</AssemblyName>
-    <VersionPrefix>4.1.0.32</VersionPrefix>
+    <VersionPrefix>4.1.0.33</VersionPrefix>
     <Title>Symbol.Data</Title>
     <Authors>symbolspace</Authors>
     <Company>symbolspace</Company>
@@ -50,6 +50,9 @@
     <Optimize>false</Optimize>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(TargetFramework)'=='netcoreapp5.0'">
+    <DefineConstants>netapp50;netcore;</DefineConstants>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(TargetFramework)'=='netcoreapp3.1'">
     <DefineConstants>netapp31;netcore;</DefineConstants>
   </PropertyGroup>
@@ -201,7 +204,7 @@
   </ItemGroup>
   
   <ItemGroup>
-    <PackageReference Include="Symbol" Version="4.0.0.8" />
+    <PackageReference Include="Symbol" Version="4.0.0.14" />
   </ItemGroup>
   
   <ItemGroup>
