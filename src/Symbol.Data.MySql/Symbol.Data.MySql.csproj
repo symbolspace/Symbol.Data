@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup Label="NuGet">
-    <TargetFrameworks>netstandard2.0;netcoreapp2.0;net45;net452;net35;net2</TargetFrameworks>
-    <IsPackable>true</IsPackable>
+	  <TargetFrameworks>net6.0;net5.0;netcoreapp3.1;net48;net47;net461;net46;net35;net2</TargetFrameworks>
+	  <IsPackable>true</IsPackable>
     <IncludeSymbols>true</IncludeSymbols>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
@@ -12,7 +12,7 @@
     <NeutralLanguage>zh-CN</NeutralLanguage>
     <AssemblyTitle>Symbol.Data.MySql</AssemblyTitle>
     <AssemblyName>Symbol.Data.MySql</AssemblyName>
-    <VersionPrefix>4.1.0.7</VersionPrefix>
+    <VersionPrefix>4.1.0.9</VersionPrefix>
     <Title>Symbol.Data.MySql</Title>
     <Authors>symbolspace</Authors>
     <Company>symbolspace</Company>
@@ -48,31 +48,73 @@
     <Optimize>false</Optimize>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(TargetFramework)'=='netcoreapp2.0'">
-    <DefineConstants>netapp20;netcore;</DefineConstants>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(TargetFramework)'=='netstandard2.0'">
-    <DefineConstants>netcore20;netcore;</DefineConstants>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(TargetFramework)'=='net45'">
-    <DefineConstants>net45</DefineConstants>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(TargetFramework)'=='net452'">
-    <DefineConstants>net45;net452</DefineConstants>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(TargetFramework)'=='net4'">
-    <DefineConstants>net40</DefineConstants>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(TargetFramework)'=='net35'">
-    <DefineConstants>net35</DefineConstants>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(TargetFramework)'=='net2'">
-    <DefineConstants>net20</DefineConstants>
-  </PropertyGroup>
+	<PropertyGroup Condition="'$(TargetFramework)'=='net6.0'">
+		<DefineConstants>net60;netcore;</DefineConstants>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(TargetFramework)'=='net5.0'">
+		<DefineConstants>net50;netcore;</DefineConstants>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(TargetFramework)'=='netcoreapp3.1'">
+		<DefineConstants>netapp31;netcore;</DefineConstants>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(TargetFramework)'=='netcoreapp3.0'">
+		<DefineConstants>netapp30;netcore;</DefineConstants>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(TargetFramework)'=='netcoreapp2.0'">
+		<DefineConstants>netapp20;netcore;</DefineConstants>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(TargetFramework)'=='netstandard2.0'">
+		<DefineConstants>netcore20;netcore;</DefineConstants>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(TargetFramework)'=='net48'">
+		<DefineConstants>net47</DefineConstants>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(TargetFramework)'=='net47'">
+		<DefineConstants>net47</DefineConstants>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(TargetFramework)'=='net461'">
+		<DefineConstants>net461</DefineConstants>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(TargetFramework)'=='net46'">
+		<DefineConstants>net46</DefineConstants>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(TargetFramework)'=='net45'">
+		<DefineConstants>net45</DefineConstants>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(TargetFramework)'=='net4'">
+		<DefineConstants>net40</DefineConstants>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(TargetFramework)'=='net35'">
+		<DefineConstants>net35</DefineConstants>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(TargetFramework)'=='net2'">
+		<DefineConstants>net20</DefineConstants>
+	</PropertyGroup>
   <PropertyGroup>
     <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
   </PropertyGroup>
-
+	<ItemGroup Condition=" '$(TargetFramework)' == 'net48' ">
+		<Reference Include="System" />
+		<Reference Include="Microsoft.CSharp" />
+		<PackageReference Include="MySql.Data" Version="6.9.12" />
+	</ItemGroup>
+	<ItemGroup Condition=" '$(TargetFramework)' == 'net47' ">
+		<Reference Include="System" />
+		<Reference Include="Microsoft.CSharp" />
+		<PackageReference Include="MySql.Data" Version="6.9.12" />
+	</ItemGroup>
+	<ItemGroup Condition=" '$(TargetFramework)' == 'net461' ">
+		<Reference Include="System" />
+		<Reference Include="Microsoft.CSharp" />
+		<PackageReference Include="MySql.Data" Version="6.9.12" />
+	</ItemGroup>
+	<ItemGroup Condition=" '$(TargetFramework)' == 'net46' ">
+		<Reference Include="System" />
+		<Reference Include="Microsoft.CSharp" />
+		<PackageReference Include="MySql.Data" Version="6.9.12" />
+	</ItemGroup>
   <ItemGroup Condition=" '$(TargetFramework)' == 'net45' ">
     <Reference Include="System" />
     <Reference Include="Microsoft.CSharp" />
@@ -103,7 +145,15 @@
   <ItemGroup Condition="'$(TargetFramework)'=='netstandard2.0'">
       <PackageReference Include="MySql.Data" Version="8.0.15" />
   </ItemGroup>
-
+	<ItemGroup Condition="'$(TargetFramework)'=='netcoreapp3.1'">
+		<PackageReference Include="MySql.Data" Version="8.0.15" />
+	</ItemGroup>
+	<ItemGroup Condition="'$(TargetFramework)'=='net5.0'">
+		<PackageReference Include="MySql.Data" Version="8.0.15" />
+	</ItemGroup>
+	<ItemGroup Condition="'$(TargetFramework)'=='net6.0'">
+		<PackageReference Include="MySql.Data" Version="8.0.15" />
+	</ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Symbol.Data\Symbol.Data.csproj" />
   </ItemGroup>

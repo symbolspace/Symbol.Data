@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup Label="NuGet">
-    <TargetFrameworks>netcoreapp3.1;netcoreapp3.0;netstandard2.0;netcoreapp2.0;net47;net461;net46;net45;net4;net35;net2</TargetFrameworks>
+    <TargetFrameworks>net6.0;net5.0;netcoreapp3.1;net48;net47;net461;net46;net35;net2</TargetFrameworks>
     <IsPackable>true</IsPackable>
     <IncludeSymbols>true</IncludeSymbols>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
@@ -12,7 +12,7 @@
     <NeutralLanguage>zh-CN</NeutralLanguage>
     <AssemblyTitle>Symbol.Data</AssemblyTitle>
     <AssemblyName>Symbol.Data</AssemblyName>
-    <VersionPrefix>4.1.0.33</VersionPrefix>
+    <VersionPrefix>4.1.0.35</VersionPrefix>
     <Title>Symbol.Data</Title>
     <Authors>symbolspace</Authors>
     <Company>symbolspace</Company>
@@ -50,10 +50,14 @@
     <Optimize>false</Optimize>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(TargetFramework)'=='netcoreapp5.0'">
-    <DefineConstants>netapp50;netcore;</DefineConstants>
+  <PropertyGroup Condition="'$(TargetFramework)'=='net6.0'">
+    <DefineConstants>net60;netcore;</DefineConstants>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(TargetFramework)'=='netcoreapp3.1'">
+	<PropertyGroup Condition="'$(TargetFramework)'=='net5.0'">
+		<DefineConstants>net50;netcore;</DefineConstants>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(TargetFramework)'=='netcoreapp3.1'">
     <DefineConstants>netapp31;netcore;</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition="'$(TargetFramework)'=='netcoreapp3.0'">
@@ -66,6 +70,9 @@
   <PropertyGroup Condition="'$(TargetFramework)'=='netstandard2.0'">
     <DefineConstants>netcore20;netcore;</DefineConstants>
   </PropertyGroup>
+	<PropertyGroup Condition="'$(TargetFramework)'=='net48'">
+		<DefineConstants>net47</DefineConstants>
+	</PropertyGroup>
   <PropertyGroup Condition="'$(TargetFramework)'=='net47'">
     <DefineConstants>net47</DefineConstants>
   </PropertyGroup>
@@ -204,7 +211,7 @@
   </ItemGroup>
   
   <ItemGroup>
-    <PackageReference Include="Symbol" Version="4.0.0.14" />
+    <PackageReference Include="Symbol" Version="4.0.0.21" />
   </ItemGroup>
   
   <ItemGroup>
