@@ -5,6 +5,7 @@
 
 using System;
 using System.Data;
+using System.Reflection;
 
 namespace Symbol.Data {
 
@@ -179,14 +180,16 @@ namespace Symbol.Data {
         /// <param name="value">字段的值。</param>
         /// <param name="index">字段的索引值，从0开始。</param>
         /// <param name="targetType">目标类型。</param>
+        /// <param name="customAttributeProvider">自定义特性提供者。</param>
         /// <param name="target">输出转换结果。</param>
         /// <returns>返回尝试结果，为true表示成功。</returns>
-        protected override bool TryConvertValue(Type type, object value, int index, Type targetType, out object target) {
+        protected override bool TryConvertValue(System.Type type, object value, int index, System.Type targetType, ICustomAttributeProvider customAttributeProvider, out object target) {
             string dataTypeName = GetDataTypeName(index);
             bool isJson = targetType==typeof(object)
                           || string.Equals(dataTypeName, "jsonb", StringComparison.OrdinalIgnoreCase)
                           || string.Equals(dataTypeName, "json", StringComparison.OrdinalIgnoreCase)
-                          || (type==typeof(string) && !targetType.IsValueType && !targetType.IsEnum && targetType.IsClass && targetType!=typeof(string));
+                          || (type==typeof(string) && !targetType.IsValueType && !targetType.IsEnum && targetType.IsClass && targetType!=typeof(string))
+                          || (TypeExtensions.Convert<bool?>( ConstAttributeExtensions.Const(customAttributeProvider,"SaveAsJson")) ?? false);
             if (isJson) {
                 if (TryParseJSON(value, targetType, out object jsonObject)) {
                     target = jsonObject;
@@ -194,7 +197,7 @@ namespace Symbol.Data {
                 }
             }
 
-            return base.TryConvertValue(type, value, index, targetType, out target);
+            return base.TryConvertValue(type, value, index, targetType, customAttributeProvider, out target);
         }
 
 

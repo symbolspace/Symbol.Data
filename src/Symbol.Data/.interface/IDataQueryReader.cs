@@ -4,6 +4,7 @@
  */
 
 using System.Data;
+using System.Reflection;
 
 namespace Symbol.Data {
 
@@ -121,6 +122,14 @@ namespace Symbol.Data {
         /// <returns>返回字段的值，若字段不存在，则为空。</returns>
         object GetValue(string name, System.Type type);
         /// <summary>
+        /// 获取指定字段的值。
+        /// </summary>
+        /// <param name="name">字段名称，空或空字符串直接返回空。</param>
+        /// <param name="type">目标类型，尝试转换为此类型，为空则保持原状。</param>
+        /// <param name="customAttributeProvider">自定义特性提供者。</param>
+        /// <returns>返回字段的值，若字段不存在，则为空。</returns>
+        object GetValue(string name, System.Type type, ICustomAttributeProvider customAttributeProvider);
+        /// <summary>
         /// 获取指定对应字段的值。
         /// </summary>
         /// <param name="index">从0开始的索引，小于0或超出有效值时，则为空。</param>
@@ -133,6 +142,14 @@ namespace Symbol.Data {
         /// <param name="type">目标类型，尝试转换为此类型，为空则保持原状。</param>
         /// <returns>返回索引顺序对应字段的值，若字段不存在，则为空。</returns>
         object GetValue(int index, System.Type type);
+        /// <summary>
+        /// 获取指定对应字段的值。
+        /// </summary>
+        /// <param name="index">从0开始的索引，小于0或超出有效值时，则为空。</param>
+        /// <param name="type">目标类型，尝试转换为此类型，为空则保持原状。</param>
+        /// <param name="customAttributeProvider">自定义特性提供者。</param>
+        /// <returns>返回索引顺序对应字段的值，若字段不存在，则为空。</returns>
+        object GetValue(int index, System.Type type, ICustomAttributeProvider customAttributeProvider);
 
         /// <summary>
         /// 检测指定字段的值是否为空、DBNull。

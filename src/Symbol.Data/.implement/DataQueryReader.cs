@@ -162,6 +162,16 @@ namespace Symbol.Data {
             return GetValue(GetIndex(name), type);
         }
         /// <summary>
+        /// 获取指定字段的值。
+        /// </summary>
+        /// <param name="name">字段名称，空或空字符串直接返回空。</param>
+        /// <param name="type">目标类型，尝试转换为此类型，为空则保持原状。</param>
+        /// <param name="customAttributeProvider">自定义特性提供者。</param>
+        /// <returns>返回字段的值，若字段不存在，则为空。</returns>
+        public virtual object GetValue(string name, System.Type type, ICustomAttributeProvider customAttributeProvider) {
+            return GetValue(GetIndex(name), type, customAttributeProvider);
+        }
+        /// <summary>
         /// 获取指定对应字段的值。
         /// </summary>
         /// <param name="index">从0开始的索引，小于0或超出有效值时，则为空。</param>
@@ -174,6 +184,16 @@ namespace Symbol.Data {
         /// <param name="type">目标类型，尝试转换为此类型，为空则保持原状。</param>
         /// <returns>返回索引顺序对应字段的值，若字段不存在，则为空。</returns>
         public virtual object GetValue(int index, System.Type type) {
+            return GetValue(index, type, null);
+        }
+        /// <summary>
+        /// 获取指定对应字段的值。
+        /// </summary>
+        /// <param name="index">从0开始的索引，小于0或超出有效值时，则为空。</param>
+        /// <param name="type">目标类型，尝试转换为此类型，为空则保持原状。</param>
+        /// <param name="customAttributeProvider">自定义特性提供者。</param>
+        /// <returns>返回索引顺序对应字段的值，若字段不存在，则为空。</returns>
+        public virtual object GetValue(int index, System.Type type, ICustomAttributeProvider customAttributeProvider) {
             if (index < 0 || index > FieldCount - 1)
                 return TypeExtensions.DefaultValue(type);
             object value = GetValue(index);
@@ -186,7 +206,7 @@ namespace Symbol.Data {
                 }
                 return value;
             }
-            if (TryConvertValue(GetType(index), value, index, type, out object target)) {
+            if (TryConvertValue(GetType(index), value, index, type, customAttributeProvider, out object target)) {
                 return target;
             }
             return value;
@@ -293,9 +313,10 @@ namespace Symbol.Data {
         /// <param name="value">字段的值。</param>
         /// <param name="index">字段的索引值，从0开始。</param>
         /// <param name="targetType">目标类型。</param>
+        /// <param name="customAttributeProvider">自定义特性提供者。</param>
         /// <param name="target">输出转换结果。</param>
         /// <returns>返回尝试结果，为true表示成功。</returns>
-        protected virtual bool TryConvertValue(System.Type type, object value, int index, System.Type targetType, out object target) {
+        protected virtual bool TryConvertValue(System.Type type, object value, int index, System.Type targetType, ICustomAttributeProvider customAttributeProvider, out object target) {
             if (targetType != null) {
                 target = TypeExtensions.Convert(value, targetType);
                 return true;
@@ -459,14 +480,14 @@ namespace Symbol.Data {
 
                 var propertyInfo = type.GetProperty(name, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.IgnoreCase);
                 if (propertyInfo != null) {
-                    object value = GetValue(i, propertyInfo.PropertyType);
+                    object value = GetValue(i, propertyInfo.PropertyType, propertyInfo);
                     propertyInfo.SetValue(result, value, null);
                     continue;
                 }
 
                 var fieldInfo = type.GetField(name, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.IgnoreCase);
                 if (fieldInfo != null) {
-                    object value = GetValue(i, fieldInfo.FieldType);
+                    object value = GetValue(i, fieldInfo.FieldType, fieldInfo);
                     fieldInfo.SetValue(result, value);
                     continue;
                 }
