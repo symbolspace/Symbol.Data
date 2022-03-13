@@ -8,12 +8,13 @@
     <OutputType>Exe</OutputType>
     <RootNamespace>Examples.Data.net452</RootNamespace>
     <AssemblyName>Examples.Data.net452</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -41,8 +42,8 @@
     <Reference Include="Google.Protobuf, Version=3.6.1.0, Culture=neutral, PublicKeyToken=a7d26565bac4d604, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Google.Protobuf.3.6.1\lib\net45\Google.Protobuf.dll</HintPath>
     </Reference>
-    <Reference Include="Symbol, Version=4.0.0.8, Culture=neutral, PublicKeyToken=1e13af8be3ebbb99, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Symbol.4.0.0.8\lib\net45\Symbol.dll</HintPath>
+    <Reference Include="Symbol, Version=4.0.0.19, Culture=neutral, PublicKeyToken=1e13af8be3ebbb99, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Symbol.4.0.0.19\lib\net461\Symbol.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel" />
