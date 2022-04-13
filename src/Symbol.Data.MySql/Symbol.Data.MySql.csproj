@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup Label="NuGet">
-	  <TargetFrameworks>net6.0;net5.0;netcoreapp3.1;net48;net47;net461;net46;net35;net2</TargetFrameworks>
+	  <TargetFrameworks>net6.0;net5.0;netcoreapp3.1;net48;net47;net461;net46;net452;net45;net40;net35;net2</TargetFrameworks>
 	  <IsPackable>true</IsPackable>
     <IncludeSymbols>true</IncludeSymbols>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
@@ -12,7 +12,7 @@
     <NeutralLanguage>zh-CN</NeutralLanguage>
     <AssemblyTitle>Symbol.Data.MySql</AssemblyTitle>
     <AssemblyName>Symbol.Data.MySql</AssemblyName>
-    <VersionPrefix>4.1.0.9</VersionPrefix>
+    <VersionPrefix>4.1.0.10</VersionPrefix>
     <Title>Symbol.Data.MySql</Title>
     <Authors>symbolspace</Authors>
     <Company>symbolspace</Company>
