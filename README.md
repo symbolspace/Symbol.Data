@@ -1,5 +1,5 @@
 ﻿# 程序集    [使用说明](https://github.com/symbolspace/Symbol.Data/wiki/Home)
-> 运行时支持 .net framework v2.0/3.5/4.0/4.5、.net standard 2.x、.net core app 2.x。
+> 运行时支持 .net framework v2.0/3.5/4.0/4.5/4.6/4.7/4.8、.netcoreapp3.1、.net 5.0/6.0
 
 * Symbol.Data.dll [![Available on NuGet https://www.nuget.org/packages/Symbol.Data/](https://img.shields.io/nuget/v/Symbol.Data.svg?style=flat)](https://www.nuget.org/packages/Symbol.Data/)
 * Symbol.Data.SqlServer.dll [![Available on NuGet https://www.nuget.org/packages/Symbol.Data.SqlServer/](https://img.shields.io/nuget/v/Symbol.Data.SqlServer.svg?style=flat)](https://www.nuget.org/packages/Symbol.Data.SqlServer/)
