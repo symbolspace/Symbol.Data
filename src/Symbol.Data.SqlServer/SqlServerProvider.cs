@@ -35,7 +35,7 @@ namespace Symbol.Data {
         /// <param name="connectionString">连接字符串。</param>
         /// <returns>返回数据库连接。</returns>
         public override IConnection CreateConnection(string connectionString) {
-            CommonException.CheckArgumentNull(connectionString, "connectionString");
+            CommonException.CheckArgumentNull(connectionString, nameof(connectionString));
             return new SqlServerConnection(this, FastWrapper.CreateInstance<System.Data.SqlClient.SqlConnection>(connectionString), connectionString);
         }
         /// <summary>
