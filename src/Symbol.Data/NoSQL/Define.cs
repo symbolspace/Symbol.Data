@@ -128,8 +128,7 @@ namespace Symbol.Data.NoSQL {
             /// <param name="value">仅支持string[]、string、{}、object、string(json)</param>
             /// <returns></returns>
             public Define Parse(object value) {
-                Define result = value as Define;
-                if (result != null)
+                if (value is Define result)
                     return result;
                 return Parse(NodeValue.As(value));
             }
@@ -416,7 +415,7 @@ namespace Symbol.Data.NoSQL {
         public string Name {
             get { return _name; }
             private set {
-                CommonException.CheckArgumentNull(value, "value");
+                CommonException.CheckArgumentNull(value, nameof(value));
                 _name = value;
                 _names = value.Split('.');
             }
@@ -466,8 +465,9 @@ namespace Symbol.Data.NoSQL {
         /// </summary>
         /// <returns></returns>
         public object ToObject() {
-            System.Collections.Generic.IDictionary<string, object> o = new System.Collections.Generic.Dictionary<string, object>();
-            o.Add(_name, _value);
+            System.Collections.Generic.IDictionary<string, object> o = new System.Collections.Generic.Dictionary<string, object> {
+                { _name, _value }
+            };
             ToObject(o);
             return o;
         }
