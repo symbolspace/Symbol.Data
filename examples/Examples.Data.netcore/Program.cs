@@ -7,23 +7,28 @@ namespace Examples.Data.netcore {
 
             {
                 //创建数据上下文对象
-                //IDataContext db = CreateDataContext("mssql2012");
-                //IDataContext db = CreateDataContext("mysql");
-                IDataContext db = CreateDataContext("pgsql");
-                //IDataContext db = CreateDataContext("sqlite");
+                DataContextTest("mssql2012");
+                //DataContextTest("mysql");
+                //DataContextTest("pgsql");
+                //DataContextTest("sqlite");
 
-                //初始化 &  数据
-                DatabaseSchema(db);
-                //增 删 改 查  常规操作
-                DatabaseCRUD(db);
-                //泛型
-                QueryGeneric(db);
-
-                //性能测试
-                QueryPerf(db);
+                
 
             }
             Console.ReadKey();
+        }
+
+        static void DataContextTest(string type) {
+            IDataContext db = CreateDataContext(type);
+            //初始化 &  数据
+            DatabaseSchema(db);
+            //增 删 改 查  常规操作
+            DatabaseCRUD(db);
+            //泛型
+            QueryGeneric(db);
+
+            //性能测试
+            QueryPerf(db);
         }
 
         static IDataContext CreateDataContext(string type) {
@@ -31,7 +36,8 @@ namespace Examples.Data.netcore {
             switch (type) {
                 case "mssql2012":
                     connectionOptions = new {
-                        host = "192.168.247.119\\MSSQL2014",    //服务器，端口为默认，所以不用写
+                        host = "mssql-master.hh",               //服务器，端口为默认，所以不用写
+                        port = 1433,                            //端口
                         name = "test",                          //数据库名称
                         account = "test",                       //登录账号
                         password = "test",                      //登录密码
@@ -39,7 +45,7 @@ namespace Examples.Data.netcore {
                     break;
                 case "mysql":
                     connectionOptions = new {
-                        host = "192.168.247.119",               //服务器
+                        host = "mysql-master.hh",               //服务器
                         port = 3306,                            //端口，可以与服务器写在一起，例如127.0.0.1:3306
                         name = "test",                          //数据库名称
                         account = "test",                       //登录账号
@@ -48,7 +54,7 @@ namespace Examples.Data.netcore {
                     break;
                 case "pgsql":
                     connectionOptions = new {
-                        host = "192.168.247.219",               //服务器
+                        host = "pgsql-master.hh",               //服务器
                         port = 5432,                            //端口，可以与服务器写在一起，例如127.0.0.1:5432
                         name = "test",                          //数据库名称
                         account = "test",                       //登录账号
@@ -68,8 +74,8 @@ namespace Examples.Data.netcore {
         }
 
         static void DatabaseSchema(IDataContext db) {
-            switch (db.Provider.GetType().Name) {
-                case "PostgreSQLProvider": {
+            switch (db.Provider.Name) {
+                case "pgsql": {
 
                         #region 创建表：t_user
                         if (!db.TableExists("t_user")) {
@@ -100,15 +106,15 @@ namespace Examples.Data.netcore {
                                   OIDS = FALSE
                                 ); ");
                             #region 初始测试数据
-                            db.Insert("test", new {
+                            db.InsertObject<long>("test", new {
                                 name = "test",
                                 count = 24234
                             });
-                            db.Insert("test", new {
+                            db.InsertObject<long>("test", new {
                                 name = "test24",
                                 count = 466
                             });
-                            db.Insert("test", new {
+                            db.InsertObject<long>("test", new {
                                 name = "test214",
                                 count = 347693,
                                 data = new {
@@ -125,7 +131,7 @@ namespace Examples.Data.netcore {
 
                     }
                     break;
-                case "SQLiteProvider": {
+                case "sqlite": {
                         #region 创建表
                         db.ExecuteNonQuery(@"
                             create table test(
@@ -146,15 +152,15 @@ namespace Examples.Data.netcore {
                         ");
                         #endregion
                         #region 初始测试数据
-                        db.Insert("test", new {
+                        db.InsertObject<long>("test", new {
                             name = "test",
                             count = 24234
                         });
-                        db.Insert("test", new {
+                        db.InsertObject<long>("test", new {
                             name = "test24",
                             count = 466
                         });
-                        db.Insert("test", new {
+                        db.InsertObject<long>("test", new {
                             name = "test214",
                             count = 347693,
                             data = new {
@@ -168,6 +174,54 @@ namespace Examples.Data.netcore {
                         #endregion
                     }
                     break;
+                case "mysql": {
+                        #region 创建表：t_user
+                        if (!db.TableExists("t_user")) {
+                            db.ExecuteNonQuery(@"
+                                CREATE TABLE `t_user`  (
+                                  `id` bigint(0) NOT NULL AUTO_INCREMENT,
+                                  `type` smallint(0) NOT NULL,
+                                  `account` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+                                  `password` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+                                  PRIMARY KEY (`id`) USING BTREE
+                                ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;");
+                        }
+                        #endregion
+                        #region 创建表：test
+                        if (!db.TableExists("test")) {
+                            db.ExecuteNonQuery(@"
+                                CREATE TABLE `test`  (
+                                  `id` bigint(0) NOT NULL AUTO_INCREMENT,
+                                  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+                                  `count` bigint(0) NOT NULL,
+                                  `data` json NULL,
+                                  PRIMARY KEY (`id`) USING BTREE
+                                ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;");
+                            #region 初始测试数据
+                            db.InsertObject<long>("test", new {
+                                name = "test",
+                                count = 24234
+                            });
+                            db.InsertObject<long>("test", new {
+                                name = "test24",
+                                count = 466
+                            });
+                            db.InsertObject<long>("test", new {
+                                name = "test214",
+                                count = 347693,
+                                data = new {
+                                    a = true,
+                                    list = new object[] { 32, "test" }
+                                }
+                            });
+                            for (int i = 0; i < 15; i++) {
+                                db.ExecuteNonQuery("insert into `test`(`name`,`count`,`data`) select `name`,`count`,`data` from `test`;");
+                            }
+                            #endregion
+                        }
+                        #endregion
+                        break;
+                    }
             }
         }
         static void DatabaseCRUD(IDataContext db) {
@@ -183,7 +237,7 @@ namespace Examples.Data.netcore {
 
                 //插入数据
                 db.BeginTransaction();
-                var id = db.Insert("test", new {
+                var id = db.InsertObject<long>("test", new {
                     name = "xxxxxxxxx",
                     count = 9999,
                     data = new {//JSON类型测试
@@ -215,7 +269,7 @@ namespace Examples.Data.netcore {
             Console.ReadKey();
             {
                 //枚举测试
-                var id = db.Insert("t_user", new {
+                var id = db.InsertObject<long>("t_user", new {
                     account = "admin",
                     type = UserTypes.Manager,
                     password="test"
