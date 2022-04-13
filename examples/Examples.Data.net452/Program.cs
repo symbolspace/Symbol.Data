@@ -5,68 +5,39 @@ using System.Linq;
 namespace Examples.Data {
 
     class Program {
-
         static void Main(string[] args) {
-            
+
             {
-               
-
                 //创建数据上下文对象
-                //IDataContext db = CreateDataContext("mssql2012");
-                //IDataContext db = CreateDataContext("mysql");
-                IDataContext db = CreateDataContext("pgsql");
-                {
-                    var builder = db.CreateSelect("test");
-                    builder.Query(new {c=false, xx = "{ '$like' : '' }",yy=24234, bookId ="{ '$notnull': null }" });
-                    //builder.Query("{ 'xx' : { '$like' : '' } }" );
-                    var sql = builder.CommandText;
-                }
-                //IDataContext db = CreateDataContext("sqlite");
-                db.TableExists("ping");
-                {
-                    var sql = @" 
- select 
-    *
- from ""t_user"" 
- order by
-    ""id"" desc
-";
-                    
-                    var select = db.CreateSelect("table", sql);
-                    //select.Count();
-                    var q = select.CreateQuery();
-                    Console.WriteLine("".PadRight(24, '-'));
-                    Console.WriteLine(q.CommandText);
-                    q.Paging(15, 0);
-                    Console.WriteLine("".PadRight(24, '-'));
-                    Console.WriteLine(q.CommandText);
-
-                    //Console.WriteLine("table:" + select.TableName);
-                    //Console.WriteLine("select:\r\n    "+string.Join("\r\n    ",select.Fields));
-                    //Console.WriteLine("where befores:\r\n    " + string.Join("\r\n    ", select.WhereBefores));
-                    //Console.WriteLine("where:\r\n    " + string.Join("\r\n    ", select.Wheres.Select(p => $"[{p.Value.ToName()}]{p.Key}")));
-                    //Console.WriteLine("order by:\r\n    " + string.Join("\r\n    ", select.OrderBys));
-                    Console.ReadKey();
-                }
-                //初始化 &  数据
-                DatabaseSchema(db);
-                //增 删 改 查  常规操作
-                DatabaseCRUD(db);
-                //泛型
-                QueryGeneric(db);
-
-                //性能测试
-                QueryPerf(db);
+                //DataContextTest("mssql2012");
+                DataContextTest("mysql");
+                DataContextTest("pgsql");
+                DataContextTest("sqlite");
 
             }
             Console.ReadKey();
         }
+
+        static void DataContextTest(string type) {
+            IDataContext db = CreateDataContext(type);
+            //初始化 &  数据
+            DatabaseSchema(db);
+            //增 删 改 查  常规操作
+            DatabaseCRUD(db);
+            //泛型
+            QueryGeneric(db);
+
+            //性能测试
+            QueryPerf(db);
+        }
+
         static IDataContext CreateDataContext(string type) {
             object connectionOptions = null;
             switch (type) {
                 case "mssql2012":
                     connectionOptions = new {
-                        host = "192.168.247.219\\MSSQL2014",    //服务器，端口为默认，所以不用写
+                        host = "mssql-master.hh",               //服务器，端口为默认，所以不用写
+                        port = 1433,                            //端口
                         name = "test",                          //数据库名称
                         account = "test",                       //登录账号
                         password = "test",                      //登录密码
@@ -74,7 +45,7 @@ namespace Examples.Data {
                     break;
                 case "mysql":
                     connectionOptions = new {
-                        host = "192.168.247.219",               //服务器
+                        host = "mysql-master.hh",               //服务器
                         port = 3306,                            //端口，可以与服务器写在一起，例如127.0.0.1:3306
                         name = "test",                          //数据库名称
                         account = "test",                       //登录账号
@@ -83,7 +54,7 @@ namespace Examples.Data {
                     break;
                 case "pgsql":
                     connectionOptions = new {
-                        host = "192.168.247.219",               //服务器
+                        host = "pgsql-master.hh",               //服务器
                         port = 5432,                            //端口，可以与服务器写在一起，例如127.0.0.1:5432
                         name = "test",                          //数据库名称
                         account = "test",                       //登录账号
@@ -101,9 +72,10 @@ namespace Examples.Data {
             return Symbol.Data.Provider.CreateDataContext(type, connectionOptions);
             //return new Symbol.Data.SqlServer2012Provider().CreateDataContext(connectionOptions);
         }
+
         static void DatabaseSchema(IDataContext db) {
-            switch (db.Provider.GetType().Name) {
-                case "PostgreSQLProvider": {
+            switch (db.Provider.Name) {
+                case "pgsql": {
 
                         #region 创建表：t_user
                         if (!db.TableExists("t_user")) {
@@ -134,15 +106,15 @@ namespace Examples.Data {
                                   OIDS = FALSE
                                 ); ");
                             #region 初始测试数据
-                            db.Insert("test", new {
+                            db.InsertObject<long>("test", new {
                                 name = "test",
                                 count = 24234
                             });
-                            db.Insert("test", new {
+                            db.InsertObject<long>("test", new {
                                 name = "test24",
                                 count = 466
                             });
-                            db.Insert("test", new {
+                            db.InsertObject<long>("test", new {
                                 name = "test214",
                                 count = 347693,
                                 data = new {
@@ -159,7 +131,7 @@ namespace Examples.Data {
 
                     }
                     break;
-                case "SQLiteProvider": {
+                case "sqlite": {
                         #region 创建表
                         db.ExecuteNonQuery(@"
                             create table test(
@@ -180,15 +152,15 @@ namespace Examples.Data {
                         ");
                         #endregion
                         #region 初始测试数据
-                        db.Insert("test", new {
+                        db.InsertObject<long>("test", new {
                             name = "test",
                             count = 24234
                         });
-                        db.Insert("test", new {
+                        db.InsertObject<long>("test", new {
                             name = "test24",
                             count = 466
                         });
-                        db.Insert("test", new {
+                        db.InsertObject<long>("test", new {
                             name = "test214",
                             count = 347693,
                             data = new {
@@ -202,6 +174,54 @@ namespace Examples.Data {
                         #endregion
                     }
                     break;
+                case "mysql": {
+                        #region 创建表：t_user
+                        if (!db.TableExists("t_user")) {
+                            db.ExecuteNonQuery(@"
+                                CREATE TABLE `t_user`  (
+                                  `id` bigint(0) NOT NULL AUTO_INCREMENT,
+                                  `type` smallint(0) NOT NULL,
+                                  `account` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+                                  `password` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+                                  PRIMARY KEY (`id`) USING BTREE
+                                ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;");
+                        }
+                        #endregion
+                        #region 创建表：test
+                        if (!db.TableExists("test")) {
+                            db.ExecuteNonQuery(@"
+                                CREATE TABLE `test`  (
+                                  `id` bigint(0) NOT NULL AUTO_INCREMENT,
+                                  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+                                  `count` bigint(0) NOT NULL,
+                                  `data` json NULL,
+                                  PRIMARY KEY (`id`) USING BTREE
+                                ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;");
+                            #region 初始测试数据
+                            db.InsertObject<long>("test", new {
+                                name = "test",
+                                count = 24234
+                            });
+                            db.InsertObject<long>("test", new {
+                                name = "test24",
+                                count = 466
+                            });
+                            db.InsertObject<long>("test", new {
+                                name = "test214",
+                                count = 347693,
+                                data = new {
+                                    a = true,
+                                    list = new object[] { 32, "test" }
+                                }
+                            });
+                            for (int i = 0; i < 15; i++) {
+                                db.ExecuteNonQuery("insert into `test`(`name`,`count`,`data`) select `name`,`count`,`data` from `test`;");
+                            }
+                            #endregion
+                        }
+                        #endregion
+                        break;
+                    }
             }
         }
         static void DatabaseCRUD(IDataContext db) {
@@ -217,7 +237,7 @@ namespace Examples.Data {
 
                 //插入数据
                 db.BeginTransaction();
-                var id = db.Insert("test", new {
+                var id = db.InsertObject<long>("test", new {
                     name = "xxxxxxxxx",
                     count = 9999,
                     data = new {//JSON类型测试
@@ -238,19 +258,7 @@ namespace Examples.Data {
                 Console.WriteLine(JSON.ToNiceJSON(db.Find("test", new { name = "xxxxxxxxx" })));
                 //更新数据
                 db.BeginTransaction();
-                var updated = db.Update("test", new {
-                    name = "fsafhakjshfksjhf",
-                    count = 88,
-                    data = (object)new {//JSON类型测试
-                        url = "https://www.baidu.com/",
-                        guid = System.Guid.NewGuid(),
-                        datetime = DateTime.Now,
-                        values = FastWrapper.As(new {//嵌套复杂对象测试
-                            nickName = "昵尔2",
-                            account = "test"
-                        })
-                    }
-                }, new { id }) == 1;
+                var updated = db.Update("test", new { name = "fsafhakjshfksjhf", count = 88 }, new { id }) == 1;
                 Console.WriteLine($"update {updated}");
                 db.CommitTransaction();
 
@@ -261,7 +269,7 @@ namespace Examples.Data {
             Console.ReadKey();
             {
                 //枚举测试
-                var id = db.Insert("t_user", new {
+                var id = db.InsertObject<long>("t_user", new {
                     account = "admin",
                     type = UserTypes.Manager,
                     password = "test"
@@ -327,5 +335,6 @@ namespace Examples.Data {
             }
             Console.ReadKey();
         }
+
     }
 }
