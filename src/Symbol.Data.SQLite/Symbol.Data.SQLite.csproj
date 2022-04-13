@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup Label="NuGet">
-	  <TargetFrameworks>net6.0;net5.0;netcoreapp3.1;net48;net47;net461;net46;net35;net2</TargetFrameworks>
+	  <TargetFrameworks>net6.0;net5.0;netcoreapp3.1;net48;net47;net461;net46;net452;net45;net4;net35;net2</TargetFrameworks>
 	  <IsPackable>true</IsPackable>
     <IncludeSymbols>true</IncludeSymbols>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
@@ -12,7 +12,7 @@
     <NeutralLanguage>zh-CN</NeutralLanguage>
     <AssemblyTitle>Symbol.Data.SQLite</AssemblyTitle>
     <AssemblyName>Symbol.Data.SQLite</AssemblyName>
-    <VersionPrefix>4.1.0.9</VersionPrefix>
+    <VersionPrefix>4.1.0.10</VersionPrefix>
     <Title>Symbol.Data.SQLite</Title>
     <Authors>symbolspace</Authors>
     <Company>symbolspace</Company>
@@ -80,6 +80,9 @@
 	<PropertyGroup Condition="'$(TargetFramework)'=='net46'">
 		<DefineConstants>net46</DefineConstants>
 	</PropertyGroup>
+	<PropertyGroup Condition="'$(TargetFramework)'=='net452'">
+		<DefineConstants>net452</DefineConstants>
+	</PropertyGroup>	
 	<PropertyGroup Condition="'$(TargetFramework)'=='net45'">
 		<DefineConstants>net45</DefineConstants>
 	</PropertyGroup>
@@ -116,7 +119,11 @@
 		<Reference Include="Microsoft.CSharp" />
 		<PackageReference Include="System.Data.SQLite.Core" Version="1.0.111" />
 	</ItemGroup>
-	
+	<ItemGroup Condition=" '$(TargetFramework)' == 'net452' ">
+		<Reference Include="System" />
+		<Reference Include="Microsoft.CSharp" />
+		<PackageReference Include="System.Data.SQLite.Core" Version="1.0.111" />
+	</ItemGroup>
   <ItemGroup Condition=" '$(TargetFramework)' == 'net45' ">
     <Reference Include="System" />
     <Reference Include="Microsoft.CSharp" />
