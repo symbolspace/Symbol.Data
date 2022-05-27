@@ -9,10 +9,10 @@ namespace Examples.Data {
 
             {
                 //创建数据上下文对象
-                //DataContextTest("mssql2012");
-                DataContextTest("mysql");
-                DataContextTest("pgsql");
-                DataContextTest("sqlite");
+                DataContextTest("mssql2012");
+                //DataContextTest("mysql");
+                //DataContextTest("pgsql");
+                //DataContextTest("sqlite");
 
             }
             Console.ReadKey();
@@ -24,9 +24,17 @@ namespace Examples.Data {
             DatabaseSchema(db);
             //增 删 改 查  常规操作
             DatabaseCRUD(db);
+            //求值
+            {
+                var maxValue = db.Max<double>("test", "count");
+                Console.WriteLine(maxValue);
+            }
+            {
+                var maxValue = db.Max<object>("test", "count");
+                Console.WriteLine(maxValue);
+            }
             //泛型
             QueryGeneric(db);
-
             //性能测试
             QueryPerf(db);
         }
@@ -36,8 +44,8 @@ namespace Examples.Data {
             switch (type) {
                 case "mssql2012":
                     connectionOptions = new {
-                        host = "mssql-master.hh",               //服务器，端口为默认，所以不用写
-                        port = 1433,                            //端口
+                        host = "mssql-master.hh\\MSSQL2014",    //服务器，端口为默认，所以不用写
+                        port = 11433,                           //端口
                         name = "test",                          //数据库名称
                         account = "test",                       //登录账号
                         password = "test",                      //登录密码
@@ -75,6 +83,58 @@ namespace Examples.Data {
 
         static void DatabaseSchema(IDataContext db) {
             switch (db.Provider.Name) {
+                case "mssql": {
+
+                        #region 创建表：t_user
+                        if (!db.TableExists("t_user")) {
+                            db.ExecuteNonQuery(@"
+                                create table [dbo].[t_user](
+                                    [id]                     int identity(1,1)        not null                        ,
+                                    [type]                   smallint                 not null                        ,
+                                    [account]                nvarchar(64)             not null                        ,
+                                    [password]               varchar(32)              not null                        ,
+                                    constraint [PK_t_user] primary key clustered ([id] asc) with (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) 
+                                        on [PRIMARY] 
+                                ) on [PRIMARY]");
+                        }
+                        #endregion
+                        #region 创建表：test
+                        if (!db.TableExists("test")) {
+                            db.ExecuteNonQuery(@"
+                                create table [dbo].[test](
+                                    [id]                     bigint identity(1,1)     not null                        ,
+                                    [name]                   nvarchar(255)                null                        ,
+                                    [count]                  bigint                   not null                        ,
+                                    [data]                   ntext                        null                        ,
+                                    constraint [PK_test] primary key clustered ([id] asc) with (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) 
+                                        on [PRIMARY] 
+                                ) on [PRIMARY]");
+                            #region 初始测试数据
+                            db.InsertObject<long>("test", new {
+                                name = "test",
+                                count = 24234
+                            });
+                            db.InsertObject<long>("test", new {
+                                name = "test24",
+                                count = 466
+                            });
+                            db.InsertObject<long>("test", new {
+                                name = "test214",
+                                count = 347693,
+                                data = new {
+                                    a = true,
+                                    list = new object[] { 32, "test" }
+                                }
+                            });
+                            for (int i = 0; i < 15; i++) {
+                                db.ExecuteNonQuery("insert into test(name,[count],[data]) select name,[count],[data] from test;");
+                            }
+                            #endregion
+                        }
+                        #endregion
+
+                    }
+                    break;
                 case "pgsql": {
 
                         #region 创建表：t_user
