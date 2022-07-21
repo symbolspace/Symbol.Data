@@ -833,20 +833,24 @@ namespace Symbol.Data {
                         var minEq = TypeExtensions.Convert(FastObject.Path(item.Children[0].Value, "minEq"), false);
                         var max = FastObject.Path(item.Children[0].Value, "max");
                         var maxEq = TypeExtensions.Convert(FastObject.Path(item.Children[0].Value, "maxEq"), false);
-                        if (min == null && max == null)
+
+                        var isMinNull = (min == null || (min is string minv && string.IsNullOrEmpty(minv)));
+                        var isMaxNull = (max == null || (max is string maxv && string.IsNullOrEmpty(maxv)));
+
+                        if (isMinNull && isMaxNull)
                             return false;
 
                         firstOperation = false;
                         writer.Write(innerOperation);
                         writer.Write(" ( ");
                         var names = _dialect.PreName(item.GetNames());
-                        if (min != null) {
+                        if (!isMinNull) {
                             writer.Write(names);
                             writer.Write(_dialect.MatchOperatorGrammar(minEq ? ">=":  ">"));
                             writer.Write(AddCommandParameter(min));
                         }
-                        if (max != null) {
-                            if (min != null) {
+                        if (!isMaxNull) {
+                            if (!isMinNull) {
                                 writer.Write(" and ");
                             }
                             writer.Write(names);
