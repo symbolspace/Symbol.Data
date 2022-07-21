@@ -827,7 +827,9 @@ namespace Symbol.Data {
                     }
                 case "$like": {
                         string[] array;
-                        if (item.Children[0].Value is System.Collections.IEnumerable list) {
+                        if (item.Children[0].Value is string x) {
+                            array = new string[] { x };
+                        } else if (item.Children[0].Value is System.Collections.IEnumerable list) {
                             array = LinqHelper.Select(list, p => TypeExtensions.Convert<string>(p)).Where(p => !string.IsNullOrEmpty(p)).ToArray();
                         } else {
                             var value = TypeExtensions.Convert<string>(item.Children[0].Value);
@@ -855,7 +857,9 @@ namespace Symbol.Data {
                     }
                 case "$start": {
                         string[] array;
-                        if (item.Children[0].Value is System.Collections.IEnumerable list) {
+                        if (item.Children[0].Value is string x) {
+                            array = new string[] { x };
+                        } else if (item.Children[0].Value is System.Collections.IEnumerable list) {
                             array = LinqHelper.Select(list, p => TypeExtensions.Convert<string>(p)).Where(p => !string.IsNullOrEmpty(p)).ToArray();
                         } else {
                             var value = TypeExtensions.Convert<string>(item.Children[0].Value);
@@ -885,7 +889,9 @@ namespace Symbol.Data {
                     }
                 case "$end": {
                         string[] array;
-                        if (item.Children[0].Value is System.Collections.IEnumerable list) {
+                        if (item.Children[0].Value is string x) {
+                            array = new string[] { x };
+                        } else if (item.Children[0].Value is System.Collections.IEnumerable list) {
                             array = LinqHelper.Select(list, p => TypeExtensions.Convert<string>(p)).Where(p => !string.IsNullOrEmpty(p)).ToArray();
                         } else {
                             var value = TypeExtensions.Convert<string>(item.Children[0].Value);

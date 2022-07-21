@@ -5,8 +5,7 @@ namespace Examples.Data.netcore {
     class Program {
         static void Main(string[] args) {
             //{
-
-            //    var c = Symbol.Data.NoSQL.Condition.Parse("{  'account': { '$like': [ 'abc','zz' ] }  }");
+            //    var c = Symbol.Data.NoSQL.Condition.Parse("{\"publisher\":{\"$like\":\"\\\"fc86a39a2b0a4522bfa203a3d053f286\\\"\"},\"classObjectId\":\"bde0f3f1a4c04b6caf3ecaa73ae32bc5\"}");
             //    Console.WriteLine(c.ToJson(true));
             //}
             {
@@ -297,6 +296,8 @@ namespace Examples.Data.netcore {
                 Console.WriteLine(builder.CommandText);
                 builder.Wheres.Clear();
                 builder.Query("{ 'account': 134 }");
+                Console.WriteLine(builder.CommandText);
+                builder.Query("{\"publisher\":{\"$like\":\"\\\"fc86a39a2b0a4522bfa203a3d053f286\\\"\"},\"classObjectId\":\"bde0f3f1a4c04b6caf3ecaa73ae32bc5\"}");
                 Console.WriteLine(builder.CommandText);
                 builder.Dispose();
             }
