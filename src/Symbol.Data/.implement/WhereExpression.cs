@@ -826,43 +826,92 @@ namespace Symbol.Data {
                         return true;
                     }
                 case "$like": {
-                        string value = item.Children[0].Value as string;
-                        if (string.IsNullOrEmpty(value)) {
-                            return true;
+                        string[] array;
+                        if (item.Children[0].Value is System.Collections.IEnumerable list) {
+                            array = LinqHelper.Select(list, p => TypeExtensions.Convert<string>(p)).Where(p => !string.IsNullOrEmpty(p)).ToArray();
                         } else {
-                            firstOperation = false;
-                            writer.Write(innerOperation);
+                            var value = TypeExtensions.Convert<string>(item.Children[0].Value);
+                            if (!string.IsNullOrEmpty(value))
+                                array = new string[] { value };
+                            else
+                                array = new string[0];
+                        }
+                        if (array.Length == 0)
+                            return true;
+
+                        firstOperation = false;
+                        writer.Write(innerOperation);
+                        writer.Write(" ( ");
+                        for (int i = 0; i < array.Length; i++) {
+                            if (i > 0) {
+                                writer.Write(" or ");
+                            }
                             bool reverse = TypeExtensions.Convert(QueryChildrenFieldPre_Extend(item, "reverse"), false);
                             writer.Write(_dialect.LikeGrammar(_dialect.PreName(item.GetNames()), true, true, reverse),
-                                AddCommandParameter(_dialect.LikeValueFilter(value, true, true, reverse)));
-                            return true;
+                                AddCommandParameter(_dialect.LikeValueFilter(array[i], true, true, reverse)));
                         }
+                        writer.Write(" ) ");
+                        return true;
                     }
                 case "$start": {
-                        string value = item.Children[0].Value as string;
-                        if (string.IsNullOrEmpty(value)) {
-                            return true;
+                        string[] array;
+                        if (item.Children[0].Value is System.Collections.IEnumerable list) {
+                            array = LinqHelper.Select(list, p => TypeExtensions.Convert<string>(p)).Where(p => !string.IsNullOrEmpty(p)).ToArray();
                         } else {
-                            firstOperation = false;
-                            writer.Write(innerOperation);
-                            bool reverse = TypeExtensions.Convert(QueryChildrenFieldPre_Extend(item, "reverse"), false);
-                            writer.Write(_dialect.LikeGrammar(_dialect.PreName(item.GetNames()), false, true, reverse),
-                                AddCommandParameter(_dialect.LikeValueFilter(value, false, true, reverse)));
-                            return true;
+                            var value = TypeExtensions.Convert<string>(item.Children[0].Value);
+                            if (!string.IsNullOrEmpty(value))
+                                array = new string[] { value };
+                            else
+                                array = new string[0];
                         }
+                        if (array.Length == 0)
+                            return true;
+                        if (array.Length == 0)
+                            return true;
+
+                        firstOperation = false;
+                        writer.Write(innerOperation);
+                        writer.Write(" ( ");
+                        for (int i = 0; i < array.Length; i++) {
+                            if (i > 0) {
+                                writer.Write(" or ");
+                            }
+                            bool reverse = TypeExtensions.Convert(QueryChildrenFieldPre_Extend(item, "reverse"), false);
+                            writer.Write(_dialect.LikeGrammar(_dialect.PreName(item.GetNames()), true, true, reverse),
+                                AddCommandParameter(_dialect.LikeValueFilter(array[i], false, true, reverse)));
+                        }
+                        writer.Write(" ) ");
+                        return true;
                     }
                 case "$end": {
-                        string value = item.Children[0].Value as string;
-                        if (string.IsNullOrEmpty(value)) {
-                            return true;
+                        string[] array;
+                        if (item.Children[0].Value is System.Collections.IEnumerable list) {
+                            array = LinqHelper.Select(list, p => TypeExtensions.Convert<string>(p)).Where(p => !string.IsNullOrEmpty(p)).ToArray();
                         } else {
-                            firstOperation = false;
-                            writer.Write(innerOperation);
-                            bool reverse = TypeExtensions.Convert(QueryChildrenFieldPre_Extend(item, "reverse"), false);
-                            writer.Write(_dialect.LikeGrammar(_dialect.PreName(item.GetNames()), true, false, reverse),
-                                AddCommandParameter(_dialect.LikeValueFilter(value, true, false, reverse)));
-                            return true;
+                            var value = TypeExtensions.Convert<string>(item.Children[0].Value);
+                            if (!string.IsNullOrEmpty(value))
+                                array = new string[] { value };
+                            else
+                                array = new string[0];
                         }
+                        if (array.Length == 0)
+                            return true;
+                        if (array.Length == 0)
+                            return true;
+
+                        firstOperation = false;
+                        writer.Write(innerOperation);
+                        writer.Write(" ( ");
+                        for (int i = 0; i < array.Length; i++) {
+                            if (i > 0) {
+                                writer.Write(" or ");
+                            }
+                            bool reverse = TypeExtensions.Convert(QueryChildrenFieldPre_Extend(item, "reverse"), false);
+                            writer.Write(_dialect.LikeGrammar(_dialect.PreName(item.GetNames()), true, true, reverse),
+                                AddCommandParameter(_dialect.LikeValueFilter(array[i], true, false, reverse)));
+                        }
+                        writer.Write(" ) ");
+                        return true;
                     }
 
                 default:

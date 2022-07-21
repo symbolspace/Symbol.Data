@@ -480,7 +480,7 @@ namespace Symbol.Data.NoSQL {
                     #endregion
                     #region like start end
                     case "like": {
-                            if (jsonValue.Type == NodeValueTypes.String) {
+                            if (jsonValue.Type == NodeValueTypes.String || jsonValue.Type == NodeValueTypes.Array) {
                                 pair._name = "like";
                                 pair._value = jsonValue.Value;
                                 //return !string.IsNullOrEmpty(jsonValue.Value as string);
@@ -489,7 +489,7 @@ namespace Symbol.Data.NoSQL {
                             return false;
                         }
                     case "start": {
-                            if (jsonValue.Type == NodeValueTypes.String) {
+                            if (jsonValue.Type == NodeValueTypes.String || jsonValue.Type == NodeValueTypes.Array) {
                                 pair._name = "start";
                                 //return !string.IsNullOrEmpty(jsonValue.Value as string);
                                 return true;
@@ -497,7 +497,7 @@ namespace Symbol.Data.NoSQL {
                             return false;
                         }
                     case "end": {
-                            if (jsonValue.Type == NodeValueTypes.String) {
+                            if (jsonValue.Type == NodeValueTypes.String || jsonValue.Type == NodeValueTypes.Array) {
                                 pair._name = "end";
                                 //return !string.IsNullOrEmpty(jsonValue.Value as string);
                                 return true;

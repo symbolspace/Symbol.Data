@@ -4,12 +4,16 @@ using Symbol.Data;
 namespace Examples.Data.netcore {
     class Program {
         static void Main(string[] args) {
+            //{
 
+            //    var c = Symbol.Data.NoSQL.Condition.Parse("{  'account': { '$like': [ 'abc','zz' ] }  }");
+            //    Console.WriteLine(c.ToJson(true));
+            //}
             {
                 //创建数据上下文对象
-                DataContextTest("mssql2012");
+                //DataContextTest("mssql2012");
                 //DataContextTest("mysql");
-                //DataContextTest("pgsql");
+                DataContextTest("pgsql");
                 //DataContextTest("sqlite");
 
                 
@@ -286,6 +290,21 @@ namespace Examples.Data.netcore {
             }
         }
         static void DatabaseCRUD(IDataContext db) {
+            //like 测试
+            {
+                var builder = db.CreateSelect("t_user");
+                builder.Query("{  'type': 1, 'account': { '$like': [ 'abc','zz' ] }  }");
+                Console.WriteLine(builder.CommandText);
+                builder.Wheres.Clear();
+                builder.Query("{ 'account': 134 }");
+                Console.WriteLine(builder.CommandText);
+                builder.Dispose();
+            }
+            Console.WriteLine("continue ...");
+            Console.ReadKey();
+
+
+
             //常规测试
             {
                 //删除数据
@@ -327,6 +346,7 @@ namespace Examples.Data.netcore {
                 Console.WriteLine("select new value");
                 Console.WriteLine(JSON.ToNiceJSON(db.Find("test", new { id })));
             }
+            Console.WriteLine("continue ...");
             Console.ReadKey();
             {
                 //枚举测试
@@ -337,7 +357,9 @@ namespace Examples.Data.netcore {
                 });
                 Console.WriteLine(JSON.ToNiceJSON(db.Find("t_user", new { id })));
             }
+            Console.WriteLine("continue ..."); 
             Console.ReadKey();
+
         }
         static void QueryPerf(IDataContext db) {
             var q = db.FindAll("test", "{ 'name':['test','test214'] }");
