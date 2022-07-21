@@ -825,6 +825,37 @@ namespace Symbol.Data {
                         writer.Write("{0}={1}", _dialect.PreName(item.GetNames()), _dialect.PreName(item.Children[0].Value as string, "."));
                         return true;
                     }
+                case "$range": {
+                        if (item.Children.Count != 1)
+                            return false;
+
+                        var min = FastObject.Path(item.Children[0].Value, "min");
+                        var minEq = TypeExtensions.Convert(FastObject.Path(item.Children[0].Value, "minEq"), false);
+                        var max = FastObject.Path(item.Children[0].Value, "max");
+                        var maxEq = TypeExtensions.Convert(FastObject.Path(item.Children[0].Value, "maxEq"), false);
+                        if (min == null && max == null)
+                            return false;
+
+                        firstOperation = false;
+                        writer.Write(innerOperation);
+                        writer.Write(" ( ");
+                        var names = _dialect.PreName(item.GetNames());
+                        if (min != null) {
+                            writer.Write(names);
+                            writer.Write(_dialect.MatchOperatorGrammar(minEq ? ">=":  ">"));
+                            writer.Write(AddCommandParameter(min));
+                        }
+                        if (max != null) {
+                            if (min != null) {
+                                writer.Write(" and ");
+                            }
+                            writer.Write(names);
+                            writer.Write(_dialect.MatchOperatorGrammar(maxEq ? "<=" : "<"));
+                            writer.Write(AddCommandParameter(max));
+                        }
+                        writer.Write(" ) ");
+                        return true;
+                    }
                 case "$like": {
                         string[] array;
                         if (item.Children[0].Value is string x) {

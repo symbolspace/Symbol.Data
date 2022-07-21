@@ -4,10 +4,10 @@ using Symbol.Data;
 namespace Examples.Data.netcore {
     class Program {
         static void Main(string[] args) {
-            //{
-            //    var c = Symbol.Data.NoSQL.Condition.Parse("{\"publisher\":{\"$like\":\"\\\"fc86a39a2b0a4522bfa203a3d053f286\\\"\"},\"classObjectId\":\"bde0f3f1a4c04b6caf3ecaa73ae32bc5\"}");
-            //    Console.WriteLine(c.ToJson(true));
-            //}
+            {
+                var c = Symbol.Data.NoSQL.Condition.Parse("{\"createDate\":{\"$range\":{\"min\":\"2022-01-01\",\"minEq\":true,\"max\":\"2022-07-22\",\"maxEq\":true}}}");
+                Console.WriteLine(c.ToJson(true));
+            }
             {
                 //创建数据上下文对象
                 //DataContextTest("mssql2012");
@@ -297,7 +297,11 @@ namespace Examples.Data.netcore {
                 builder.Wheres.Clear();
                 builder.Query("{ 'account': 134 }");
                 Console.WriteLine(builder.CommandText);
+                builder.Wheres.Clear();
                 builder.Query("{\"publisher\":{\"$like\":\"\\\"fc86a39a2b0a4522bfa203a3d053f286\\\"\"},\"classObjectId\":\"bde0f3f1a4c04b6caf3ecaa73ae32bc5\"}");
+                Console.WriteLine(builder.CommandText);
+                builder.Wheres.Clear();
+                builder.Query("{\"createDate\":{\"$range\":{\"min\":\"2022-01-01\",\"minEq\":true,\"max\":\"2022-07-22\",\"maxEq\":true}}}");
                 Console.WriteLine(builder.CommandText);
                 builder.Dispose();
             }

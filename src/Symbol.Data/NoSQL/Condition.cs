@@ -505,6 +505,24 @@ namespace Symbol.Data.NoSQL {
                             return false;
                         }
                     #endregion
+                    #region range
+                    case "range": {
+                            if (jsonValue.Type == NodeValueTypes.String) {
+                                var text = ((string)jsonValue.Value)?.Trim();
+                                if (!text.StartsWith("{"))
+                                    return false;
+                                pair._name = "range";
+                                pair._value = jsonValue.Value;
+                                return true;
+                            }
+                            if (jsonValue.Type == NodeValueTypes.Object || jsonValue.Type == NodeValueTypes.Dictionary) {
+                                pair._name = "range";
+                                pair._value = jsonValue.Value;
+                                return true;
+                            }
+                            return false;
+                        }
+                    #endregion
                     #region min max count sum
                     case "min": {
                             if (jsonValue.Type == NodeValueTypes.Number) {
