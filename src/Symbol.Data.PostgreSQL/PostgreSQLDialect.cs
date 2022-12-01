@@ -55,14 +55,14 @@ namespace Symbol.Data {
         /// <returns></returns>
         public override string LikeGrammar(string field, bool left, bool right, bool reverse) {
             if (reverse) {
-                field = PreName(field);
+                field = PreName(field)+"::text";
                 if (!left)
                     field = "'^'+" + field;
                 if (!right)
                     field += "+'$'";
                 return "{0} ~* " + field;
             }
-            return PreName(field) + " ~* {0}";
+            return PreName(field) + "::text ~* {0}";
         }
 
         #region DateTimeNowGrammar
