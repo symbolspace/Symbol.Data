@@ -12,7 +12,7 @@
     <NeutralLanguage>zh-CN</NeutralLanguage>
     <AssemblyTitle>Symbol.Data.PostgreSQL</AssemblyTitle>
     <AssemblyName>Symbol.Data.PostgreSQL</AssemblyName>
-    <VersionPrefix>4.2.0.18</VersionPrefix>
+    <VersionPrefix>4.2.0.19</VersionPrefix>
     <Title>Symbol.Data.PostgreSQL</Title>
     <Authors>symbolspace</Authors>
     <Company>symbolspace</Company>
@@ -33,6 +33,7 @@
     <AssemblyOriginatorKeyFile>..\..\Symbol.snk</AssemblyOriginatorKeyFile>
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
     <LangVersion>7.3</LangVersion>
+		<PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
 
@@ -99,9 +100,6 @@
 	<PropertyGroup Condition="'$(TargetFramework)'=='net2'">
 		<DefineConstants>net20</DefineConstants>
 	</PropertyGroup>
-  <PropertyGroup>
-    <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
-  </PropertyGroup>
 	<ItemGroup Condition=" '$(TargetFramework)' == 'net48' ">
 		<Reference Include="System" />
 		<Reference Include="Microsoft.CSharp" />

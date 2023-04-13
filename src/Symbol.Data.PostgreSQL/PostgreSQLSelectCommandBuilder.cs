@@ -135,7 +135,7 @@ namespace Symbol.Data {
                 return;
             text = text.Substring(i)?.Trim('\r', '\n')?.Trim();
             if(!string.IsNullOrEmpty(text))
-                _whereBefores.Add(text.Substring(i));
+                _whereBefores.Add(text);
         }
         void ParseGroupBy(string text) {
             text = text?.Trim('\r', '\n')?.Trim();
@@ -173,13 +173,12 @@ namespace Symbol.Data {
                     fields = fields.Substring(i);
                 }
             }
-            foreach(var field in fields.Split(',')) {
-                var name = field.Trim('\r', '\n')?.Trim();
+            foreach(var item in fields.Split(',')) {
+                var name = item.Trim('\r', '\n')?.Trim();
                 if (string.IsNullOrEmpty(name))
                     continue;
                 _fields.Add(name);
             }
-            //System.Collections.Generic.ICollectionExtensions.AddRange(_fields, fields.Split(','));
             return top;
         }
         private void ParseWhere(string text) {
@@ -187,11 +186,16 @@ namespace Symbol.Data {
             if (!string.IsNullOrEmpty(text))
                 Where(WhereOperators.And, text);
         }
-        private void ParseOrderBy(string orderbys) {
-            orderbys = orderbys?.Trim('\r','\n')?.Trim();
-            if (string.IsNullOrEmpty(orderbys))
+        private void ParseOrderBy(string text) {
+            text = text?.Trim('\r','\n')?.Trim();
+            if (string.IsNullOrEmpty(text))
                 return;
-            System.Collections.Generic.ICollectionExtensions.AddRange(_orderbys, orderbys.Split(','));
+            foreach (var item in text.Split(',')) {
+                var name = item.Trim('\r', '\n')?.Trim();
+                if (string.IsNullOrEmpty(name))
+                    continue;
+                _orderbys.Add(name);
+            }
         }
         #endregion
 
