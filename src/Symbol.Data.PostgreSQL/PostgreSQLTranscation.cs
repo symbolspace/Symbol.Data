@@ -18,7 +18,7 @@ namespace Symbol.Data {
             get {
                 var transaction = (Npgsql.NpgsqlTransaction)DbTransaction;
                 return transaction != null
-#if !net20 && !net35 && !net40 && !net60
+#if !net20 && !net35 && !net40 && !net60 && !net70
                     && !transaction.IsCompleted
 #endif
                     ;
