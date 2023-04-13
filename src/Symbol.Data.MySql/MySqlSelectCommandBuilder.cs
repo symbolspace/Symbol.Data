@@ -213,8 +213,8 @@ namespace Symbol.Data {
             return builder.ToString();
         }
         void BuildSkip(System.Text.StringBuilder builder) {
-            if (SkipCount > 0 || TakeCount > 0) {
-                builder.AppendFormat(" limit {0},{1}", SkipCount, TakeCount);
+            if (TakeCount > 0) {
+                builder.AppendLine().AppendFormat(" limit {0},{1}", SkipCount<1 ? 0 : SkipCount, TakeCount);
             }
         }
 
