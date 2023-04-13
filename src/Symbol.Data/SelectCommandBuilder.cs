@@ -28,9 +28,22 @@ namespace Symbol.Data {
         /// </summary>
         protected Symbol.Collections.Generic.HashSet<string> _whereBefores;
         /// <summary>
+        /// where 表达式
+        /// </summary>
+        private IWhereExpression _whereExpression;
+        /// <summary>
+        /// GroupBy字段列表
+        /// </summary>
+        protected System.Collections.Generic.List<string> _groupByKeys;
+        /// <summary>
+        /// having 表达式
+        /// </summary>
+        private IWhereExpression _havingExpression;
+
+        /// <summary>
         /// 排序列表
         /// </summary>
-        protected Symbol.Collections.Generic.HashSet<string> _orderbys;
+        protected System.Collections.Generic.List<string> _orderbys;
         /// <summary>
         /// 当前数据上下文对象。
         /// </summary>
@@ -42,7 +55,6 @@ namespace Symbol.Data {
         private bool _ended = false;
 
         private System.Collections.Generic.List<object> _parameters;
-        private IWhereExpression _whereExpression;
         private static readonly string[] _customTableChars = new string[] { "@", "select ", " where", " as", "*", " from", "(" };
 
         #endregion
@@ -105,6 +117,26 @@ namespace Symbol.Data {
             }
         }
         /// <summary>
+        /// 获取group by命令语句。
+        /// </summary>
+        public virtual string GroupByCommandText {
+            get {
+                System.Text.StringBuilder builder = new System.Text.StringBuilder();
+                BuildGroupBy(builder);
+                return builder.ToString();
+            }
+        }
+        /// <summary>
+        /// 获取having命令语句。
+        /// </summary>
+        public virtual string HavingCommandText {
+            get {
+                System.Text.StringBuilder builder = new System.Text.StringBuilder();
+                BuildHaving(builder);
+                return builder.ToString();
+            }
+        }
+        /// <summary>
         /// 获取order by命令语句。
         /// </summary>
         public virtual string OrderByCommandText {
@@ -136,9 +168,17 @@ namespace Symbol.Data {
         /// </summary>
         public Symbol.Collections.Generic.HashSet<string> WhereBefores { get { return _whereBefores; } }
         /// <summary>
+        /// 获取GroupBy字段列表。
+        /// </summary>
+        public System.Collections.Generic.List<string> GroupByKeys { get { return _groupByKeys; } }
+        /// <summary>
+        /// 获取having命令。
+        /// </summary>
+        public System.Collections.Generic.Dictionary<string, WhereOperators> Havings { get { return _havingExpression?.Items; } }
+        /// <summary>
         /// 获取order by语句的命令。
         /// </summary>
-        public Symbol.Collections.Generic.HashSet<string> OrderBys { get { return _orderbys; } }
+        public System.Collections.Generic.List<string> OrderBys { get { return _orderbys; } }
         /// <summary>
         /// 获取是否为自定义表。
         /// </summary>
@@ -170,12 +210,16 @@ namespace Symbol.Data {
             _tableName = tableName;
             _fields = new Collections.Generic.HashSet<string>(System.StringComparer.OrdinalIgnoreCase);
             _whereBefores = new Collections.Generic.HashSet<string>(System.StringComparer.OrdinalIgnoreCase);
-            _orderbys = new Collections.Generic.HashSet<string>(System.StringComparer.OrdinalIgnoreCase);
+            _groupByKeys= new System.Collections.Generic.List<string>();
+            _orderbys = new System.Collections.Generic.List<string>();
             TakeCount = -1;
             _parameters = new System.Collections.Generic.List<object>();
             _dialect = dataContext.Provider.CreateDialect();
             _whereExpression = CreateWhereExpression();
             _whereExpression.AddCommandParameter = AddCommandParameterDefault;
+            _havingExpression = CreateWhereExpression();
+            _havingExpression.AddCommandParameter = AddCommandParameterDefault;
+
             if (!string.IsNullOrEmpty(commandText)) {
                 Parse(commandText);
             }
@@ -190,8 +234,8 @@ namespace Symbol.Data {
         /// </summary>
         /// <returns>返回WhereExpression对象。</returns>
         protected virtual IWhereExpression CreateWhereExpression() {
-            IWhereExpression whereExpression = new WhereExpression(_dataContext, _dialect, _whereExpression == null ? AddCommandParameterDefault : _whereExpression.AddCommandParameter);
-            return whereExpression;
+            IWhereExpression expression = new WhereExpression(_dataContext, _dialect, _whereExpression == null ? AddCommandParameterDefault : _whereExpression.AddCommandParameter);
+            return expression;
         }
 
         #region PreName
@@ -230,6 +274,58 @@ namespace Symbol.Data {
         /// </summary>
         /// <param name="commandText">命令脚本。</param>
         protected abstract void Parse(string commandText);
+        /// <summary>
+        /// 预处理：解析命令脚本
+        /// </summary>
+        /// <param name="commandText"></param>
+        /// <returns></returns>
+        protected virtual string PreParse(string commandText) {
+            commandText = StringExtensions.Replace(
+                                StringExtensions.Replace(
+                                    commandText, "select*", "select *", true),
+                                "*from ", " * from", true);
+
+            //select 右侧
+            commandText = CommandTextGrammarReplace(commandText, "select", false, true);
+
+            //where 左右侧
+            commandText = CommandTextGrammarReplace(commandText, "where");
+            //group by 左右侧
+            commandText = CommandTextGrammarReplace(commandText, "group by");
+            //order by 左右侧
+            commandText = CommandTextGrammarReplace(commandText, "order by");
+            //having 左右侧
+            commandText = CommandTextGrammarReplace(commandText, "having");
+            //offset 左右侧
+            commandText = CommandTextGrammarReplace(commandText, "offset");
+            //limit 左右侧
+            commandText = CommandTextGrammarReplace(commandText, "limit");
+
+            return commandText;
+        }
+        /// <summary>
+        /// 命令脚本语法替换
+        /// </summary>
+        /// <param name="commandText">命令脚本</param>
+        /// <param name="keyword">关键词</param>
+        /// <param name="left">左侧</param>
+        /// <param name="right">右侧</param>
+        /// <returns></returns>
+        protected virtual string CommandTextGrammarReplace(string commandText, string keyword, bool left = true, bool right = true) {
+            if (left) {
+                commandText = StringExtensions.Replace(
+                                    StringExtensions.Replace(
+                                        commandText, $"\r{keyword}", $"\r {keyword}", true),
+                                    $"\n{keyword}", $" \n {keyword}", true);
+            }
+            if (right) {
+                commandText = StringExtensions.Replace(
+                                    StringExtensions.Replace(
+                                        commandText, $"{keyword}\r", $"{keyword} \r", true),
+                                    $"{keyword}\n", $" {keyword} \n", true);
+            }
+            return commandText;
+        }
         #endregion
         #region AddCommandParameterDefault
         /// <summary>
@@ -312,12 +408,47 @@ namespace Symbol.Data {
         protected virtual void BuildWhere(System.Text.StringBuilder builder) {
             if (Wheres.Count == 0)
                 return;
-            var whereCommandText = _whereExpression.CommandText;
-            if (string.IsNullOrEmpty(whereCommandText))
+            var commandText = _whereExpression.CommandText;
+            if (string.IsNullOrEmpty(commandText))
                 return;
             builder.AppendLine(" where ");
-            builder.Append(whereCommandText);
+            builder.Append(commandText);
         }
+        /// <summary>
+        /// 构造group by脚本。
+        /// </summary>
+        /// <param name="builder">构造缓存。</param>
+        protected virtual void BuildGroupBy(System.Text.StringBuilder builder) {
+            if (GroupByKeys.Count == 0)
+                return;
+            bool isFirst = true;
+            foreach (string item in GroupByKeys) {
+                if (string.IsNullOrEmpty(item))
+                    continue;
+                if (isFirst) {
+                    builder.AppendLine(" group by ").Append("     ");
+                    isFirst = false;
+                } else {
+                    builder.Append("    ,");
+                }
+                builder.AppendLine(_dialect.PreName(item));
+            }
+
+        }
+        /// <summary>
+        /// 构造having脚本。
+        /// </summary>
+        /// <param name="builder">构造缓存。</param>
+        protected virtual void BuildHaving(System.Text.StringBuilder builder) {
+            if (Havings.Count == 0)
+                return;
+            var commandText = _havingExpression.CommandText;
+            if (string.IsNullOrEmpty(commandText))
+                return;
+            builder.AppendLine(" having ");
+            builder.Append(commandText);
+        }
+
         /// <summary>
         /// 构造order by脚本。
         /// </summary>
@@ -325,17 +456,17 @@ namespace Symbol.Data {
         protected virtual void BuildOrderBy(System.Text.StringBuilder builder) {
             if (OrderBys.Count == 0)
                 return;
-            bool isFirstOrderBy = true;
-            foreach (string orderBy in OrderBys) {
-                if (string.IsNullOrEmpty(orderBy))
+            bool isFirst = true;
+            foreach (string item in OrderBys) {
+                if (string.IsNullOrEmpty(item))
                     continue;
-                if (isFirstOrderBy) {
+                if (isFirst) {
                     builder.AppendLine(" order by ");
-                    isFirstOrderBy = false;
+                    isFirst = false;
                 } else {
                     builder.AppendLine(",");
                 }
-                builder.Append("    ").Append(orderBy);
+                builder.Append("    ").Append(item);
             }
 
         }
@@ -348,6 +479,7 @@ namespace Symbol.Data {
         /// </summary>
         /// <param name="fields">字段列表。</param>
         /// <returns></returns>
+        /// <remarks>会强制清空<see cref="Fields"/>。</remarks>
         public virtual ISelectCommandBuilder Select(params string[] fields) {
             _fields.Clear();
             if (fields != null && fields.Length > 0) {
@@ -370,6 +502,7 @@ namespace Symbol.Data {
         /// 生成求count命令。
         /// </summary>
         /// <returns></returns>
+        /// <remarks>会强制清空<see cref="Fields"/>和<see cref="OrderBys"/>。</remarks>
         public virtual ISelectCommandBuilder Count() {
             _orderbys.Clear();
             _fields.Clear();
@@ -377,10 +510,35 @@ namespace Symbol.Data {
             return this;
         }
         /// <summary>
+        /// 生成求count(1) as fieldAs 命令。
+        /// </summary>
+        /// <param name="fieldAs">as 字段名称。</param>
+        /// <returns></returns>
+        /// <remarks>不会清空其它字段和order by</remarks>
+        public virtual ISelectCommandBuilder CountAs(string fieldAs) {
+            return CountAs(fieldAs, false);
+        }
+        /// <summary>
+        /// 生成求count(1) as fieldAs 命令。
+        /// </summary>
+        /// <param name="fieldAs">as 字段名称。</param>
+        /// <param name="clear">是否清空所有字段和order by</param>
+        /// <returns></returns>
+        public virtual ISelectCommandBuilder CountAs(string fieldAs, bool clear) {
+            CommonException.CheckArgumentNull(fieldAs, "fieldAs"); 
+            if (clear) {
+                _orderbys.Clear();
+                _fields.Clear();
+            }
+            _fields.Add(string.Format("count(1) as {0}", _dialect.PreName(fieldAs)));
+            return this;
+        }
+        /// <summary>
         /// 生成求sum命令（清空所有字段）。
         /// </summary>
         /// <param name="field">字段名称。</param>
         /// <returns></returns>
+        /// <remarks>会强制清空<see cref="Fields"/>。</remarks>
         public virtual ISelectCommandBuilder Sum(string field) {
             return Sum(field, true);
         }
@@ -401,10 +559,40 @@ namespace Symbol.Data {
             return this;
         }
         /// <summary>
+        /// 生成求sum(field) as fieldAs 命令。
+        /// </summary>
+        /// <param name="field">字段名称。</param>
+        /// <param name="fieldAs">as 字段名称。</param>
+        /// <returns></returns>
+        /// <remarks>不会清空其它字段和order by</remarks>
+        public virtual ISelectCommandBuilder SumAs(string field, string fieldAs) {
+            return SumAs(field, fieldAs, false);
+        }
+        /// <summary>
+        /// 生成求sum(field) as fieldAs 命令。
+        /// </summary>
+        /// <param name="field">字段名称。</param>
+        /// <param name="fieldAs">as 字段名称。</param>
+        /// <param name="clear">是否清空所有字段和order by</param>
+        /// <returns></returns>
+        public virtual ISelectCommandBuilder SumAs(string field, string fieldAs, bool clear) {
+            CommonException.CheckArgumentNull(field, "field");
+            CommonException.CheckArgumentNull(fieldAs, "fieldAs");
+
+            if (clear) {
+                _orderbys.Clear();
+                _fields.Clear();
+            }
+            _fields.Add(string.Format("sum({0}) as {1}", _dialect.PreName(field), _dialect.PreName(fieldAs)));
+            return this;
+        }
+
+        /// <summary>
         /// 生成求min命令（清空所有字段）。
         /// </summary>
         /// <param name="field">字段名称。</param>
         /// <returns></returns>
+        /// <remarks>会强制清空<see cref="Fields"/>。</remarks>
         public virtual ISelectCommandBuilder Min(string field) {
             return Min(field, true);
         }
@@ -424,10 +612,40 @@ namespace Symbol.Data {
             return this;
         }
         /// <summary>
+        /// 生成求min(field) as fieldAs 命令。
+        /// </summary>
+        /// <param name="field">字段名称。</param>
+        /// <param name="fieldAs">as 字段名称。</param>
+        /// <returns></returns>
+        /// <remarks>不会清空其它字段和order by</remarks>
+        public virtual ISelectCommandBuilder MinAs(string field, string fieldAs) {
+            return MinAs(field, fieldAs, false);
+        }
+        /// <summary>
+        /// 生成求min(field) as fieldAs 命令。
+        /// </summary>
+        /// <param name="field">字段名称。</param>
+        /// <param name="fieldAs">as 字段名称。</param>
+        /// <param name="clear">是否清空所有字段和order by</param>
+        /// <returns></returns>
+        public virtual ISelectCommandBuilder MinAs(string field, string fieldAs, bool clear) {
+            CommonException.CheckArgumentNull(field, "field");
+            CommonException.CheckArgumentNull(fieldAs, "fieldAs");
+
+            if (clear) {
+                _orderbys.Clear();
+                _fields.Clear();
+            }
+            _fields.Add(string.Format("min({0}) as {1}", _dialect.PreName(field), _dialect.PreName(fieldAs)));
+            return this;
+        }
+
+        /// <summary>
         /// 生成求max命令（清空所有字段）。
         /// </summary>
         /// <param name="field">字段名称。</param>
         /// <returns></returns>
+        /// <remarks>会强制清空<see cref="Fields"/>。</remarks>
         public virtual ISelectCommandBuilder Max(string field) {
             return Max(field, true);
         }
@@ -447,10 +665,39 @@ namespace Symbol.Data {
             return this;
         }
         /// <summary>
+        /// 生成求max(field) as fieldAs 命令。
+        /// </summary>
+        /// <param name="field">字段名称。</param>
+        /// <param name="fieldAs">as 字段名称。</param>
+        /// <returns></returns>
+        /// <remarks>不会清空其它字段和order by</remarks>
+        public virtual ISelectCommandBuilder MaxAs(string field,string fieldAs) {
+            return MaxAs(field, fieldAs, false);
+        }
+        /// <summary>
+        /// 生成求max(field) as fieldAs 命令。
+        /// </summary>
+        /// <param name="field">字段名称。</param>
+        /// <param name="fieldAs">as 字段名称。</param>
+        /// <param name="clear">是否清空所有字段和order by</param>
+        /// <returns></returns>
+        public virtual ISelectCommandBuilder MaxAs(string field, string fieldAs, bool clear) {
+            CommonException.CheckArgumentNull(field, "field");
+            CommonException.CheckArgumentNull(fieldAs, "fieldAs");
+
+            if (clear) {
+                _orderbys.Clear();
+                _fields.Clear();
+            }
+            _fields.Add(string.Format("max({0}) as {1}", _dialect.PreName(field), _dialect.PreName(fieldAs)));
+            return this;
+        }
+        /// <summary>
         /// 生成求avg命令（清空所有字段）。
         /// </summary>
         /// <param name="field">字段名称。</param>
         /// <returns></returns>
+        /// <remarks>会强制清空<see cref="Fields"/>。</remarks>
         public virtual ISelectCommandBuilder Average(string field) {
             return Average(field, true);
         }
@@ -467,6 +714,34 @@ namespace Symbol.Data {
                 _fields.Clear();
             }
             _fields.Add(string.Format("avg({0})", _dialect.PreName(field)));
+            return this;
+        }
+        /// <summary>
+        /// 生成求avg(field) as fieldAs 命令。
+        /// </summary>
+        /// <param name="field">字段名称。</param>
+        /// <param name="fieldAs">as 字段名称。</param>
+        /// <returns></returns>
+        /// <remarks>不会清空其它字段和order by</remarks>
+        public virtual ISelectCommandBuilder AverageAs(string field,string fieldAs) {
+            return AverageAs(field, fieldAs, false);
+        }
+        /// <summary>
+        /// 生成求avg(field) as fieldAs 命令。
+        /// </summary>
+        /// <param name="field">字段名称。</param>
+        /// <param name="fieldAs">as 字段名称。</param>
+        /// <param name="clear">是否清空所有字段和order by</param>
+        /// <returns></returns>
+        public virtual ISelectCommandBuilder AverageAs(string field, string fieldAs, bool clear) {
+            CommonException.CheckArgumentNull(field, "field");
+            CommonException.CheckArgumentNull(fieldAs, "fieldAs");
+
+            if (clear) {
+                _orderbys.Clear();
+                _fields.Clear();
+            }
+            _fields.Add(string.Format("avg({0}) as {1}", _dialect.PreName(field), _dialect.PreName(fieldAs)));
             return this;
         }
         #endregion
@@ -981,14 +1256,179 @@ namespace Symbol.Data {
 
         #endregion
 
+        #region GroupBy
+        /// <summary>
+        /// 清空group by命令列表。
+        /// </summary>
+        /// <returns></returns>
+        public virtual ISelectCommandBuilder GroupByClear() {
+            _groupByKeys.Clear();
+            return this;
+        }
+        /// <summary>
+        /// 生成group by命令（自动忽略空或空文本）。
+        /// </summary>
+        /// <param name="field">列，例：aa</param>
+        /// <returns></returns>
+        public virtual ISelectCommandBuilder GroupBy(string field) {
+            if (!string.IsNullOrEmpty(field))
+                _groupByKeys.Add(field);
+            return this;
+        }
+        /// <summary>
+        /// 生成group by命令。
+        /// </summary>
+        /// <param name="fields">字段列表。</param>
+        /// <returns></returns>
+        public virtual ISelectCommandBuilder GroupBy(params string[] fields) {
+            if (fields != null && fields.Length > 0) {
+                foreach (string field in fields) {
+                    if (string.IsNullOrEmpty(field))
+                        continue;
+                    _groupByKeys.Add(field);
+                }
+            }
+            return this;
+        }
+        #endregion
+
+
+        #region Having
+        /// <summary>
+        /// 清空having命令列表。
+        /// </summary>
+        /// <returns></returns>
+        public virtual ISelectCommandBuilder HavingClear() {
+            _havingExpression.Clear();
+            return this;
+        }
+        /// <summary>
+        /// 生成having命令。
+        /// </summary>
+        /// <param name="operator">逻辑操作符。</param>
+        /// <param name="expressions">表达式。</param>
+        /// <returns></returns>
+        public virtual ISelectCommandBuilder Having(WhereOperators @operator, params string[] expressions) {
+            _havingExpression?.Where(@operator, expressions);
+            return this;
+        }
+        /// <summary>
+        /// 生成having命令。
+        /// </summary>
+        /// <param name="expression">表达式。</param>
+        /// <param name="op">逻辑操作符：and、or，不区分大小写。</param>
+        /// <returns></returns>
+        public virtual ISelectCommandBuilder Having(string expression, string op = "and") {
+            _havingExpression?.Where(expression, op);
+            return this;
+        }
+        /// <summary>
+        /// 生成having命令。
+        /// </summary>
+        /// <param name="expression">带格式串的表达式。</param>
+        /// <param name="value">值，忽略null和string.Empty。</param>
+        /// <param name="op">逻辑操作符：and、or，不区分大小写。</param>
+        /// <param name="valueFilter">值过虑器，value不为null或string.Empty时。</param>
+        /// <returns></returns>
+        public virtual ISelectCommandBuilder HavingIf(string expression, string value, string op = "and", WhereIfValueFilterDelegate<string> valueFilter = null) {
+            _havingExpression?.WhereIf(expression, value, op, valueFilter);
+            return this;
+        }
+        /// <summary>
+        /// 生成having命令。
+        /// </summary>
+        /// <param name="expression">带格式串的表达式。</param>
+        /// <param name="value">值，忽略null和string.Empty。</param>
+        /// <param name="operator">逻辑操作符。</param>
+        /// <param name="valueFilter">值过虑器，value不为null或string.Empty时。</param>
+        /// <returns></returns>
+        public virtual ISelectCommandBuilder HavingIf(string expression, string value, WhereOperators @operator, WhereIfValueFilterDelegate<string> valueFilter = null) {
+            _havingExpression?.WhereIf(expression, value, @operator, valueFilter);
+            return this;
+        }
+        /// <summary>
+        /// 生成having命令。
+        /// </summary>
+        /// <param name="expression">带格式串的表达式。</param>
+        /// <param name="value">值，忽略null。</param>
+        /// <param name="min">最小值，不为空时，忽略小于min的值</param>
+        /// <param name="max">最大值，不为空时，忽略大于max的值</param>
+        /// <param name="op">逻辑操作符：and、or，不区分大小写。</param>
+        /// <returns></returns>
+        public virtual ISelectCommandBuilder HavingIf(string expression, decimal? value, decimal? min = null, decimal? max = null, string op = "and") {
+            _havingExpression?.WhereIf(expression, value, min, max, op);
+            return this;
+        }
+        /// <summary>
+        /// 生成having命令。
+        /// </summary>
+        /// <param name="expression">带格式串的表达式。</param>
+        /// <param name="value">值，忽略null和string.Empty。</param>
+        /// <param name="op">逻辑操作符：and、or，不区分大小写。</param>
+        /// <param name="valueFilter">值过虑器，value不为null或string.Empty时。</param>
+        /// <returns></returns>
+        public virtual ISelectCommandBuilder HavingIf(string expression, object value, string op = "and", WhereIfValueFilterDelegate<object> valueFilter = null) {
+            _havingExpression?.WhereIf(expression, value, op, valueFilter);
+            return this;
+        }
+        /// <summary>
+        /// 生成having命令。
+        /// </summary>
+        /// <param name="expression">带格式串的表达式。</param>
+        /// <param name="value">值，忽略null和string.Empty。</param>
+        /// <param name="operator">逻辑操作符。</param>
+        /// <param name="valueFilter">值过虑器，value不为null或string.Empty时。</param>
+        /// <returns></returns>
+        public virtual ISelectCommandBuilder HavingIf(string expression, object value, WhereOperators @operator, WhereIfValueFilterDelegate<object> valueFilter = null) {
+            _havingExpression?.WhereIf(expression, value, @operator, valueFilter);
+            return this;
+        }
+        /// <summary>
+        /// Having规则（NoSQL）。
+        /// </summary>
+        /// <param name="condition">规则</param>
+        /// <param name="filter">过滤器</param>
+        /// <returns></returns>
+        public virtual ISelectCommandBuilder Having(object condition, CommandQueryFilterDelegate filter = null) {
+            if (condition == null)
+                return this;
+            return Having(NoSQL.Condition.Parse(condition), filter);
+        }
+        /// <summary>
+        /// Having规则（NoSQL）。
+        /// </summary>
+        /// <param name="condition">规则</param>
+        /// <param name="filter">过滤器</param>
+        /// <returns></returns>
+        public virtual ISelectCommandBuilder Having(NoSQL.Condition condition, CommandQueryFilterDelegate filter = null) {
+            if (condition == null || condition.Type != NoSQL.ConditionTypes.Root || condition.Children.Count == 0)
+                return this;
+            if (filter != null && !filter(this, condition))
+                return this;
+            _havingExpression?.Query(condition);
+            return this;
+        }
+
+        #endregion
+
+
         #region OrderBy
+        /// <summary>
+        /// 清空order by命令列表。
+        /// </summary>
+        /// <returns></returns>
+        public virtual ISelectCommandBuilder OrderByClear() {
+            _orderbys.Clear();
+            return this;
+        }
         /// <summary>
         /// 生成order by命令。
         /// </summary>
         /// <param name="orderBys">命令列表。</param>
         /// <returns></returns>
         public virtual ISelectCommandBuilder OrderBy(params string[] orderBys) {
-            System.Collections.Generic.ICollectionExtensions.AddRange(_orderbys, orderBys);
+            if (orderBys != null && orderBys.Length > 0)
+                _orderbys.AddRange(orderBys);
             return this;
         }
         /// <summary>

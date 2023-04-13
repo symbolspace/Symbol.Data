@@ -48,6 +48,14 @@ namespace Symbol.Data {
         /// </summary>
         string DeleteCommmandText { get; }
         /// <summary>
+        /// 获取group by命令语句。
+        /// </summary>
+        string GroupByCommandText { get; }
+        /// <summary>
+        /// 获取having命令语句。
+        /// </summary>
+        string HavingCommandText { get; }
+        /// <summary>
         /// 获取order by命令语句。
         /// </summary>
         string OrderByCommandText { get; }
@@ -72,9 +80,17 @@ namespace Symbol.Data {
         /// </summary>
         System.Collections.Generic.Dictionary<string, WhereOperators> Wheres { get; }
         /// <summary>
+        /// 获取GroupBy字段列表。
+        /// </summary>
+        System.Collections.Generic.List<string> GroupByKeys { get; }
+        /// <summary>
+        /// 获取having命令。
+        /// </summary>
+        System.Collections.Generic.Dictionary<string, WhereOperators> Havings { get; }
+        /// <summary>
         /// 获取order by语句的命令。
         /// </summary>
-        Symbol.Collections.Generic.HashSet<string> OrderBys { get; }
+        System.Collections.Generic.List<string> OrderBys { get; }
 
         /// <summary>
         /// 获取方言对象。
@@ -116,6 +132,7 @@ namespace Symbol.Data {
         /// </summary>
         /// <param name="fields">字段列表。</param>
         /// <returns></returns>
+        /// <remarks>会强制清空<see cref="Fields"/>。</remarks>
         ISelectCommandBuilder Select(params string[] fields);
         #endregion
         #region Where WhereBefore
@@ -461,6 +478,74 @@ namespace Symbol.Data {
         #endregion
 
         #endregion
+        #region Having
+        /// <summary>
+        /// 清空having命令列表。
+        /// </summary>
+        /// <returns></returns>
+        ISelectCommandBuilder HavingClear();
+        /// <summary>
+        /// 生成having命令。
+        /// </summary>
+        /// <param name="operator">逻辑操作符。</param>
+        /// <param name="expressions">表达式。</param>
+        /// <returns></returns>
+        ISelectCommandBuilder Having(WhereOperators @operator, params string[] expressions);
+        /// <summary>
+        /// 生成having命令。
+        /// </summary>
+        /// <param name="expression">表达式。</param>
+        /// <param name="op">逻辑操作符：and、or，不区分大小写。</param>
+        /// <returns></returns>
+        ISelectCommandBuilder Having(string expression, string op = "and");
+
+        /// <summary>
+        /// 生成having命令。
+        /// </summary>
+        /// <param name="expression">带格式串的表达式。</param>
+        /// <param name="value">值，忽略null和string.Empty。</param>
+        /// <param name="op">逻辑操作符：and、or，不区分大小写。</param>
+        /// <param name="valueFilter">值过虑器，value不为null或string.Empty时。</param>
+        /// <returns></returns>
+        ISelectCommandBuilder HavingIf(string expression, string value, string op = "and", WhereIfValueFilterDelegate<string> valueFilter = null);
+        /// <summary>
+        /// 生成having命令。
+        /// </summary>
+        /// <param name="expression">带格式串的表达式。</param>
+        /// <param name="value">值，忽略null和string.Empty。</param>
+        /// <param name="operator">逻辑操作符。</param>
+        /// <param name="valueFilter">值过虑器，value不为null或string.Empty时。</param>
+        /// <returns></returns>
+        ISelectCommandBuilder HavingIf(string expression, string value, WhereOperators @operator, WhereIfValueFilterDelegate<string> valueFilter = null);
+        /// <summary>
+        /// 生成having命令。
+        /// </summary>
+        /// <param name="expression">带格式串的表达式。</param>
+        /// <param name="value">值，忽略null。</param>
+        /// <param name="min">最小值，不为空时，忽略小于min的值</param>
+        /// <param name="max">最大值，不为空时，忽略大于max的值</param>
+        /// <param name="op">逻辑操作符：and、or，不区分大小写。</param>
+        /// <returns></returns>
+        ISelectCommandBuilder HavingIf(string expression, decimal? value, decimal? min = null, decimal? max = null, string op = "and");
+        /// <summary>
+        /// 生成having命令。
+        /// </summary>
+        /// <param name="expression">带格式串的表达式。</param>
+        /// <param name="value">值，忽略null和string.Empty。</param>
+        /// <param name="op">逻辑操作符：and、or，不区分大小写。</param>
+        /// <param name="valueFilter">值过虑器，value不为null或string.Empty时。</param>
+        /// <returns></returns>
+        ISelectCommandBuilder HavingIf(string expression, object value, string op = "and", WhereIfValueFilterDelegate<object> valueFilter = null);
+        /// <summary>
+        /// 生成having命令。
+        /// </summary>
+        /// <param name="expression">带格式串的表达式。</param>
+        /// <param name="value">值，忽略null和string.Empty。</param>
+        /// <param name="operator">逻辑操作符。</param>
+        /// <param name="valueFilter">值过虑器，value不为null或string.Empty时。</param>
+        /// <returns></returns>
+        ISelectCommandBuilder HavingIf(string expression, object value, WhereOperators @operator, WhereIfValueFilterDelegate<object> valueFilter = null);
+        #endregion
 
         #region NoSQL
         /// <summary>
@@ -495,6 +580,21 @@ namespace Symbol.Data {
         ISelectCommandBuilder Query(NoSQL.Condition condition, CommandQueryFilterDelegate filter = null);
 
         /// <summary>
+        /// Having规则（NoSQL）。
+        /// </summary>
+        /// <param name="condition">规则</param>
+        /// <param name="filter">过滤器</param>
+        /// <returns></returns>
+        ISelectCommandBuilder Having(object condition, CommandQueryFilterDelegate filter = null);
+        /// <summary>
+        /// Having规则（NoSQL）。
+        /// </summary>
+        /// <param name="condition">规则</param>
+        /// <param name="filter">过滤器</param>
+        /// <returns></returns>
+        ISelectCommandBuilder Having(NoSQL.Condition condition, CommandQueryFilterDelegate filter = null);
+
+        /// <summary>
         /// 排序（NoSQL）。
         /// </summary>
         /// <param name="sorter">排序对象</param>
@@ -508,8 +608,32 @@ namespace Symbol.Data {
         ISelectCommandBuilder Sort(NoSQL.Sorter sorter);
         #endregion
 
+        #region GroupBy
+        /// <summary>
+        /// 清空group by命令列表。
+        /// </summary>
+        /// <returns></returns>
+        ISelectCommandBuilder GroupByClear();
+        /// <summary>
+        /// 生成group by命令（自动忽略空或空文本）。
+        /// </summary>
+        /// <param name="field">列，例：aa</param>
+        /// <returns></returns>
+        ISelectCommandBuilder GroupBy(string field);
+        /// <summary>
+        /// 生成group by命令。
+        /// </summary>
+        /// <param name="fields">字段列表。</param>
+        /// <returns></returns>
+        ISelectCommandBuilder GroupBy(params string[] fields);
+        #endregion
 
         #region OrderBy
+        /// <summary>
+        /// 清空order by命令列表。
+        /// </summary>
+        /// <returns></returns>
+        ISelectCommandBuilder OrderByClear();
         /// <summary>
         /// 生成order by命令（自动忽略空或空文本）。
         /// </summary>
@@ -531,12 +655,28 @@ namespace Symbol.Data {
         /// 生成求count命令。
         /// </summary>
         /// <returns></returns>
+        /// <remarks>会强制清空<see cref="Fields"/>和<see cref="OrderBys"/>。</remarks>
         ISelectCommandBuilder Count();
+        /// <summary>
+        /// 生成求count(1) as fieldAs 命令。
+        /// </summary>
+        /// <param name="fieldAs">as 字段名称。</param>
+        /// <returns></returns>
+        /// <remarks>不会清空其它字段和order by</remarks>
+        ISelectCommandBuilder CountAs(string fieldAs);
+        /// <summary>
+        /// 生成求count(1) as fieldAs 命令。
+        /// </summary>
+        /// <param name="fieldAs">as 字段名称。</param>
+        /// <param name="clear">是否清空所有字段和order by</param>
+        /// <returns></returns>
+        ISelectCommandBuilder CountAs(string fieldAs, bool clear);
         /// <summary>
         /// 生成求sum命令（清空所有字段）。
         /// </summary>
         /// <param name="field">字段名称。</param>
         /// <returns></returns>
+        /// <remarks>会强制清空<see cref="Fields"/>。</remarks>
         ISelectCommandBuilder Sum(string field);
         /// <summary>
         /// 生成求sum命令。
@@ -546,10 +686,28 @@ namespace Symbol.Data {
         /// <returns></returns>
         ISelectCommandBuilder Sum(string field, bool clear);
         /// <summary>
+        /// 生成求sum(field) as fieldAs 命令。
+        /// </summary>
+        /// <param name="field">字段名称。</param>
+        /// <param name="fieldAs">as 字段名称。</param>
+        /// <returns></returns>
+        /// <remarks>不会清空其它字段和order by</remarks>
+        ISelectCommandBuilder SumAs(string field,string fieldAs);
+        /// <summary>
+        /// 生成求sum(field) as fieldAs 命令。
+        /// </summary>
+        /// <param name="field">字段名称。</param>
+        /// <param name="fieldAs">as 字段名称。</param>
+        /// <param name="clear">是否清空所有字段和order by</param>
+        /// <returns></returns>
+        ISelectCommandBuilder SumAs(string field, string fieldAs, bool clear);
+
+        /// <summary>
         /// 生成求min命令（清空所有字段）。
         /// </summary>
         /// <param name="field">字段名称。</param>
         /// <returns></returns>
+        /// <remarks>会强制清空<see cref="Fields"/>。</remarks>
         ISelectCommandBuilder Min(string field);
         /// <summary>
         /// 生成求min命令。
@@ -559,10 +717,27 @@ namespace Symbol.Data {
         /// <returns></returns>
         ISelectCommandBuilder Min(string field, bool clear);
         /// <summary>
+        /// 生成求min(field) as fieldAs 命令。
+        /// </summary>
+        /// <param name="field">字段名称。</param>
+        /// <param name="fieldAs">as 字段名称。</param>
+        /// <returns></returns>
+        /// <remarks>不会清空其它字段和order by</remarks>
+        ISelectCommandBuilder MinAs(string field,string fieldAs);
+        /// <summary>
+        /// 生成求min(field) as fieldAs 命令。
+        /// </summary>
+        /// <param name="field">字段名称。</param>
+        /// <param name="fieldAs">as 字段名称。</param>
+        /// <param name="clear">是否清空所有字段和order by</param>
+        /// <returns></returns>
+        ISelectCommandBuilder MinAs(string field, string fieldAs, bool clear);
+        /// <summary>
         /// 生成求max命令（清空所有字段）。
         /// </summary>
         /// <param name="field">字段名称。</param>
         /// <returns></returns>
+        /// <remarks>会强制清空<see cref="Fields"/>。</remarks>
         ISelectCommandBuilder Max(string field);
         /// <summary>
         /// 生成求max命令。
@@ -572,10 +747,27 @@ namespace Symbol.Data {
         /// <returns></returns>
         ISelectCommandBuilder Max(string field, bool clear);
         /// <summary>
+        /// 生成求max(field) as fieldAs 命令。
+        /// </summary>
+        /// <param name="field">字段名称。</param>
+        /// <param name="fieldAs">as 字段名称。</param>
+        /// <returns></returns>
+        /// <remarks>不会清空其它字段和order by</remarks>
+        ISelectCommandBuilder MaxAs(string field,string fieldAs);
+        /// <summary>
+        /// 生成求max(field) as fieldAs 命令。
+        /// </summary>
+        /// <param name="field">字段名称。</param>
+        /// <param name="fieldAs">as 字段名称。</param>
+        /// <param name="clear">是否清空所有字段和order by</param>
+        /// <returns></returns>
+        ISelectCommandBuilder MaxAs(string field, string fieldAs, bool clear);
+        /// <summary>
         /// 生成求avg命令（清空所有字段）。
         /// </summary>
         /// <param name="field">字段名称。</param>
         /// <returns></returns>
+        /// <remarks>会强制清空<see cref="Fields"/>。</remarks>
         ISelectCommandBuilder Average(string field);
         /// <summary>
         /// 生成求avg命令。
@@ -584,6 +776,22 @@ namespace Symbol.Data {
         /// <param name="clear">是否清空所有字段</param>
         /// <returns></returns>
         ISelectCommandBuilder Average(string field, bool clear);
+        /// <summary>
+        /// 生成求avg(field) as fieldAs 命令。
+        /// </summary>
+        /// <param name="field">字段名称。</param>
+        /// <param name="fieldAs">as 字段名称。</param>
+        /// <returns></returns>
+        /// <remarks>不会清空其它字段和order by</remarks>
+        ISelectCommandBuilder AverageAs(string field,string fieldAs);
+        /// <summary>
+        /// 生成求avg(field) as fieldAs 命令。
+        /// </summary>
+        /// <param name="field">字段名称。</param>
+        /// <param name="fieldAs">as 字段名称。</param>
+        /// <param name="clear">是否清空所有字段和order by</param>
+        /// <returns></returns>
+        ISelectCommandBuilder AverageAs(string field, string fieldAs, bool clear);
 
         #endregion
 

@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup Label="NuGet">
-    <TargetFrameworks>net6.0;net5.0;netcoreapp3.1;net48;net47;net461;net46;net452;net45;net40;net35;net2</TargetFrameworks>
+    <TargetFrameworks>net7.0;net6.0;net5.0;netcoreapp3.1;net48;net47;net461;net46;net452;net45;net40;net35;net2</TargetFrameworks>
     <IsPackable>true</IsPackable>
     <IncludeSymbols>true</IncludeSymbols>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
@@ -12,7 +12,7 @@
     <NeutralLanguage>zh-CN</NeutralLanguage>
     <AssemblyTitle>Symbol.Data</AssemblyTitle>
     <AssemblyName>Symbol.Data</AssemblyName>
-    <VersionPrefix>4.1.0.40</VersionPrefix>
+    <VersionPrefix>4.2.0.43</VersionPrefix>
     <Title>Symbol.Data</Title>
     <Authors>symbolspace</Authors>
     <Company>symbolspace</Company>
@@ -34,6 +34,7 @@
     <AssemblyOriginatorKeyFile>..\..\Symbol.snk</AssemblyOriginatorKeyFile>
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
     <LangVersion>7.3</LangVersion>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
@@ -49,7 +50,9 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Optimize>false</Optimize>
   </PropertyGroup>
-
+	<PropertyGroup Condition="'$(TargetFramework)'=='net7.0'">
+		<DefineConstants>net70;netcore;</DefineConstants>
+	</PropertyGroup>
   <PropertyGroup Condition="'$(TargetFramework)'=='net6.0'">
     <DefineConstants>net60;netcore;</DefineConstants>
   </PropertyGroup>
@@ -211,7 +214,7 @@
   </ItemGroup>
   
   <ItemGroup>
-    <PackageReference Include="Symbol" Version="4.0.0.27" />
+    <PackageReference Include="Symbol" Version="4.0.1.35" />
   </ItemGroup>
   
   <ItemGroup>
@@ -226,5 +229,10 @@
       <PackagePath>\</PackagePath>
     </None>
   </ItemGroup>
-
+	<ItemGroup>
+		<None Include="..\..\README.md">
+			<Pack>True</Pack>
+			<PackagePath>\</PackagePath>
+		</None>
+	</ItemGroup>
 </Project>
