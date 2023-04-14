@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup Label="NuGet">
 	  <TargetFrameworks>net7.0;net6.0;net5.0;netcoreapp3.1;net48;net47;net461;net46;net452;net45;net4;net35;net2</TargetFrameworks>
@@ -128,20 +128,20 @@
   <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
     <PackageReference Include="System.Data.Common" Version="4.3.0">
     </PackageReference>
-    <PackageReference Include="System.Data.SqlClient" Version="4.5.0">
+    <PackageReference Include="System.Data.SqlClient" Version="4.8.5">
     </PackageReference>
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp2.0'">
     <PackageReference Include="System.Data.Common" Version="4.3.0">
     </PackageReference>
-    <PackageReference Include="System.Data.SqlClient" Version="4.5.0">
+    <PackageReference Include="System.Data.SqlClient" Version="4.8.5">
     </PackageReference>
   </ItemGroup>
   <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp3.0'">
     <PackageReference Include="System.Data.Common" Version="4.3.0">
     </PackageReference>
-    <PackageReference Include="System.Data.SqlClient" Version="4.5.0">
+    <PackageReference Include="System.Data.SqlClient" Version="4.8.5">
     </PackageReference>
   </ItemGroup>
 	<ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp3.1'">
