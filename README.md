@@ -1,5 +1,5 @@
 ﻿# 程序集    [使用说明](https://github.com/symbolspace/Symbol.Data/wiki/Home)
-> 运行时支持 .net framework v2.0/3.5/4.0/4.5/4.6/4.7/4.8、.netcoreapp3.1、.net 5.0/6.0
+> 运行时支持 .net framework v2.0/3.5/4.0/4.5/4.6/4.7/4.8、.netcoreapp3.1、.net 5.0/6.0/7.0
 > 仓库：[GitHub](https://github.com/symbolspace/Symbol.Data)、[Gitee](https://gitee.com/symbolspace/Symbol-Data)
 
 * Symbol.Data.dll [![Available on NuGet https://www.nuget.org/packages/Symbol.Data/](https://img.shields.io/nuget/v/Symbol.Data.svg?style=flat)](https://www.nuget.org/packages/Symbol.Data/)
@@ -10,9 +10,11 @@
 
 
 # 最近更新   [版本历史](https://github.com/symbolspace/Symbol.Data/wiki/Version-history)
-> v4.1.0.7 2019-06-26
-* 分离到子仓库；
-* 本次没有重大更新，可以选择不更新；
+> v4.2.0.43 2023-04-14
+* 支持.net 7.0；
+* 支持group by 、having 命令，以及SQL解析；
+* 支持count/sum/min/max/avg指令的as操作；
+* select builder若干增强；
 
 
 # 简介
