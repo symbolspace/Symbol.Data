@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup Label="NuGet">
-	  <TargetFrameworks>net6.0;net5.0;netcoreapp3.1;net48;net47;net461;net46;net452;net45;net4;net35;net2</TargetFrameworks>
+	  <TargetFrameworks>net7.0;net6.0;net5.0;netcoreapp3.1;net48;net47;net461;net46;net452;net45;net4;net35;net2</TargetFrameworks>
 	  <IsPackable>true</IsPackable>
     <IncludeSymbols>true</IncludeSymbols>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
@@ -12,7 +12,7 @@
     <NeutralLanguage>zh-CN</NeutralLanguage>
     <AssemblyTitle>Symbol.Data.SQLite</AssemblyTitle>
     <AssemblyName>Symbol.Data.SQLite</AssemblyName>
-    <VersionPrefix>4.1.0.10</VersionPrefix>
+    <VersionPrefix>4.2.0.11</VersionPrefix>
     <Title>Symbol.Data.SQLite</Title>
     <Authors>symbolspace</Authors>
     <Company>symbolspace</Company>
@@ -21,8 +21,9 @@
     <PackageId>Symbol.Data.SQLite</PackageId>
     <PackageLicenseUrl></PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/symbolspace/Symbol.Data/</PackageProjectUrl>
-    <PackageIconUrl>https://raw.githubusercontent.com/symbolspace/Symbol.Data/master/icon.png</PackageIconUrl>
-    <PackageTags>sqlite;nosql;ado;orm;symbol</PackageTags>
+		<PackageIconUrl>https://raw.githubusercontent.com/symbolspace/Symbol/master/icon.png</PackageIconUrl>
+		<PackageIcon>icon.png</PackageIcon>
+		<PackageTags>sqlite;nosql;ado;orm;symbol</PackageTags>
     <PackageReleaseNotes>Please see https://github.com/symbolspace/Symbol.Data/wiki/Home for more information.</PackageReleaseNotes>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <RepositoryUrl>https://github.com/symbolspace/Symbol.Data/</RepositoryUrl>
@@ -32,22 +33,24 @@
     <AssemblyOriginatorKeyFile>..\..\Symbol.snk</AssemblyOriginatorKeyFile>
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
     <LangVersion>7.3</LangVersion>
-  </PropertyGroup>
-
+		<PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+	</PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <OutputPath>bin\Release</OutputPath>
     <DefineConstants></DefineConstants>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Optimize>true</Optimize>
   </PropertyGroup>
-
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <OutputPath>bin\Debug</OutputPath>
     <DefineConstants></DefineConstants>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Optimize>false</Optimize>
   </PropertyGroup>
-
+	<PropertyGroup Condition="'$(TargetFramework)'=='net7.0'">
+		<DefineConstants>net70;netcore;</DefineConstants>
+	</PropertyGroup>
 	<PropertyGroup Condition="'$(TargetFramework)'=='net6.0'">
 		<DefineConstants>net60;netcore;</DefineConstants>
 	</PropertyGroup>
@@ -95,9 +98,6 @@
 	<PropertyGroup Condition="'$(TargetFramework)'=='net2'">
 		<DefineConstants>net20</DefineConstants>
 	</PropertyGroup>
-  <PropertyGroup>
-    <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
-  </PropertyGroup>
 
 	<ItemGroup Condition=" '$(TargetFramework)' == 'net48' ">
 		<Reference Include="System" />
@@ -153,27 +153,39 @@
   </ItemGroup>
 	<ItemGroup Condition="'$(TargetFramework)'=='netcoreapp3.1'">
 		<PackageReference Include="System.Data.SQLite.Core" Version="1.0.111" />
-		<PackageReference Include="System.Reflection.Emit" Version="4.3.0" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)'=='net5.0'">
 		<PackageReference Include="System.Data.SQLite.Core" Version="1.0.111" />
-		<PackageReference Include="System.Reflection.Emit" Version="4.3.0" />
 	</ItemGroup>
 	<ItemGroup Condition="'$(TargetFramework)'=='net6.0'">
 		<PackageReference Include="System.Data.SQLite.Core" Version="1.0.111" />
-		<PackageReference Include="System.Reflection.Emit" Version="4.3.0" />
+	</ItemGroup>
+	<ItemGroup Condition="'$(TargetFramework)'=='net7.0'">
+		<PackageReference Include="System.Data.SQLite.Core" Version="1.0.117" />
 	</ItemGroup>
 	
 	<ItemGroup>
     <ProjectReference Include="..\Symbol.Data\Symbol.Data.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <None Include="..\..\LICENSE.txt">
-      <Pack>True</Pack>
-      <PackagePath></PackagePath>
-    </None>
-  </ItemGroup>
+	<ItemGroup>
+		<None Include="..\..\LICENSE.txt">
+			<Pack>True</Pack>
+			<PackagePath></PackagePath>
+		</None>
+	</ItemGroup>
+	<ItemGroup>
+		<None Include="..\..\icon.png">
+			<Pack>True</Pack>
+			<PackagePath>\</PackagePath>
+		</None>
+	</ItemGroup>
+	<ItemGroup>
+		<None Include="..\..\README.md">
+			<Pack>True</Pack>
+			<PackagePath>\</PackagePath>
+		</None>
+	</ItemGroup>
 
 </Project>
