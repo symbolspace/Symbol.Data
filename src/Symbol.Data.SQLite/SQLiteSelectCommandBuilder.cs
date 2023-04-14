@@ -2,18 +2,15 @@
  *  author：symbolspace
  *  e-mail：symbolspace@outlook.com
  */
- 
+
+using Symbol.Text;
+
 namespace Symbol.Data {
 
     /// <summary>
     /// SQLite 查询命令构造器基类
     /// </summary>
     public class SQLiteSelectCommandBuilder : Symbol.Data.SelectCommandBuilder, ISelectCommandBuilder {
-        #region fields
-        private bool _limitMode;
-
-        #endregion
-
 
         #region ctor
         /// <summary>
@@ -24,7 +21,6 @@ namespace Symbol.Data {
         /// <param name="commandText"></param>
         public SQLiteSelectCommandBuilder(IDataContext dataContext, string tableName, string commandText)
             : base(dataContext, tableName, commandText) {
-            _limitMode = true;
         }
         #endregion
 
@@ -36,61 +32,83 @@ namespace Symbol.Data {
         /// </summary>
         /// <param name="commandText">命令脚本。</param>
         protected override void Parse(string commandText) {
-            commandText = StringExtensions.Replace(
-                                            StringExtensions.Replace(
-                                                commandText, "select*", "select *", true),
-                                            "*from ", " * from", true);
-            int i = commandText.IndexOf("select ", System.StringComparison.OrdinalIgnoreCase);
-            if (i == -1)//没有select ，无效
-                throw new System.InvalidOperationException("没有“select ”：" + commandText);
-            //if (i != 0)
-            //    SelectBefore = commandText.Substring(0, i);
-            i += "select ".Length;
-            int j = commandText.IndexOf(" from", i, System.StringComparison.OrdinalIgnoreCase);
-            if (j == -1)//没有from
-                throw new System.InvalidOperationException("没有“ from ”：" + commandText);
-            bool top = ParseFields(commandText.Substring(i, j - i));//取出列
-            _limitMode = true;
+            commandText = PreParse(commandText);
 
-            if (!top) {
-                int ix = commandText.IndexOf("limit ", System.StringComparison.OrdinalIgnoreCase);
-                if (ix != -1) {
-                    _limitMode = true;
-                    System.Text.RegularExpressions.Match match = System.Text.RegularExpressions.Regex.Match(commandText, "limit\\s*(\\d+),(\\d+)", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
-                    SkipCount = TypeExtensions.Convert<int>(match.Groups[1].Value, 0);
-                    TakeCount = TypeExtensions.Convert<int>(match.Groups[2].Value, 0);
-                    commandText = commandText.Replace(match.Value, "");
+            //select 
+            var beginIndex = 0;
+            int endIndex;
+            {
+                var content = StringExtractHelper.StringsStartEnd(commandText, "select ", new string[] { " from " }, beginIndex, false, false, false, out endIndex);
+                if (endIndex != -1) {
+                    ParseFields(content);
+                    beginIndex = endIndex;
+                } else {
+                    throw new System.InvalidOperationException("没有“select ”：" + commandText);
                 }
             }
-            j += " from ".Length;//推进到form 后面
-            i = commandText.IndexOf(" where ", j, System.StringComparison.OrdinalIgnoreCase);//尝试找到where
-            if (i != -1) {
-                PaseWhereBefore(commandText.Substring(j, i - j));//分析WhereBefore
-                i += " where ".Length;
-                j = commandText.IndexOf(" order by", i, System.StringComparison.OrdinalIgnoreCase);
-                if (j == -1) {
-                    j = commandText.IndexOf("\norder by", i, System.StringComparison.OrdinalIgnoreCase);
+
+            //where before
+            {
+                var content = StringExtractHelper.StringsStartEnd(commandText, " from ", new string[] { " where ", " group by ", " order by ", " limit ", "[*]$" }, beginIndex, false, false, false, out endIndex);
+                if (endIndex != -1) {
+                    ParseWhereBefore(content);
+                    beginIndex = endIndex;
                 }
-                if (j == -1) {
-                    j = commandText.Length;
-                } else {
-                    ParseOrderBy(commandText.Substring(j + " order by".Length));
+            }
+            //where
+            {
+                var content = StringExtractHelper.StringsStartEnd(commandText, " where ", new string[] { " group by ", " order by ", " limit ", "[*]$" }, beginIndex, false, false, false, out endIndex);
+                if (endIndex != -1) {
+                    ParseWhere(content);
+                    beginIndex = endIndex;
                 }
-                ParseWhere(commandText.Substring(i, j - i));
-            } else {
-                int j2 = commandText.IndexOf(" order by", j, System.StringComparison.OrdinalIgnoreCase);
-                if (j == -1) {
-                    j = commandText.IndexOf("\norder by", i, System.StringComparison.OrdinalIgnoreCase);
+            }
+            //group by
+            bool hasGroupBy = false;
+            {
+                var content = StringExtractHelper.StringsStartEnd(commandText, " group by ", new string[] { " having ", " order by ", " limit ", "[*]$" }, beginIndex, false, false, false, out endIndex);
+                if (endIndex != -1) {
+                    ParseGroupBy(content);
+                    beginIndex = endIndex;
+                    hasGroupBy = true;
                 }
-                if (j2 != -1) {
-                    PaseWhereBefore(commandText.Substring(j, j2 - j));//分析WhereBefore
-                    ParseOrderBy(commandText.Substring(j2 + " order by".Length));
-                } else {
-                    PaseWhereBefore(commandText.Substring(j));
+            }
+            //having
+            if (hasGroupBy) {
+                var content = StringExtractHelper.StringsStartEnd(commandText, " having ", new string[] { " order by ", " limit ", "[*]$" }, beginIndex, false, false, false, out endIndex);
+                if (endIndex != -1) {
+                    ParseHaving(content);
+                    beginIndex = endIndex;
+                }
+            }
+            //order by
+            {
+                var content = StringExtractHelper.StringsStartEnd(commandText, " order by ", new string[] { " limit ", "[*]$" }, beginIndex, false, false, false, out endIndex);
+                if (endIndex != -1) {
+                    ParseOrderBy(content);
+                    beginIndex = endIndex;
+                }
+            }
+            //limit
+            var hasLimit = false;
+            {
+                var content = StringExtractHelper.StringsStartEnd(commandText, " limit ", new string[] { " offset ", "[*]$" }, beginIndex, false, false, false, out endIndex);
+                if (endIndex != -1) {
+                    ParseLimit(content);
+                    beginIndex = endIndex;
+                    hasLimit = true;
+                }
+            }
+            //offset
+            if (hasLimit) {
+                var content = StringExtractHelper.StringsStartEnd(commandText, " offset ", new string[] { "[*]$" }, beginIndex, false, false, false, out endIndex);
+                if (endIndex != -1) {
+                    ParseOffset(content);
+                    beginIndex = endIndex;
                 }
             }
         }
-        void PaseWhereBefore(string text) {
+        void ParseWhereBefore(string text) {
             if (string.IsNullOrEmpty(text))
                 return;
             bool b = false;
@@ -119,7 +137,36 @@ namespace Symbol.Data {
                 _tableName = _tableName.Trim('[', ']');
             if (i == text.Length)
                 return;
-            _whereBefores.Add(text.Substring(i));
+            text = text.Substring(i)?.Trim('\r', '\n')?.Trim();
+            if (!string.IsNullOrEmpty(text))
+                _whereBefores.Add(text);
+        }
+        void ParseGroupBy(string text) {
+            text = text?.Trim('\r', '\n')?.Trim();
+            if (string.IsNullOrEmpty(text))
+                return;
+            GroupByKeys.Add(text);
+        }
+        void ParseHaving(string text) {
+            text = text?.Trim('\r', '\n')?.Trim();
+            if (!string.IsNullOrEmpty(text))
+                Having(WhereOperators.And, text);
+        }
+        private void ParseWhere(string text) {
+            text = text?.Trim('\r', '\n')?.Trim();
+            if (!string.IsNullOrEmpty(text))
+                Where(WhereOperators.And, text);
+        }
+        private void ParseOrderBy(string text) {
+            text = text?.Trim('\r', '\n')?.Trim();
+            if (string.IsNullOrEmpty(text))
+                return;
+            foreach (var item in text.Split(',')) {
+                var name = item.Trim('\r', '\n')?.Trim();
+                if (string.IsNullOrEmpty(name))
+                    continue;
+                _orderbys.Add(name);
+            }
         }
         private bool ParseFields(string fields) {
             fields = fields.Trim();
@@ -138,40 +185,30 @@ namespace Symbol.Data {
                     fields = fields.Substring(i);
                 }
             }
-            System.Collections.Generic.ICollectionExtensions.AddRange(_fields, fields.Split(','));
+            foreach (var field in fields.Split(',')) {
+                var name = field.Trim('\r', '\n')?.Trim();
+                if (string.IsNullOrEmpty(name))
+                    continue;
+                _fields.Add(name);
+            }
             return top;
         }
-        private void ParseWhere(string expressions) {
-            Where(WhereOperators.And, expressions);
-        }
-        private void ParseOrderBy(string orderbys) {
-            //orderbys = PreOffset(orderbys.Trim());
-            if (string.IsNullOrEmpty(orderbys))
-                return;
-
-            System.Collections.Generic.ICollectionExtensions.AddRange(_orderbys, orderbys.Split(','));
-        }
-        string PreOffset(string orderbys) {
-            if (string.IsNullOrEmpty(orderbys))
-                return null;
-            string regex = "offset[\\s\\S]+(?<offset>[0-9]+)[\\s\\S]+rows[\\s\\S]+fetch[\\s\\S]+next[\\s\\S]+(?<next>[0-9]+)[\\s\\S]+rows[\\s\\S]+only[\\s\\S;]*|offset[\\s\\S]+(?<offset>[0-9]+)[\\s\\S]+rows[\\s\\S;]*";
-            //string regex2 = "offset[\\s\\S]+([0-9]+)[\\s\\S]+rows[\\s\\S;]*";
-            System.Text.RegularExpressions.Match match = System.Text.RegularExpressions.Regex.Match(orderbys, regex, System.Text.RegularExpressions.RegexOptions.IgnoreCase);
-            //if (!match.Success) {
-            //    match = System.Text.RegularExpressions.Regex.Match(orderbys, regex2, System.Text.RegularExpressions.RegexOptions.IgnoreCase);
-            //}
-            if (!match.Success) {
-                return orderbys;
+        void ParseLimit(string text) {
+            var match = System.Text.RegularExpressions.Regex.Match(text, "\\s*(\\d+),(\\d+)", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+            if (match.Success) {
+                SkipCount = TypeExtensions.Convert<int>(match.Groups[1].Value, 0);
+                TakeCount = TypeExtensions.Convert<int>(match.Groups[2].Value, 0);
+            } else {
+                match = System.Text.RegularExpressions.Regex.Match(text, "\\s*(\\d+)", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+                if (match.Success) {
+                    TakeCount = TypeExtensions.Convert<int>(match.Groups[1].Value, 0);
+                }
             }
-            SkipCount = TypeExtensions.Convert<int>(match.Groups["offset"].Value, 0);
-            int takeCount = TypeExtensions.Convert<int>(match.Groups["next"].Value, 0);
-            if (takeCount > 0) {
-                TakeCount = takeCount;
-            }
-            //if (match.Groups.Count > 2) {
-
-            //}
-            return orderbys.Replace(match.Value, "");
+        }
+        void ParseOffset(string text) {
+            var match = System.Text.RegularExpressions.Regex.Match(text, "(\\d+)", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+            if(match.Success)
+                SkipCount = TypeExtensions.Convert(match.Groups[1].Value, 0);
         }
         #endregion
 
@@ -185,15 +222,22 @@ namespace Symbol.Data {
             BuildSelect(builder);
             BuildWhereBefore(builder);
             BuildWhere(builder);
+            BuildGroupBy(builder);
+            BuildHaving(builder);
             BuildOrderBy(builder);
             BuildSkip(builder);
             return builder.ToString();
         }
         void BuildSkip(System.Text.StringBuilder builder) {
-            if (_limitMode) {
-                if (SkipCount > 0 || TakeCount > 0) {
-                    builder.AppendFormat(" limit {0},{1}", SkipCount, TakeCount);
+            if (TakeCount > 0) {
+                if (SkipCount > 0) {
+                    builder.AppendLine().AppendFormat(" limit {0},{1}", SkipCount, TakeCount);
+                } else {
+                    builder.AppendLine().AppendFormat(" limit {0}", TakeCount);
                 }
+            } else if(SkipCount>0){
+                builder.AppendLine().Append(" limit -1")
+                       .AppendLine().AppendFormat(" offset {0}", SkipCount);
             }
         }
         #endregion
