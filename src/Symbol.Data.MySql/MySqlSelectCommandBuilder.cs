@@ -214,7 +214,9 @@ namespace Symbol.Data {
         }
         void BuildSkip(System.Text.StringBuilder builder) {
             if (TakeCount > 0) {
-                builder.AppendLine().AppendFormat(" limit {0},{1}", SkipCount<1 ? 0 : SkipCount, TakeCount);
+                builder.AppendLine().AppendFormat(" limit {0},{1}", SkipCount < 1 ? 0 : SkipCount, TakeCount);
+            } else if (SkipCount > 0) { 
+                builder.AppendLine().AppendFormat(" limit {0},{1}", SkipCount, ulong.MaxValue);
             }
         }
 
