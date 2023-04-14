@@ -6,6 +6,22 @@
 [assembly: Symbol.Data.Provider("sql2012", typeof(Symbol.Data.SqlServer2012Provider))]
 [assembly: Symbol.Data.Provider("mssql2012", typeof(Symbol.Data.SqlServer2012Provider))]
 [assembly: Symbol.Data.Provider("mssql.2012", typeof(Symbol.Data.SqlServer2012Provider))]
+
+[assembly: Symbol.Data.Provider("sql2014", typeof(Symbol.Data.SqlServer2012Provider))]
+[assembly: Symbol.Data.Provider("mssql2014", typeof(Symbol.Data.SqlServer2012Provider))]
+[assembly: Symbol.Data.Provider("mssql.2014", typeof(Symbol.Data.SqlServer2012Provider))]
+
+[assembly: Symbol.Data.Provider("sql2016", typeof(Symbol.Data.SqlServer2012Provider))]
+[assembly: Symbol.Data.Provider("mssql2016", typeof(Symbol.Data.SqlServer2012Provider))]
+[assembly: Symbol.Data.Provider("mssql.2016", typeof(Symbol.Data.SqlServer2012Provider))]
+
+[assembly: Symbol.Data.Provider("sql2017", typeof(Symbol.Data.SqlServer2012Provider))]
+[assembly: Symbol.Data.Provider("mssql2017", typeof(Symbol.Data.SqlServer2012Provider))]
+[assembly: Symbol.Data.Provider("mssql.2017", typeof(Symbol.Data.SqlServer2012Provider))]
+
+[assembly: Symbol.Data.Provider("sql2019", typeof(Symbol.Data.SqlServer2012Provider))]
+[assembly: Symbol.Data.Provider("mssql2019", typeof(Symbol.Data.SqlServer2012Provider))]
+[assembly: Symbol.Data.Provider("mssql.2019", typeof(Symbol.Data.SqlServer2012Provider))]
 namespace Symbol.Data {
 
     /// <summary>

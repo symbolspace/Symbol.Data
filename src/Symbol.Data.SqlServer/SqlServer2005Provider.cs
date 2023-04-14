@@ -4,9 +4,18 @@
  */
 
 [assembly: Symbol.Data.Provider("mssql", typeof(Symbol.Data.SqlServer2005Provider))]
+
 [assembly: Symbol.Data.Provider("sql2005", typeof(Symbol.Data.SqlServer2005Provider))]
 [assembly: Symbol.Data.Provider("mssql2005", typeof(Symbol.Data.SqlServer2005Provider))]
 [assembly: Symbol.Data.Provider("mssql.2005", typeof(Symbol.Data.SqlServer2005Provider))]
+
+[assembly: Symbol.Data.Provider("sql2008", typeof(Symbol.Data.SqlServer2005Provider))]
+[assembly: Symbol.Data.Provider("mssql2008", typeof(Symbol.Data.SqlServer2005Provider))]
+[assembly: Symbol.Data.Provider("mssql.2008", typeof(Symbol.Data.SqlServer2005Provider))]
+
+[assembly: Symbol.Data.Provider("sql2000", typeof(Symbol.Data.SqlServer2005Provider))]
+[assembly: Symbol.Data.Provider("mssql2000", typeof(Symbol.Data.SqlServer2005Provider))]
+[assembly: Symbol.Data.Provider("mssql.2000", typeof(Symbol.Data.SqlServer2005Provider))]
 namespace Symbol.Data {
 
     /// <summary>
