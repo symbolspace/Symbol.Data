@@ -35,16 +35,11 @@ namespace Symbol.Data {
 
         #region cctor
         static PostgreSQLProvider() {
-            _types = new Collections.Generic.NameValueCollection<System.Type>();
-#if netcore || net45
-            _types.Add("Npgsql.NpgsqlConnection", typeof(Npgsql.NpgsqlConnection));
-            _types.Add("Npgsql.NpgsqlConnectionStringBuilder", typeof(Npgsql.NpgsqlConnectionStringBuilder));
-            _types.Add("NpgsqlTypes.NpgsqlDbType", typeof(NpgsqlTypes.NpgsqlDbType));
-#else
-            GetType("Npgsql.NpgsqlConnection");
-            GetType("Npgsql.NpgsqlConnectionStringBuilder");
-            GetType("NpgsqlTypes.NpgsqlDbType");
-#endif
+            _types = new Collections.Generic.NameValueCollection<System.Type> {
+                { "Npgsql.NpgsqlConnection", typeof(Npgsql.NpgsqlConnection) },
+                { "Npgsql.NpgsqlConnectionStringBuilder", typeof(Npgsql.NpgsqlConnectionStringBuilder) },
+                { "NpgsqlTypes.NpgsqlDbType", typeof(NpgsqlTypes.NpgsqlDbType) }
+            };
         }
         #endregion
 
