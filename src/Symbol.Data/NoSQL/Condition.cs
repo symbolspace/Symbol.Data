@@ -4,6 +4,8 @@
  */
 
 using System;
+using System.Collections.Generic;
+
 namespace Symbol.Data.NoSQL {
 
     /// <summary>
@@ -784,6 +786,17 @@ namespace Symbol.Data.NoSQL {
                 return this;
             }
 
+            public IConditionBlock Like(string name, string[] value, bool reverse=false) {
+                if(value!=null && value.Length>0)
+                    Like_Reverse(AppendField(name, "$like", value), reverse);
+                return this;
+            }
+            public IConditionBlock Like(string name, IEnumerable<string> value, bool reverse = false) {
+                if (value != null)
+                    Like_Reverse(AppendField(name, "$like",LinqHelper.ToArray(value)), reverse);
+                return this;
+            }
+
             public IConditionBlock Like(string name, string value) {
                 if (!string.IsNullOrEmpty(value))
                     AppendField(name, "$like", value);
@@ -848,6 +861,22 @@ namespace Symbol.Data.NoSQL {
                 if (item.Children.Count > 0 && item != _condition)
                     _condition.Children.Add(item);
             }
+            public IConditionBlock Range(string name, object min = null, object max = null, bool minEq = false, bool maxEq = false) {
+                if (!string.IsNullOrEmpty(name) && (min != null || max != null)) {
+                    var values = FastWrapper.As(null);
+                    if (min != null) {
+                        values["min"] = min;
+                        values["minEq"] = minEq;
+                    }
+                    if (max != null) {
+                        values["max"] = max;
+                        values["maxEq"] = maxEq;
+                    }
+                    AppendField(name, "$range", values);
+                }
+                return this;
+            }
+
             public IConditionBlock And(ConditionBlockAction action) {
                 DoBlock("$and", action);
                 return this;

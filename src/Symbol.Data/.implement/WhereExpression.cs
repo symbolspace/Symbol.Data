@@ -3,6 +3,7 @@
  *  e-mail：symbolspace@outlook.com
  */
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Text;
@@ -468,7 +469,110 @@ namespace Symbol.Data {
 
         #endregion
 
-        #region Like         
+        #region Range
+        /// <summary>
+        /// 区间匹配
+        /// </summary>
+        /// <param name="field">列，例：aa</param>
+        /// <param name="min">最小值</param>
+        /// <param name="max">最大值</param>
+        /// <param name="minEq">包含最小值</param>
+        /// <param name="maxEq">包含最大值</param>
+        /// <returns></returns>
+        public virtual IWhereExpression Range(string field, object min = null, object max = null, bool minEq = false, bool maxEq = false, string op = "and") {
+            if (!string.IsNullOrEmpty(field)) {
+
+                var isMinNull = (min == null || (min is string minv && string.IsNullOrEmpty(minv)));
+                var isMaxNull = (max == null || (max is string maxv && string.IsNullOrEmpty(maxv)));
+
+                var builder = new StringBuilder();
+                if (!isMinNull) {
+                    builder.Append(_dialect.PreName(field))
+                           .Append(_dialect.MatchOperatorGrammar(minEq ? ">=" : ">"))
+                           .Append(AddCommandParameter(min));
+                }
+                if (!isMaxNull) {
+
+                    if (!isMinNull) {
+                        builder.Append(" and ");
+                    }
+
+                    builder.Append(_dialect.PreName(field))
+                           .Append(_dialect.MatchOperatorGrammar(maxEq ? "<=" : "<"))
+                           .Append(AddCommandParameter(max));
+                }
+
+                if (builder.Length > 0) {
+                    Where($" ( {builder} ) ", op);
+                }
+
+            }
+
+            return this;
+        }
+        #endregion
+
+
+        #region Like
+        /// <summary>
+        /// 模糊匹配（like %value%，自动忽略空或空文本）。
+        /// </summary>
+        /// <param name="field">列，例：aa</param>
+        /// <param name="value">文本内容</param>
+        /// <param name="reverse">倒转，为true时表示value like field。</param>
+        /// <param name="op">逻辑操作符：and、or，不区分大小写。</param>
+        /// <returns></returns>
+        public virtual IWhereExpression Like(string field, string[] value, bool reverse= false, string op = "and") {
+            if (!string.IsNullOrEmpty(field) && value!=null && value.Length>0) {
+                var i = 0;
+                var builder = new StringBuilder();
+                foreach(var p in value) {
+                    if (string.IsNullOrEmpty(p))
+                        continue;
+                    if (i > 0)
+                        builder.Append(" or ");
+                    builder.AppendFormat(
+                                _dialect.LikeGrammar(_dialect.PreName(field), true, true, reverse),
+                                AddCommandParameter(_dialect.LikeValueFilter(p, true, true, reverse))
+                            );
+                    i++;
+                }
+                if (builder.Length > 0) {
+                    return Where(builder.ToString(), op);
+                }
+            }
+            return this;
+        }
+        /// <summary>
+        /// 模糊匹配（like %value%，自动忽略空或空文本）。
+        /// </summary>
+        /// <param name="field">列，例：aa</param>
+        /// <param name="value">文本内容</param>
+        /// <param name="reverse">倒转，为true时表示value like field。</param>
+        /// <param name="op">逻辑操作符：and、or，不区分大小写。</param>
+        /// <returns></returns>
+        public virtual IWhereExpression Like(string field, IEnumerable<string> value, bool reverse = false, string op = "and") {
+            if (!string.IsNullOrEmpty(field) && value != null) {
+                var i = 0;
+                var builder = new StringBuilder();
+                foreach (var p in value) {
+                    if (string.IsNullOrEmpty(p))
+                        continue;
+                    if (i > 0)
+                        builder.Append(" or ");
+                    builder.AppendFormat(
+                                _dialect.LikeGrammar(_dialect.PreName(field), true, true, reverse),
+                                AddCommandParameter(_dialect.LikeValueFilter(p, true, true, reverse))
+                            );
+                    i++;
+                }
+                if (builder.Length > 0) {
+                    return Where(builder.ToString(), op);
+                }
+            }
+            return this;
+        }
+
         /// <summary>
         /// 模糊匹配（like %value%，自动忽略空或空文本）。
         /// </summary>

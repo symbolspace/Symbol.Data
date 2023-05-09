@@ -3,6 +3,9 @@
  *  e-mail：symbolspace@outlook.com
  */
 
+using System.Collections;
+using System.Collections.Generic;
+
 namespace Symbol.Data.NoSQL {
 
     /// <summary>
@@ -76,6 +79,22 @@ namespace Symbol.Data.NoSQL {
         /// </summary>
         /// <param name="name">键</param>
         /// <param name="value">值</param>
+        /// <param name="reverse">倒转，为true时表示value like field。</param>
+        /// <returns></returns>
+        IConditionBlock Like(string name, string[] value, bool reverse=false);
+        /// <summary>
+        /// 匹配：模糊匹配 $like
+        /// </summary>
+        /// <param name="name">键</param>
+        /// <param name="value">值</param>
+        /// <param name="reverse">倒转，为true时表示value like field。</param>
+        /// <returns></returns>
+        IConditionBlock Like(string name, IEnumerable<string> value, bool reverse = false);
+        /// <summary>
+        /// 匹配：模糊匹配 $like
+        /// </summary>
+        /// <param name="name">键</param>
+        /// <param name="value">值</param>
         /// <returns></returns>
         IConditionBlock Like(string name, string value);
         /// <summary>
@@ -83,8 +102,8 @@ namespace Symbol.Data.NoSQL {
         /// </summary>
         /// <param name="name">键</param>
         /// <param name="value">值</param>
-        /// <returns></returns>
         /// <param name="reverse">倒转，为true时表示value like field。</param>
+        /// <returns></returns>
         IConditionBlock Like(string name, string value, bool reverse);
         /// <summary>
         /// 匹配：以指定文本起始 $start
@@ -117,6 +136,17 @@ namespace Symbol.Data.NoSQL {
         /// <returns></returns>
         IConditionBlock End(string name, string value, bool reverse);
 
+
+        /// <summary>
+        /// 区间匹配
+        /// </summary>
+        /// <param name="name">键</param>
+        /// <param name="min">最小值</param>
+        /// <param name="max">最大值</param>
+        /// <param name="minEq">包含最小值</param>
+        /// <param name="maxEq">包含最大值</param>
+        /// <returns></returns>
+        IConditionBlock Range(string name, object min = null, object max = null, bool minEq = false, bool maxEq = false);
 
         /// <summary>
         /// 逻辑与 $and &amp;&amp;

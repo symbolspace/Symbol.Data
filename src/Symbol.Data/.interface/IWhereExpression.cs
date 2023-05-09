@@ -3,6 +3,7 @@
  *  e-mail：symbolspace@outlook.com
  */
 using System;
+using System.Collections.Generic;
 using System.Data;
 
 namespace Symbol.Data {
@@ -247,7 +248,38 @@ namespace Symbol.Data {
         IWhereExpression Gte(string field, object value, string op = "and");
         #endregion
 
+        #region Range
+        /// <summary>
+        /// 区间匹配
+        /// </summary>
+        /// <param name="field">列，例：aa</param>
+        /// <param name="min">最小值</param>
+        /// <param name="max">最大值</param>
+        /// <param name="minEq">包含最小值</param>
+        /// <param name="maxEq">包含最大值</param>
+        /// <returns></returns>
+        IWhereExpression Range(string field, object min = null, object max = null, bool minEq = false, bool maxEq = false, string op = "and");
+        #endregion
+
         #region Like
+        /// <summary>
+        /// 模糊匹配（like %value%，自动忽略空或空文本）。
+        /// </summary>
+        /// <param name="field">列，例：aa</param>
+        /// <param name="value">文本内容</param>
+        /// <param name="reverse">倒转，为true时表示value like field。</param>
+        /// <param name="op">逻辑操作符：and、or，不区分大小写。</param>
+        /// <returns></returns>
+        IWhereExpression Like(string field, string[] value, bool reverse = false, string op = "and");
+        /// <summary>
+        /// 模糊匹配（like %value%，自动忽略空或空文本）。
+        /// </summary>
+        /// <param name="field">列，例：aa</param>
+        /// <param name="value">文本内容</param>
+        /// <param name="reverse">倒转，为true时表示value like field。</param>
+        /// <param name="op">逻辑操作符：and、or，不区分大小写。</param>
+        /// <returns></returns>
+        IWhereExpression Like(string field, IEnumerable<string> value, bool reverse=false, string op = "and");
         /// <summary>
         /// 模糊匹配（like %value%，自动忽略空或空文本）。
         /// </summary>
