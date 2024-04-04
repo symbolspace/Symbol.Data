@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup Label="NuGet">
-    <TargetFrameworks>net7.0;net6.0;net5.0;netcoreapp3.1;net48;net47;net461;net46;net452;net45;net40;net35;net2</TargetFrameworks>
+    <TargetFrameworks>net8.0;net7.0;net6.0;net5.0;netcoreapp3.1;netstandard2.0;net48;net47;net461;net46;net452;net45;net40;net35;net2</TargetFrameworks>
     <IsPackable>true</IsPackable>
     <IncludeSymbols>true</IncludeSymbols>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
@@ -50,6 +50,9 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Optimize>false</Optimize>
   </PropertyGroup>
+	<PropertyGroup Condition="'$(TargetFramework)'=='net8.0'">
+		<DefineConstants>net80;netcore;</DefineConstants>
+	</PropertyGroup>
 	<PropertyGroup Condition="'$(TargetFramework)'=='net7.0'">
 		<DefineConstants>net70;netcore;</DefineConstants>
 	</PropertyGroup>
