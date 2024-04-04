@@ -9,7 +9,7 @@ namespace Symbol.Data {
 
 
     /// <summary>
-    /// ADO.NET 提供者。
+    /// 抽象：ADO.NET 提供者。
     /// </summary>
     public abstract class AdoProvider : Provider, IAdoProvider {
 

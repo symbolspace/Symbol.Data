@@ -8,7 +8,7 @@ using System.Data;
 namespace Symbol.Data {
 
     /// <summary>
-    /// ADO.NET 数据上下文接口。
+    /// 接口：ADO.NET 数据上下文。
     /// </summary>
     public interface IAdoDataContext : IDataContext {
     }

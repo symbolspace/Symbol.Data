@@ -8,7 +8,7 @@ using System.Data;
 namespace Symbol.Data {
 
     /// <summary>
-    /// 事务接口。
+    /// 接口：事务。
     /// </summary>
     public interface IAdoTransaction : ITransaction {
 

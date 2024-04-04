@@ -8,7 +8,7 @@ using System.Data;
 namespace Symbol.Data {
 
     /// <summary>
-    /// 命令基类
+    /// 抽象：命令
     /// </summary>
     public abstract class Command : ICommand {
 

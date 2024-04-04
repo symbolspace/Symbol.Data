@@ -478,6 +478,7 @@ namespace Symbol.Data {
         /// <param name="max">最大值</param>
         /// <param name="minEq">包含最小值</param>
         /// <param name="maxEq">包含最大值</param>
+        /// <param name="op">逻辑操作符：and、or，不区分大小写。</param>
         /// <returns></returns>
         public virtual IWhereExpression Range(string field, object min = null, object max = null, bool minEq = false, bool maxEq = false, string op = "and") {
             if (!string.IsNullOrEmpty(field)) {

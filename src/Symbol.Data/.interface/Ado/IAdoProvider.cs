@@ -8,7 +8,7 @@ using System.Data;
 namespace Symbol.Data {
 
     /// <summary>
-    /// ADO.NET 提供者接口
+    /// 接口：ADO.NET 提供者
     /// </summary>
     public interface IAdoProvider 
         : IProvider {

@@ -7,7 +7,7 @@ using System.Data;
 namespace Symbol.Data {
 
     /// <summary>
-    /// 数据查询基类。
+    /// 抽象：数据查询。
     /// </summary>
     /// <typeparam name="T">任意类型。</typeparam>
     public abstract class DataQuery<T> : IDataQuery<T> {

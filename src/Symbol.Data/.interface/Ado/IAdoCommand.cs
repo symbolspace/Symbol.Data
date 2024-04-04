@@ -8,7 +8,7 @@ using System.Data;
 namespace Symbol.Data {
 
     /// <summary>
-    /// ADO.NET 命令接口
+    /// 接口：ADO.NET 命令
     /// </summary>
     public interface IAdoCommand 
         : ICommand {

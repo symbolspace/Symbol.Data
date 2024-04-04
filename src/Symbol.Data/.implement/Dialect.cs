@@ -8,7 +8,7 @@ using System.Data;
 namespace Symbol.Data {
 
     /// <summary>
-    /// 方言
+    /// 抽象：方言
     /// </summary>
     public abstract class Dialect : IDialect {
 

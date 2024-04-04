@@ -9,7 +9,7 @@ namespace Symbol.Data {
 
 
     /// <summary>
-    /// ADO.NET 数据上下文。
+    /// 抽象：ADO.NET 数据上下文。
     /// </summary>
     public abstract class AdoDataContext : DataContext, IAdoDataContext {
 

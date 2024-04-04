@@ -7,7 +7,7 @@ using System;
 
 namespace Symbol.Data {
     /// <summary>
-    /// 数据库提供者特性。
+    /// 特性：数据库提供者。
     /// </summary>
     [AttributeUsage(AttributeTargets.Assembly, AllowMultiple = true, Inherited = true)]
     public class ProviderAttribute : System.Attribute {

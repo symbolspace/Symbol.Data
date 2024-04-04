@@ -8,7 +8,7 @@ using System.Data;
 
 namespace Symbol.Data {
     /// <summary>
-    /// 数据上下文基类
+    /// 抽象：数据上下文
     /// </summary>
     public abstract class DataContext : IDataContext {
 

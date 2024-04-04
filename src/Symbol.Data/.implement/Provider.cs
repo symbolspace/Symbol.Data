@@ -7,7 +7,7 @@
 namespace Symbol.Data {
 
     /// <summary>
-    /// 数据库提供者基类
+    /// 抽象：数据库提供者
     /// </summary>
     public abstract class Provider : IProvider {
 

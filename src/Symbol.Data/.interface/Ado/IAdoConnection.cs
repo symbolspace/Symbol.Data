@@ -8,7 +8,7 @@ using System.Data;
 namespace Symbol.Data {
 
     /// <summary>
-    /// ADO.NET 连接接口。
+    /// 接口：ADO.NET 连接
     /// </summary>
     public interface IAdoConnection : IConnection {
         /// <summary>

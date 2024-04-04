@@ -9,7 +9,7 @@ namespace Symbol.Data {
 
 
     /// <summary>
-    /// 连接基类
+    /// 抽象：连接
     /// </summary>
     public abstract class Connection : IConnection {
 

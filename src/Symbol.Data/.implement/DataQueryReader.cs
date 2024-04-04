@@ -9,7 +9,7 @@ using System.Reflection;
 namespace Symbol.Data {
 
     /// <summary>
-    /// 数据查询读取器基类
+    /// 抽象：数据查询读取器。
     /// </summary>
     public abstract class DataQueryReader : IDataQueryReader {
 

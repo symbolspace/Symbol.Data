@@ -9,7 +9,7 @@ namespace Symbol.Data {
 
 
     /// <summary>
-    /// ADO.NET 命令。
+    /// 抽象：ADO.NET 命令。
     /// </summary>
     public abstract class AdoCommand : Command, IAdoCommand {
 

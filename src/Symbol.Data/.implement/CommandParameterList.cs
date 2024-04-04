@@ -8,7 +8,7 @@ using System.Data;
 namespace Symbol.Data {
 
     /// <summary>
-    /// 命令参数列表基类
+    /// 抽象：命令参数列表
     /// </summary>
     public abstract class CommandParameterList : ICommandParameterList {
 

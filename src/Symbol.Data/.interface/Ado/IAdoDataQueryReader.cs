@@ -8,7 +8,7 @@ using System.Data;
 namespace Symbol.Data {
 
     /// <summary>
-    /// ADO.NET 数据查询读取器接口。
+    /// 接口：ADO.NET 数据查询读取器。
     /// </summary>
     public interface IAdoDataQueryReader
         : IDataQueryReader

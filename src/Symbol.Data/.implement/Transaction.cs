@@ -9,7 +9,7 @@ namespace Symbol.Data {
 
 
     /// <summary>
-    /// 事务基类
+    /// 抽象：事务
     /// </summary>
     public abstract class Transaction : ITransaction {
 
