@@ -881,6 +881,12 @@ namespace Symbol.Data {
         /// <returns>返回第一条记录。</returns>
         object FirstOrDefault();
         /// <summary>
+        /// 从查询中拿出第一条记录，如果查询未包含任何记录，将返回此类型的default(T);
+        /// </summary>
+        /// <param name="type">类型，可以模拟出泛型的感觉。</param>
+        /// <returns>返回第一条记录。</returns>
+        object FirstOrDefault(Type type);
+        /// <summary>
         /// 将查询快速读取并构造一个List对象。
         /// </summary>
         /// <returns>返回一个List对象。</returns>

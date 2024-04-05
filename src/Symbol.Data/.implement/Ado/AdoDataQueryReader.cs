@@ -207,8 +207,8 @@ namespace Symbol.Data {
         /// </summary>
         public override void Dispose() {
             var commandCache = ThreadHelper.InterlockedSet(ref _commandCache, null);
-            if (commandCache?.DbCommand?.Transaction == null)
-                commandCache?.DbCommand?.Cancel();
+            //if (commandCache?.DbCommand?.Transaction == null)
+            //    commandCache?.DbCommand?.Cancel();
 
             var dataReader=ThreadHelper.InterlockedSet(ref _dataReader, null);
             if (dataReader != null) {

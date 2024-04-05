@@ -38,6 +38,10 @@ namespace Symbol.Data {
         /// 获取或设置当前超时时间（秒，不会影响到DataContext）。
         /// </summary>
         public abstract int Timeout { get; set; }
+        /// <summary>
+        /// 允许无事务
+        /// </summary>
+        public virtual bool AllowNoTransaction { get; set; }
 
         #endregion
 

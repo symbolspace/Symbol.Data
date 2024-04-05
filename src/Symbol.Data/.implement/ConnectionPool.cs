@@ -48,8 +48,8 @@ namespace Symbol.Data {
             _master = master;
 
             _list = new System.Collections.Concurrent.ConcurrentStack<IConnection>();
-            if (!_master.MultipleActiveResultSets)
-                Push(_master);
+            //if (!_master.MultipleActiveResultSets)
+            //    Push(_master);
         }
         #endregion
 
@@ -60,11 +60,23 @@ namespace Symbol.Data {
         /// </summary>
         /// <returns>返回一个连接对象。</returns>
         public virtual IConnection Take() {
+            return Take(false);
+        }
+        /// <summary>
+        /// 从池中拿出一个连接对象。
+        /// </summary>
+        /// <param name="allowNoTransaction">允许无事务。</param>
+        /// <returns>返回一个连接对象。</returns>
+        public virtual IConnection Take(bool allowNoTransaction) {
             var master = Master;
             if (master == null)
                 return null;
-            if (master.MultipleActiveResultSets || master.Transaction.Working)
+            if (master.MultipleActiveResultSets)
                 return master;
+            if (master.Transaction.Working) {
+                if (!allowNoTransaction)
+                    return master;
+            }
             var list = ThreadHelper.InterlockedGet(ref _list);
             IConnection connection;
             if (!list.TryPop(out connection)) {
@@ -84,6 +96,11 @@ namespace Symbol.Data {
             var master = Master;
             if (connection.MultipleActiveResultSets) {
                 if( connection!= master)
+                    connection.Dispose();
+                return;
+            }
+            if(master.Transaction.Working) {
+                if(connection!= master)
                     connection.Dispose();
                 return;
             }

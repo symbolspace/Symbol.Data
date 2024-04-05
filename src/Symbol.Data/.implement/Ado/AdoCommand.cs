@@ -53,14 +53,13 @@ namespace Symbol.Data {
         /// <param name="commandText">命令文本</param>
         /// <returns>返回DbCommandCache对象。</returns>
         protected virtual AdoCommandCache CreateDbCommand(string commandText) {
-            var connection = (IAdoConnection)DataContext?.Connections?.Take();
+            var connection = (IAdoConnection)DataContext?.Connections?.Take(AllowNoTransaction);
             if (connection == null)
                 return null;
             IDbCommand dbCommand = null;
             try {
                 connection.Open();
                 dbCommand = connection.DbConnection.CreateCommand();
-                //dbCommand.Connection = connection.DbConnection;
                 if (connection.Transaction.Working) {
                     dbCommand.Transaction = connection.DbTransaction;
                 }
@@ -176,9 +175,9 @@ namespace Symbol.Data {
         protected virtual void DestroyDbCommand(IDbCommand dbCommand) {
             if (dbCommand == null)
                 return;
-            dbCommand.Cancel();
-            dbCommand.Connection = null;
-            dbCommand.Transaction = null;
+            //dbCommand.Cancel();
+            //dbCommand.Connection = null;
+            //dbCommand.Transaction = null;
             dbCommand.Dispose();
         }
         /// <summary>
