@@ -31,7 +31,10 @@ namespace Symbol.Data {
         /// 获取或设置当前超时时间（秒，不会影响到DataContext）。
         /// </summary>
         int Timeout { get; set; }
-
+        /// <summary>
+        /// 允许无事务
+        /// </summary>
+        bool AllowNoTransaction { get; set; }
 
         /// <summary>
         /// 执行查询，并返回查询的第一条记录的第一个列。

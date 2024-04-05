@@ -45,7 +45,9 @@ namespace Symbol.Data.Binding {
                 var condition = MapObject(Condition, dataContext, entity, reader);
                 builder.Query(condition);
                 return CacheFunc(cache, builder, "max", type, () => {
-                    var value = dataContext.ExecuteScalar(builder.CommandText, builder.Parameters);
+                    using var q = builder.CreateQuery(type);
+                    q.Command.AllowNoTransaction = true;
+                    var value = q.FirstOrDefault();
                     if (value == null && type.IsValueType)
                         return TypeExtensions.DefaultValue(type);
                     return TypeExtensions.Convert(value, type);

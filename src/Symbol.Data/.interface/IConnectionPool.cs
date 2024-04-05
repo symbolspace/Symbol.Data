@@ -31,6 +31,13 @@ namespace Symbol.Data {
         /// <returns>返回一个连接对象。</returns>
         IConnection Take();
         /// <summary>
+        /// 从池中拿出一个连接对象。
+        /// </summary>
+        /// <param name="allowNoTransaction">允许无事务。</param>
+        /// <returns>返回一个连接对象。</returns>
+        IConnection Take(bool allowNoTransaction);
+
+        /// <summary>
         /// 将连接对象放入池中。
         /// </summary>
         /// <param name="connection">连接对象，null直接忽略。</param>

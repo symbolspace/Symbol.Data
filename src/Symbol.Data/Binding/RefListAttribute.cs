@@ -79,7 +79,8 @@ namespace Symbol.Data.Binding {
                 builder.Query(conditiion).Sort(Sorter);
                 return CacheFunc(cache, builder, "list.ref", type, () => {
                     var list = (System.Collections.IList)FastWrapper.CreateInstance(type);
-                    var q = dataContext.CreateQuery(elementType, builder.CommandText, builder.Parameters);
+                    using var q = builder.CreateQuery(elementType);
+                    q.Command.AllowNoTransaction = true;
                     q.DataBinderObjectCache = cache;
                     foreach (var item in q) {
                         list.Add(item);

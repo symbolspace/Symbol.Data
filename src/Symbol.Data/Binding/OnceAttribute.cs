@@ -53,7 +53,8 @@ namespace Symbol.Data.Binding {
                 return CacheFunc(cache, builder, "once", type, () => {
                     object value = null;
                     if (builder.WhereCommandText.Length > 0) {
-                        var q = dataContext.CreateQuery(type, builder.CommandText, builder.Parameters);
+                        using var q = builder.CreateQuery(type);
+                        q.Command.AllowNoTransaction = true;
                         q.DataBinderObjectCache = cache;
                         value = q.FirstOrDefault();
                     }
