@@ -7,7 +7,7 @@ namespace Symbol.Data {
 
 
     /// <summary>
-    /// SqlServer 数据上下文。
+    /// 抽象：SqlServer 数据上下文。
     /// </summary>
     public abstract class SqlServerDataContext : AdoDataContext {
 

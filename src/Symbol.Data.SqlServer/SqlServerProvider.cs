@@ -6,7 +6,7 @@
 namespace Symbol.Data {
 
     /// <summary>
-    /// SqlServer数据库提供者基类
+    /// 抽象：SqlServer数据库提供者
     /// </summary>
     public abstract class SqlServerProvider : AdoProvider {
 
@@ -35,7 +35,11 @@ namespace Symbol.Data {
         /// <param name="connectionString">连接字符串。</param>
         /// <returns>返回数据库连接。</returns>
         public override IConnection CreateConnection(string connectionString) {
+            connectionString = connectionString?.Trim();
             CommonException.CheckArgumentNull(connectionString, nameof(connectionString));
+            if(connectionString.StartsWith("{") && connectionString.EndsWith("}")) {
+                return CreateConnection((object)connectionString);
+            }
             return new SqlServerConnection(this, FastWrapper.CreateInstance<System.Data.SqlClient.SqlConnection>(connectionString), connectionString);
         }
         /// <summary>
