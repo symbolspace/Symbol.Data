@@ -56,7 +56,7 @@ namespace Symbol.Data {
         protected override void DestroyDbCommand(System.Data.IDbCommand dbCommand) {
             if (dbCommand == null)
                 return;
-            dbCommand.Cancel();
+            //dbCommand.Cancel();
             if (dbCommand.Transaction == null) {
                 dbCommand.Connection = null;
             }
