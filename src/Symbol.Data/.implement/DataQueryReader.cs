@@ -3,6 +3,7 @@
  *  e-mail：symbolspace@outlook.com
  */
 
+using System.ComponentModel;
 using System.Data;
 using System.Reflection;
 
@@ -474,7 +475,8 @@ namespace Symbol.Data {
             //没有字段？
             if (FieldCount == 0)
                 return true;
-
+            var supportInitialize = result as ISupportInitialize;
+            supportInitialize?.BeginInit();
             for (int i = 0; i < FieldCount; i++) {
                 string name = GetName(i);
 
@@ -492,6 +494,7 @@ namespace Symbol.Data {
                     continue;
                 }
             }
+            supportInitialize?.EndInit();
             return true;
 
         }
