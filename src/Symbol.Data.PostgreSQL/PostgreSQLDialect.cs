@@ -64,14 +64,14 @@ namespace Symbol.Data {
             //}
             //return PreName(field) + "::text ~* {0}";
             if (reverse) {
-                field = PreName(field);
+                field = PreName(field)+ "::text";
                 if (left)
-                    field = "'%'+" + field;
+                    field = "'%'||" + field;
                 if (right)
-                    field += "+'%'";
+                    field += "||'%'";
                 return "{0} like " + field;
             } else {
-                return PreName(field) + " like {0}";
+                return PreName(field) + "::text like {0}";
             }
         }
 
