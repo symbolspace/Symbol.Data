@@ -32,19 +32,19 @@ namespace Symbol.Data {
         }
         #endregion
 
-        /// <summary>
-        /// Like 值过滤器
-        /// </summary>
-        /// <param name="value">值</param>
-        /// <param name="left">允许起始</param>
-        /// <param name="right">允许末尾</param>
-        /// <param name="reverse">倒转，为true时表示value like field。</param>
-        /// <returns></returns>
-        public override string LikeValueFilter(string value, bool left, bool right, bool reverse) {
-            if (reverse)
-                return value;
-            return string.Format("{0}{1}{2}", left ? "" : "^", value.Replace("^", "\\^").Replace("$", "\\$"), right ? "" : "$");
-        }
+        ///// <summary>
+        ///// Like 值过滤器
+        ///// </summary>
+        ///// <param name="value">值</param>
+        ///// <param name="left">允许起始</param>
+        ///// <param name="right">允许末尾</param>
+        ///// <param name="reverse">倒转，为true时表示value like field。</param>
+        ///// <returns></returns>
+        //public override string LikeValueFilter(string value, bool left, bool right, bool reverse) {
+        //    if (reverse)
+        //        return value;
+        //    return string.Format("{0}{1}{2}", left ? "" : "^", value.Replace("^", "\\^").Replace("$", "\\$"), right ? "" : "$");
+        //}
         /// <summary>
         /// Like 语法
         /// </summary>
@@ -54,15 +54,25 @@ namespace Symbol.Data {
         /// <param name="reverse">倒转，为true时表示value like field。</param>
         /// <returns></returns>
         public override string LikeGrammar(string field, bool left, bool right, bool reverse) {
+            //if (reverse) {
+            //    field = PreName(field)+"::text";
+            //    if (!left)
+            //        field = "'^'+" + field;
+            //    if (!right)
+            //        field += "+'$'";
+            //    return "{0} ~* " + field;
+            //}
+            //return PreName(field) + "::text ~* {0}";
             if (reverse) {
-                field = PreName(field)+"::text";
-                if (!left)
-                    field = "'^'+" + field;
-                if (!right)
-                    field += "+'$'";
-                return "{0} ~* " + field;
+                field = PreName(field);
+                if (left)
+                    field = "'%'+" + field;
+                if (right)
+                    field += "+'%'";
+                return "{0} like " + field;
+            } else {
+                return PreName(field) + " like {0}";
             }
-            return PreName(field) + "::text ~* {0}";
         }
 
         #region DateTimeNowGrammar

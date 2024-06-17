@@ -12,7 +12,7 @@
     <NeutralLanguage>zh-CN</NeutralLanguage>
     <AssemblyTitle>Symbol.Data.PostgreSQL</AssemblyTitle>
     <AssemblyName>Symbol.Data.PostgreSQL</AssemblyName>
-    <VersionPrefix>4.2.0.22</VersionPrefix>
+    <VersionPrefix>4.2.0.23</VersionPrefix>
     <Title>Symbol.Data.PostgreSQL</Title>
     <Authors>symbolspace</Authors>
     <Company>symbolspace</Company>
@@ -21,7 +21,6 @@
     <PackageId>Symbol.Data.PostgreSQL</PackageId>
     <PackageLicenseUrl></PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/symbolspace/Symbol.Data/</PackageProjectUrl>
-    <PackageIconUrl>https://raw.githubusercontent.com/symbolspace/Symbol/master/icon.png</PackageIconUrl>
     <PackageIcon>icon.png</PackageIcon>
     <PackageTags>postgresql;psql,nosql;ado;orm;symbol</PackageTags>
     <PackageReleaseNotes>Please see https://github.com/symbolspace/Symbol.Data/wiki/Home for more information.</PackageReleaseNotes>
