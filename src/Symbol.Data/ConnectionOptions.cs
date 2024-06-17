@@ -142,7 +142,7 @@ namespace Symbol.Data {
         /// </summary>
         /// <returns>返回所有键值。</returns>
         public object ToObject() {
-            return _vars;
+            return FastWrapper.Combine(null, _vars);
         }
         #endregion
 
