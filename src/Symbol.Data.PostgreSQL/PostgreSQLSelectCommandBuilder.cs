@@ -10,7 +10,7 @@ namespace Symbol.Data {
     /// <summary>
     /// PostgreSQL 查询命令构造器基类
     /// </summary>
-    public class PostgreSQLSelectCommandBuilder : Symbol.Data.SelectCommandBuilder, ISelectCommandBuilder {
+    public class PostgreSQLSelectCommandBuilder : Symbol.Data.SelectCommandBuilder {
 
 
         #region ctor

@@ -10,23 +10,6 @@ namespace Symbol.Data {
     /// </summary>
     public class PostgreSQLTransaction : AdoTransaction {
 
-        #region properties
-        /// <summary>
-        /// 获取是否在事务中。
-        /// </summary>
-        public override bool Working {
-            get {
-                var transaction = (Npgsql.NpgsqlTransaction)DbTransaction;
-                return transaction != null
-#if !net20 && !net35 && !net40 && !net60 && !net70
-                    && !transaction.IsCompleted
-#endif
-                    ;
-            }
-        }
-
-        #endregion
-
         #region ctor
         /// <summary>
         /// 创建实例。

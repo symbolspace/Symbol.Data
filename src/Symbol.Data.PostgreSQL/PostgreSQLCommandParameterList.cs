@@ -44,12 +44,18 @@ namespace Symbol.Data {
                 item.Value = TypeExtensions.Convert<long>(item.Value);
                 return;
             }
-            if (item.RealType.IsArray && item.RealType.GetElementType() == typeof(string)) {
-                item.Properties["NpgsqlDbType"] = TypeExtensions.Convert("Array,Text", PostgreSQLProvider.GetDbType());
-                return;
-            }
-            if (item.RealType.IsArray && item.RealType.GetElementType() != typeof(byte)) {
+            if (item.RealType.IsArray) {
+                var elementType = item.RealType.GetElementType();
+                if (elementType == typeof(string)) {
+                    item.Properties["NpgsqlDbType"] = TypeExtensions.Convert("Array,Text", PostgreSQLProvider.GetDbType());
+                    return;
+                }
+                if(elementType== typeof(byte)) {
+                    item.Properties["NpgsqlDbType"] = TypeExtensions.Convert("Bytea", PostgreSQLProvider.GetDbType());
+                    return;
+                }
                 item.Properties["NpgsqlDbType"] = TypeExtensions.Convert("Json", PostgreSQLProvider.GetDbType());
+                item.RealType = typeof(object);
                 item.Value = item.Value == null ? null : JSON.ToJSON(item.Value);
                 return;
             }
