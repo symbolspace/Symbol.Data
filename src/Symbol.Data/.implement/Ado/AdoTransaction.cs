@@ -3,6 +3,7 @@
  *  e-mail：symbolspace@outlook.com
  */
 
+using System;
 using System.Data;
 
 namespace Symbol.Data {
@@ -25,7 +26,13 @@ namespace Symbol.Data {
         public override bool Working {
             get {
                 var transaction = DbTransaction;
-                return transaction != null && transaction.Connection != null && transaction.Connection.State != ConnectionState.Closed;
+                try {
+                    return transaction != null 
+                    && transaction.Connection != null 
+                    && transaction.Connection.State != ConnectionState.Closed;
+                } catch (ObjectDisposedException) {
+                    return false;
+                }
             }
         }
         /// <summary>

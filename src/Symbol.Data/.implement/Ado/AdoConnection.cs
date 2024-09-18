@@ -123,6 +123,8 @@ namespace Symbol.Data {
             if (string.IsNullOrEmpty(database))
                 return;
             Open();
+            if (string.Equals(DbConnection.Database, database, System.StringComparison.OrdinalIgnoreCase))
+                return;
             DbConnection?.ChangeDatabase(database);
         }
         #endregion
