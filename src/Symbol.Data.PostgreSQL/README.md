@@ -1,7 +1,21 @@
 ﻿### 程序集    [使用说明](https://github.com/symbolspace/Symbol.Data/wiki/Home)
-> 运行时支持 .net framework v2.0/3.5/4.0/4.5、.net standard 2.x、.net core app 2.x。
+Symbol.Data.PostgreSQL.dll [![Available on NuGet https://www.nuget.org/packages/Symbol.Data.PostgreSQL/](https://img.shields.io/nuget/v/Symbol.Data.PostgreSQL.svg?style=flat)](https://www.nuget.org/packages/Symbol.Data.PostgreSQL/)
 
-* Symbol.Data.PostgreSQL.dll [![Available on NuGet https://www.nuget.org/packages/Symbol.Data.PostgreSQL/](https://img.shields.io/nuget/v/Symbol.Data.PostgreSQL.svg?style=flat)](https://www.nuget.org/packages/Symbol.Data.PostgreSQL/)
+运行时支持：
+* .net framework 2.0
+* .net framework 3.5
+* .net framework 4.0
+* .net framework 4.5
+* .net framework 4.6
+* .net framework 4.6.1
+* .net framework 4.7
+* .net framework 4.8
+* .net standard 2.0
+* .net core app 3.1
+* .net 5.0
+* .net 6.0
+* .net 7.0
+* .net 8.0
 
 
 ### 创建IDataContext [更多使用说明](https://github.com/symbolspace/Symbol.Data/wiki/Home)
@@ -25,15 +39,32 @@ var db = Symbol.Data.Provider.CreateDataContext("pgsql", connectionOptions);
 ```
 
 ### 各个运行时引用说明
-* .net framework v2.0/v3.5
+* .net framework 2.0
 > Npgsql *v2.2.7*
 
-* .net framework v4.0
-> Npgsql *v3.0.8*
+* .net framework 3.5
+> Npgsql *v2.2.7*
 
-* .net framework v4.5
-> Npgsql *v3.1.0*
+* .net framework 4.0
+> Npgsql *v2.2.7*
 
-* .net standard v2.x / .net core app v2.x
-> Npgsql *v3.2.5* **[core]**
+* .net framework 4.5~4.8
+> Npgsql *v4.1.14*
 
+* .net standard 2.0
+> Npgsql *v5.0.18*
+
+* .net core app 3.1
+> Npgsql *v5.0.18*
+
+* .net 5.0
+> Npgsql *v5.0.18*
+
+* .net 6.0
+> Npgsql *v6.0.4.816*
+
+* .net 7.0
+> Npgsql *v6.0.12*
+
+* .net 8.0
+> Npgsql *v8.0.4*

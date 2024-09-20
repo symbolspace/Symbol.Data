@@ -3,6 +3,8 @@
  *  e-mail：symbolspace@outlook.com
  */
 
+using NpgsqlTypes;
+
 namespace Symbol.Data {
 
     /// <summary>
@@ -47,14 +49,14 @@ namespace Symbol.Data {
             if (item.RealType.IsArray) {
                 var elementType = item.RealType.GetElementType();
                 if (elementType == typeof(string)) {
-                    item.Properties["NpgsqlDbType"] = TypeExtensions.Convert("Array,Text", PostgreSQLProvider.GetDbType());
+                    item.Properties["NpgsqlDbType"] = NpgsqlDbType.Array | NpgsqlDbType.Text;
                     return;
                 }
                 if(elementType== typeof(byte)) {
-                    item.Properties["NpgsqlDbType"] = TypeExtensions.Convert("Bytea", PostgreSQLProvider.GetDbType());
+                    item.Properties["NpgsqlDbType"] = NpgsqlDbType.Bytea;
                     return;
                 }
-                item.Properties["NpgsqlDbType"] = TypeExtensions.Convert("Json", PostgreSQLProvider.GetDbType());
+                item.Properties["NpgsqlDbType"] = NpgsqlDbType.Json;
                 item.RealType = typeof(object);
                 item.Value = item.Value == null ? null : JSON.ToJSON(item.Value);
                 return;
@@ -65,7 +67,7 @@ namespace Symbol.Data {
                 || TypeExtensions.IsInheritFrom(item.RealType, typeof(System.Collections.Generic.IDictionary<string, object>))
                 || (item.RealType.IsClass && !TypeExtensions.IsSystemBaseType(item.RealType))
             ) {
-                item.Properties["NpgsqlDbType"] = TypeExtensions.Convert("Json", PostgreSQLProvider.GetDbType());
+                item.Properties["NpgsqlDbType"] = NpgsqlDbType.Json;
                 item.RealType = typeof(object);
                 item.Value = item.Value == null ? null : JSON.ToJSON(item.Value);
                 return;

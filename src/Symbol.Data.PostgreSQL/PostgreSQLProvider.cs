@@ -4,6 +4,7 @@
  */
 
 using System.Data;
+using Npgsql;
 
 [assembly: Symbol.Data.Provider("pgsql", typeof(Symbol.Data.PostgreSQLProvider))]
 [assembly: Symbol.Data.Provider("psql", typeof(Symbol.Data.PostgreSQLProvider))]
@@ -16,10 +17,6 @@ namespace Symbol.Data {
     /// </summary>
     public class PostgreSQLProvider : AdoProvider {
 
-        #region fields
-        private static readonly Symbol.Collections.Generic.NameValueCollection<System.Type> _types;
-        #endregion
-
         #region properties
 
         /// <summary>
@@ -31,16 +28,6 @@ namespace Symbol.Data {
         /// </summary>
         public override string Version { get { return "9.x"; } }
 
-        #endregion
-
-        #region cctor
-        static PostgreSQLProvider() {
-            _types = new Collections.Generic.NameValueCollection<System.Type> {
-                { "Npgsql.NpgsqlConnection", typeof(Npgsql.NpgsqlConnection) },
-                { "Npgsql.NpgsqlConnectionStringBuilder", typeof(Npgsql.NpgsqlConnectionStringBuilder) },
-                { "NpgsqlTypes.NpgsqlDbType", typeof(NpgsqlTypes.NpgsqlDbType) }
-            };
-        }
         #endregion
 
         #region ctor
@@ -58,9 +45,12 @@ namespace Symbol.Data {
         /// <param name="connectionString">连接字符串。</param>
         /// <returns>返回数据库连接。</returns>
         public override IConnection CreateConnection(string connectionString) {
-            CommonException.CheckArgumentNull(connectionString, "connectionString");
-            System.Type type = GetConnectionType(true);
-            return new PostgreSQLConnection(this, FastWrapper.CreateInstance<IDbConnection>(type, connectionString), connectionString);
+            connectionString = connectionString?.Trim();
+            CommonException.CheckArgumentNull(connectionString, nameof(connectionString));
+            if (connectionString.StartsWith("{") && connectionString.EndsWith("}")) {
+                return CreateConnection((object)connectionString);
+            }
+            return new PostgreSQLConnection(this,new NpgsqlConnection(connectionString), connectionString);
         }
         /// <summary>
         /// 创建数据库连接。
@@ -82,8 +72,14 @@ namespace Symbol.Data {
                     goto lb_Object;
                 }
             }
-           lb_Object:
-            System.Data.Common.DbConnectionStringBuilder builder = FastWrapper.CreateInstance<System.Data.Common.DbConnectionStringBuilder>(GetType("Npgsql.NpgsqlConnectionStringBuilder", true));
+        lb_Object:
+            System.Data.Common.DbConnectionStringBuilder builder
+#if NET20 || NET35 || NET40
+                = new NpgsqlConnectionStringBuilder()
+#else
+                = new NpgsqlConnectionStringBuilder(true)
+#endif
+            ;
             builder["Pooling"] = true;
             builder["MaxPoolSize"] = 1024;
             builder["Port"] = 5432;
@@ -131,49 +127,6 @@ namespace Symbol.Data {
 
         #region methods
 
-        #region GetType
-        /// <summary>
-        /// 获取 PostgreSQL.Data 类型
-        /// </summary>
-        /// <param name="typeFullName">类型全名。</param>
-        /// <param name="throw">是否报错</param>
-        /// <returns></returns>
-        public static System.Type GetType(string typeFullName, bool @throw = false) {
-            if (string.IsNullOrEmpty(typeFullName))
-                return null;
-            System.Type type = _types[typeFullName];
-            if (type == null) {
-                string typeName = typeFullName + ", Npgsql";
-                type = FastWrapper.GetWarpperType(typeName, "Npgsql.dll");
-                if (type == null && @throw)
-                    CommonException.ThrowTypeLoad(typeName);
-                _types[typeFullName] = type;
-            }
-            return type;
-        }
-        #endregion
-
-        #region GetConnectionType
-        /// <summary>
-        /// 获取 PostgreSQL.Data.PostgreSQLClient.PostgreSQLConnection 类型
-        /// </summary>
-        /// <param name="throw">是否报错</param>
-        /// <returns></returns>
-        public static System.Type GetConnectionType(bool @throw=false) {
-            return GetType("Npgsql.NpgsqlConnection", @throw);
-        }
-        #endregion
-        #region GetDbType
-        /// <summary>
-        /// 获取 PostgreSQL.Data.PostgreSQLClient.PostgreSQLDbType 类型
-        /// </summary>
-        /// <param name="throw">是否报错</param>
-        /// <returns></returns>
-        public static System.Type GetDbType(bool @throw=false) {
-            return GetType("NpgsqlTypes.NpgsqlDbType", @throw);
-        }
-        #endregion
-
         #region MapTypes
         delegate bool MapTypes_Filter(System.Type type);
         /// <summary>
@@ -192,11 +145,7 @@ namespace Symbol.Data {
                 filter = (p1) => p1.Name.StartsWith(perfix, System.StringComparison.OrdinalIgnoreCase);
 
             foreach (System.Type type in assembly.GetTypes()) {
-#if NETDNX
-                if (type.GetTypeInfo().IsAbstract || !filter(type))
-#else
                 if (type.IsAbstract || !filter(type))
-#endif
                     continue;
                 helper.MapType(type);
             }
@@ -211,11 +160,7 @@ namespace Symbol.Data {
         /// <param name="connection">连接实例</param>
         /// <returns>返回是否成功</returns>
         public static bool MapType(System.Type type, object connection = null) {
-#if NETDNX
-            if (type == null || type.GetTypeInfo().IsAbstract)
-#else
             if (type == null || type.IsAbstract)
-#endif
                 return false;
 
             MapTypeHelper helper = new MapTypeHelper(connection);
@@ -238,7 +183,7 @@ namespace Symbol.Data {
 
             public MapTypeHelper(object connection = null) {
                 _connection = connection;
-                _connectionType = GetConnectionType(true);
+                _connectionType = typeof(NpgsqlConnection);
                 if (_connection == null) {
                     _mapCompositeGlobally = _connectionType.GetMethod("MapCompositeGlobally", System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.InvokeMethod);
                     _mapEnumGlobally = _connectionType.GetMethod("MapEnumGlobally", System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.InvokeMethod);
@@ -248,28 +193,16 @@ namespace Symbol.Data {
                 }
             }
             public bool MapType(System.Type type, string pgName = null, object nameTranslator = null) {
-#if NETDNX
-                if (type == null || type.GetTypeInfo().IsAbstract)
-#else
                 if (type == null || type.IsAbstract)
-#endif
                     return false;
 
-#if NETDNX
-                if (type.GetTypeInfo().IsClass) {
-#else
                 if (type.IsClass) {
-#endif
                     if (_connection == null) {
                         _mapCompositeGlobally.MakeGenericMethod(type).Invoke(null, new object[2]);
                     } else {
                         _mapComposite.MakeGenericMethod(type).Invoke(_connection, new object[2]);
                     }
-#if NETDNX
-                } else if (type.GetTypeInfo().IsEnum) {
-#else
                 } else if (type.IsEnum) {
-#endif
                     if (_connection == null) {
                         _mapEnumGlobally.MakeGenericMethod(type).Invoke(null, new object[] { type.Name.ToLower(), null });
                     } else {
