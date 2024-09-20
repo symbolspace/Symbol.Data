@@ -10,11 +10,12 @@ namespace Examples.Data.netcore {
             //}
             {
                 //创建数据上下文对象
-                DataContextTest("mssql");
-                DataContextTest("mssql2012");
-                DataContextTest("mysql");
+                //DataContextTest("mssql");
+                //DataContextTest("mssql2012");
+                //DataContextTest("mysql");
                 DataContextTest("postgresql");
-                DataContextTest("sqlite");
+                DataContextTest("kingbase");
+                //DataContextTest("sqlite");
             }
             Console.ReadKey();
         }
@@ -138,6 +139,15 @@ namespace Examples.Data.netcore {
                         password = "test",                      //登录密码
                     };
                     break;
+                case "kingbase":
+                    connectionOptions = new {
+                        host = "kingbase-master.hh",            //服务器
+                        port = 54321,                           //端口，可以与服务器写在一起，例如127.0.0.1:5432
+                        name = "test",                          //数据库名称
+                        account = "test",                       //登录账号
+                        password = "test",                      //登录密码
+                    };
+                    break;
                 case "sqlite":
                     connectionOptions = new {
                         //name = "test",                          //数据库名称
@@ -191,6 +201,44 @@ namespace Examples.Data.netcore {
                     }
                     break;
                 case "postgresql": {
+
+                        #region 创建表：t_user
+                        if (!db.TableExists("t_user")) {
+                            db.ExecuteNonQuery(@"
+                                create table t_user(
+                                    id bigserial not null,
+                                    ""type"" smallint  not null,
+                                    account character varying(64) not null,
+                                    ""password"" character varying(32) not null,
+                                    CONSTRAINT ""pk_t_User_id"" PRIMARY KEY(id)
+                                )
+                                WITH(
+                                    OIDS = FALSE
+                                );");
+                        }
+                        #endregion
+                        #region 创建表：test
+
+                        db.ExecuteNonQuery(@"
+                                create table test(
+                                   id bigserial not null,
+                                   name character varying(255),
+                                   ""age""      integer         not null,
+                                   ""height""   integer         not null,
+                                   ""money""    numeric(18,2)   not null,
+                                   ""count""    bigint          not null,
+                                   ""data""     jsonb               null,
+                                   CONSTRAINT ""pk_test_id"" PRIMARY KEY(id)
+                                )
+                                WITH(
+                                  OIDS = FALSE
+                                ); ");
+
+                        #endregion
+
+                    }
+                    break;
+                case "kingbase": {
 
                         #region 创建表：t_user
                         if (!db.TableExists("t_user")) {

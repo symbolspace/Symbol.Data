@@ -4,7 +4,7 @@
 
 * Symbol.Data.dll [![Available on NuGet https://www.nuget.org/packages/Symbol.Data/](https://img.shields.io/nuget/v/Symbol.Data.svg?style=flat)](https://www.nuget.org/packages/Symbol.Data/)
 * Symbol.Data.SqlServer.dll [![Available on NuGet https://www.nuget.org/packages/Symbol.Data.SqlServer/](https://img.shields.io/nuget/v/Symbol.Data.SqlServer.svg?style=flat)](https://www.nuget.org/packages/Symbol.Data.SqlServer/)
-* Symbol.Data.PostgreSQL.dll [![Available on NuGet https://www.nuget.org/packages/Symbol.Data.PostgreSQL/](https://img.shields.io/nuget/v/Symbol.Data.PostgreSQL.svg?style=flat)](https://www.nuget.org/packages/Symbol.Data.PostgreSQL/)
+* Symbol.Data.Kingbase.dll [![Available on NuGet https://www.nuget.org/packages/Symbol.Data.Kingbase/](https://img.shields.io/nuget/v/Symbol.Data.Kingbase.svg?style=flat)](https://www.nuget.org/packages/Symbol.Data.Kingbase/)
 * Symbol.Data.MySQL.dll [![Available on NuGet https://www.nuget.org/packages/Symbol.Data.MySQL/](https://img.shields.io/nuget/v/Symbol.Data.MySQL.svg?style=flat)](https://www.nuget.org/packages/Symbol.Data.MySQL/)
 * Symbol.Data.SQLite.dll [![Available on NuGet https://www.nuget.org/packages/Symbol.Data.SQLite/](https://img.shields.io/nuget/v/Symbol.Data.SQLite.svg?style=flat)](https://www.nuget.org/packages/Symbol.Data.SQLite/)
 
@@ -23,6 +23,7 @@
 * 支持数据库架构版本检测；
 * 数据库：MSSQL 2005/2008/2012/2014/2016+，引用 **Symbol.Data.SqlServer** ；
 * 数据库：PostgreSQL，引用 **Symbol.Data.PostgreSQL**，基于Npgsql.dll；
+* 数据库：Kingbase，引用 **Symbol.Data.Kingbase**，基于Kdbndp_V9.dll；
 * 数据库：MySql，引用 **Symbol.Data.MySql**，基于 MySql.Data.dll；
 * 数据库：SQLite，引用 **Symbol.Data.SQLite**，基于 System.Data.SQLite.Core.dll，自适应x64/x86，自动识别；
 
