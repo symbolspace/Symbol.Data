@@ -1,7 +1,7 @@
 ﻿### 程序集    [使用说明](https://github.com/symbolspace/Symbol.Data/wiki/Home)
 Symbol.Data.Kingbase.dll [![Available on NuGet https://www.nuget.org/packages/Symbol.Data.Kingbase/](https://img.shields.io/nuget/v/Symbol.Data.Kingbase.svg?style=flat)](https://www.nuget.org/packages/Symbol.Data.Kingbase/)
 
-运行时运行
+运行时支持：
 * .net framework 4.0
 * .net framework 4.5
 * .net framework 4.6
